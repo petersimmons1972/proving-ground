@@ -52,3 +52,16 @@ def test_run_task_zero_profile_no_system_flag():
     cmd = call_args[0][0]
     assert "--system-prompt" not in cmd
     assert "--system" not in cmd
+
+
+def test_files_written_excludes_prompt_md(tmp_path):
+    """prompt.md is seeded by the runner itself and must not appear in files_written.
+
+    Uses a real tmp directory so the actual rglob + name-filter logic is exercised,
+    not a mock of the filesystem.
+    """
+    with patch("src.runner.subprocess.run") as mock_run:
+        mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
+        result = run_task("t1-1", "my task spec", "zero", "", str(tmp_path))
+    assert "prompt.md" not in result.files_written
+    assert not any(f.endswith("prompt.md") for f in result.files_written)
