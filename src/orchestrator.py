@@ -72,7 +72,8 @@ def run_benchmark(data_dir: str, tiers: list[str]) -> None:
                 working_dir=str(runs_path / run_id),
             )
 
-            # Automated scoring
+            # Automated scoring — score_tests returns only tests_pass populated;
+            # loc/complexity/scope are computed separately (require working_dir).
             auto = score_tests(exit_code=result.exit_code, stdout=result.stdout)
             loc_min, loc_verb = _LOC_REFS.get(task.id, (10, 80))
             loc = score_lines_of_code(result.working_dir, loc_min, loc_verb)
