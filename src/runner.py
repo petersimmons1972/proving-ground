@@ -42,7 +42,11 @@ def run_task(
     run_dir = Path(working_dir) / task_id / profile_name
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    cmd = ["claude", "--print", "--no-interactive"]
+    cmd = [
+        "claude", "--print",
+        "--dangerously-skip-permissions",
+        "--no-session-persistence",
+    ]
     if system_prompt:
         cmd += ["--system-prompt", system_prompt]
 

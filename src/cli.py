@@ -1,5 +1,8 @@
 import click
+from pathlib import Path
 from src.orchestrator import run_benchmark
+
+_DEFAULT_DATA_DIR = str(Path(__file__).parent.parent / "data")
 
 
 @click.command()
@@ -12,7 +15,7 @@ from src.orchestrator import run_benchmark
 )
 @click.option(
     "--data-dir",
-    default="/data",
+    default=_DEFAULT_DATA_DIR,
     show_default=True,
     help="Data directory for profiles and results",
 )

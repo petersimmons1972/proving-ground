@@ -1,9 +1,8 @@
 import re
 import statistics
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-
-import anthropic
 
 
 @dataclass
@@ -24,25 +23,28 @@ def score_with_judge(
     task_spec: str,
     runs: int = 3,
 ) -> JudgeScores:
-    """Score a session with LLM-as-judge. Returns median of `runs` evaluations."""
+    """Score a session with LLM-as-judge via claude --print. Returns median of `runs` evaluations."""
     rubric = _RUBRIC_PATH.read_text()
-    client = anthropic.Anthropic()
+    prompt = (
+        f"## Task Spec\n\n{task_spec}\n\n"
+        f"## Agent Session\n\n{session_transcript}"
+    )
     all_scores: list[dict] = []
 
     for _ in range(runs):
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=256,
-            system=rubric,
-            messages=[{
-                "role": "user",
-                "content": (
-                    f"## Task Spec\n\n{task_spec}\n\n"
-                    f"## Agent Session\n\n{session_transcript}"
-                ),
-            }],
+        result = subprocess.run(
+            [
+                "claude", "--print",
+                "--dangerously-skip-permissions",
+                "--no-session-persistence",
+                "--system-prompt", rubric,
+            ],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            timeout=300,
         )
-        all_scores.append(_parse_scores(response.content[0].text))
+        all_scores.append(_parse_scores(result.stdout))
 
     return _median_scores(all_scores)
 
