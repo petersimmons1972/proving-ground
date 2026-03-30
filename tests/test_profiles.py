@@ -27,3 +27,10 @@ def test_user_profile_content_is_loaded(tmp_path):
     (tmp_path / "my-agent.txt").write_text(text)
     profiles = load_profiles(Path("profiles"), user_dir=tmp_path)
     assert profiles["my-agent"] == text.strip()
+
+def test_load_md_user_profile(tmp_path):
+    text = "You are a careful engineer who documents decisions."
+    (tmp_path / "my-agent.md").write_text(text)
+    profiles = load_profiles(Path("profiles"), user_dir=tmp_path)
+    assert "my-agent" in profiles
+    assert profiles["my-agent"] == text.strip()

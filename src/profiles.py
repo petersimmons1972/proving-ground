@@ -1,8 +1,7 @@
 from pathlib import Path
-from typing import Optional
 
 
-def load_profiles(controls_dir: Path, user_dir: Optional[Path]) -> dict:
+def load_profiles(controls_dir: Path, user_dir: Path | None) -> dict[str, str]:
     """Load zero, light, and any user-supplied profiles.
 
     Returns a dict mapping profile name to system prompt text.
