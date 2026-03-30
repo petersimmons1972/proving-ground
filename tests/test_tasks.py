@@ -19,3 +19,8 @@ def test_tasks_ordered_by_id():
     tasks = load_tasks(tiers=["1"])
     ids = [t.id for t in tasks]
     assert ids == sorted(ids)
+
+
+def test_load_all_tasks():
+    tasks = load_tasks(tiers=["1", "2", "3"])
+    assert len(tasks) == 10
