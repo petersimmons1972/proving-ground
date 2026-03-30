@@ -1,0 +1,8 @@
+services:
+  proving-ground:
+    build: .
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./data:/data
+    command: []
