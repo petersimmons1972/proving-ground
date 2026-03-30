@@ -5,118 +5,290 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Proving Ground — Results</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #0f0f0f;
-  color: #e8e8e8;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0F172A;
+  color: #f8fafc;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
-.page { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 40px;
+}
+
+/* --- Header --- */
+header {
+  margin-bottom: 56px;
+  page-break-inside: avoid;
+}
+
 h1 {
-  font-size: 2.8rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.6rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #ffffff;
-  margin-bottom: 8px;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #f8fafc;
+  margin-bottom: 12px;
 }
-.subtitle { font-size: 1rem; color: #888; margin-bottom: 48px; }
+
+h1 span {
+  color: #D4A574;
+}
+
+.run-meta {
+  font-size: 0.85rem;
+  color: #64748b;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* --- Verdict --- */
 .verdict {
-  font-size: 1.4rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
   font-style: italic;
-  color: #d4a853;
-  border-left: 4px solid #d4a853;
-  padding: 16px 24px;
-  margin-bottom: 48px;
-  background: rgba(212, 168, 83, 0.08);
+  color: #D4A574;
+  padding: 24px 0;
+  margin-bottom: 56px;
+  border-bottom: 1px solid #1e293b;
+  line-height: 1.5;
+  page-break-inside: avoid;
 }
+
+/* --- Score Cards --- */
+.scores-section {
+  margin-bottom: 64px;
+  page-break-inside: avoid;
+}
+
+.section-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #475569;
+  margin-bottom: 20px;
+}
+
 .scores-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  margin-bottom: 48px;
 }
+
+@media (max-width: 700px) {
+  .scores-grid { grid-template-columns: 1fr; }
+}
+
 .score-card {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 24px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 32px 24px 24px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
-.score-card .config-name {
-  font-size: 0.85rem;
+
+.score-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.score-card.score-gold::before   { background: #D4A574; }
+.score-card.score-muted::before  { background: #64748b; }
+.score-card.score-dim::before    { background: #475569; }
+
+.config-name {
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #888;
-  margin-bottom: 8px;
+  letter-spacing: 0.14em;
+  color: #94a3b8;
+  margin-bottom: 12px;
 }
-.score-card .score-value {
-  font-size: 3.5rem;
+
+.score-value {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4.5rem;
   font-weight: 700;
   line-height: 1;
+  margin-bottom: 16px;
+}
+
+.score-gold  .score-value { color: #D4A574; }
+.score-muted .score-value { color: #64748b; }
+.score-dim   .score-value { color: #475569; }
+
+.tier-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.tier-breakdown .tier-label {
+  color: #475569;
+  margin-right: 2px;
+}
+
+/* --- Chart Sections --- */
+.chart-section {
+  margin-bottom: 64px;
+  page-break-inside: avoid;
+}
+
+.radar-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* --- Bar Chart --- */
+.bar-chart-container {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* --- History Section --- */
+.history-section {
+  margin-bottom: 64px;
+  page-break-inside: avoid;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.history-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.history-card .config-name {
   margin-bottom: 8px;
 }
-.score-card .tier-row {
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 4px;
+
+.history-trend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.score-green { color: #2a9d5c; }
-.score-amber { color: #d4a853; }
-.score-red   { color: #e05252; }
-section { margin-bottom: 48px; }
-h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: 24px; color: #ccc; }
-.radar-container { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
-.radar-legend { display: flex; gap: 24px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
-.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #888; }
-.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+.history-delta {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.delta-positive { color: #D4A574; }
+.delta-negative { color: #475569; }
+
+/* --- Footer --- */
 footer {
-  margin-top: 64px;
+  margin-top: 80px;
   padding-top: 24px;
-  border-top: 1px solid #2a2a2a;
-  font-size: 0.8rem;
-  color: #444;
+  border-top: 1px solid #1e293b;
+  font-size: 0.75rem;
+  color: #334155;
   text-align: center;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* --- Print --- */
+@media print {
+  body { background: #fff; color: #111; }
+  .score-card { border: 1px solid #ccc; }
+  footer { color: #999; border-top-color: #ccc; }
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <h1>Proving Ground</h1>
-  <p class="subtitle">Run {{ report.run_id }} &middot; Suite {{ report.task_suite_version }}</p>
+  <!-- Header -->
+  <header>
+    <h1>Proving <span>Ground</span></h1>
+    <p class="run-meta">Run {{ report.run_id }} &middot; Suite {{ report.task_suite_version }}</p>
+  </header>
 
+  <!-- Verdict -->
   <div class="verdict">{{ verdict }}</div>
 
-  <!-- Composite Scores -->
-  <section>
-    <h2>Overall Scores</h2>
+  <!-- Overall Scores -->
+  <section class="scores-section">
+    <div class="section-label">Overall Scores</div>
     <div class="scores-grid">
       {% for config in report.configurations %}
       {% set overall = report.scores[config]['overall'] %}
-      {% set color_class = 'score-green' if overall >= 7 else ('score-amber' if overall >= 5 else 'score-red') %}
-      <div class="score-card">
+      {% if overall >= 7.0 %}
+        {% set tier_class = 'score-gold' %}
+      {% elif overall >= 5.0 %}
+        {% set tier_class = 'score-muted' %}
+      {% else %}
+        {% set tier_class = 'score-dim' %}
+      {% endif %}
+      <div class="score-card {{ tier_class }}">
         <div class="config-name">{{ config }}</div>
-        <div class="score-value {{ color_class }}">{{ "%.1f"|format(overall) }}</div>
-        <div class="tier-row">
-          T1: {{ "%.1f"|format(report.scores[config]['tier1']) }}
-          &middot;
-          T2: {{ "%.1f"|format(report.scores[config]['tier2']) }}
-          &middot;
-          T3: {{ "%.1f"|format(report.scores[config]['tier3']) }}
+        <div class="score-value">{{ "%.1f"|format(overall) }}</div>
+        <div class="tier-breakdown">
+          <span><span class="tier-label">T1</span> {{ "%.1f"|format(report.scores[config]['tier1']) }}</span>
+          <span><span class="tier-label">T2</span> {{ "%.1f"|format(report.scores[config]['tier2']) }}</span>
+          <span><span class="tier-label">T3</span> {{ "%.1f"|format(report.scores[config]['tier3']) }}</span>
         </div>
       </div>
       {% endfor %}
     </div>
   </section>
 
-  <!-- Radar Chart — SVG rendered inline, no external assets -->
-  <section>
-    <h2>Dimension Breakdown</h2>
+  <!-- Radar Chart -->
+  <section class="chart-section">
+    <div class="section-label">Dimension Profile</div>
     <div class="radar-container">
       {{ radar_svg(radar_data, dimensions, config_colors, report.configurations) | safe }}
     </div>
-    <div class="radar-legend">
+    <div class="chart-legend">
       {% for config in report.configurations %}
       <div class="legend-item">
         <div class="legend-dot" style="background: {{ config_colors.get(config, '#888') }}"></div>
@@ -126,7 +298,52 @@ footer {
     </div>
   </section>
 
-  <footer>Proving Ground &middot; Task Suite {{ report.task_suite_version }}</footer>
+  <!-- Dimension Breakdown: Bar Chart -->
+  <section class="chart-section">
+    <div class="section-label">Dimension Breakdown</div>
+    <div class="bar-chart-container">
+      {{ bar_chart_svg(report.dimension_scores, dimensions, report.configurations, config_colors) | safe }}
+    </div>
+    <div class="chart-legend">
+      {% for config in report.configurations %}
+      <div class="legend-item">
+        <div class="legend-dot" style="background: {{ config_colors.get(config, '#888') }}"></div>
+        {{ config }}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- History (conditional) -->
+  {% if report.history and report.history | length > 1 %}
+  <section class="history-section">
+    <div class="section-label">Trend</div>
+    <div class="history-grid">
+      {% for config in report.configurations %}
+      {% set config_history = [] %}
+      {% for run in report.history %}
+        {% if config in run.get('scores', {}) %}
+          {% if config_history.append(run['scores'][config].get('overall', 0)) %}{% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if config_history | length > 1 %}
+      <div class="history-card">
+        <div class="config-name">{{ config }}</div>
+        <div class="history-trend">
+          {{ sparkline_svg(config_history, config_colors.get(config, '#888')) | safe }}
+          {% set delta = config_history[-1] - config_history[-2] %}
+          <span class="history-delta {{ 'delta-positive' if delta >= 0 else 'delta-negative' }}">
+            {{ "%+.1f"|format(delta) }}
+          </span>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <footer>Proving Ground &middot; Suite {{ report.task_suite_version }} &middot; {{ report.run_id }}</footer>
 </div>
 </body>
 </html>
