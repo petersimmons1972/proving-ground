@@ -19,7 +19,7 @@ class TaskResult:
     stdout: str
     stderr: str
     working_dir: str
-    # Files written by Claude during the run (excludes the prompt file we write)
+    # Files written by Claude during the run
     files_written: list[str] = field(default_factory=list)
 
 
@@ -33,38 +33,33 @@ def run_task(
 ) -> TaskResult:
     """Run a single task with Claude Code headless.
 
-    Launches `claude --print` with the task spec as the prompt.
+    Launches `claude --print` with the task spec piped via stdin.
     If system_prompt is non-empty, passes it via --system-prompt.
     Captures stdout, stderr, exit code, and files written to the run directory.
 
     Each call creates an isolated subdirectory: working_dir/task_id/profile_name.
-    The task spec is also written to prompt.md there for audit purposes.
     """
     run_dir = Path(working_dir) / task_id / profile_name
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    # Write the prompt to disk so each run is fully reproducible from its directory.
-    prompt_file = run_dir / "prompt.md"
-    prompt_file.write_text(task_spec)
-
     cmd = ["claude", "--print", "--no-interactive"]
     if system_prompt:
         cmd += ["--system-prompt", system_prompt]
-    cmd += [task_spec]
 
     result = subprocess.run(
         cmd,
+        input=task_spec,        # pipe spec via stdin — avoids CLI arg length limits
         cwd=str(run_dir),
         capture_output=True,
         text=True,
         timeout=timeout,
     )
 
-    # Collect every file Claude wrote, excluding the prompt file we seeded.
+    # Collect every file Claude wrote in the run directory.
     files_written = [
         str(f.relative_to(run_dir))
         for f in run_dir.rglob("*")
-        if f.is_file() and f.name != "prompt.md"
+        if f.is_file()
     ]
 
     return TaskResult(
