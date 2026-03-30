@@ -1,0 +1,12 @@
+{"level": "ERROR", "msg": "Connection refused", "ts": 1711800000}
+{"level": "info", "msg": "Server started", "ts": 1711800001}
+ERROR,1711800002,"Disk full"
+INFO,1711800003,"Backup complete"
+
+{"level": "warn", "msg": "High memory: 情報", "ts": 1711800004}
+MALFORMED LINE HERE
+,,,
+{"incomplete": true}
+DEBUG,1711800005,"Cache miss"
+{"level": "error", "msg": "Timeout after 30s", "ts": 1711800006}
+WARN,1711800007,"Retry attempt 3"

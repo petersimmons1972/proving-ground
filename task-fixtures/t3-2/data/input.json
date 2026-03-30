@@ -1,0 +1,5 @@
+[
+  {"id": 1, "raw_name": "  Alice Smith  ", "raw_score": "95", "active": true},
+  {"id": 2, "raw_name": "BOB JONES", "raw_score": "87", "active": false},
+  {"id": 3, "raw_name": "charlie brown", "raw_score": "72", "active": true}
+]
