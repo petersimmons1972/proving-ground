@@ -78,3 +78,14 @@ def test_score_complexity_no_files(tmp_path):
     # Empty dir -- should return a neutral default
     score = score_complexity(str(tmp_path))
     assert 4.0 <= score <= 8.0
+
+
+def test_score_complexity_simple_function(tmp_path):
+    f = tmp_path / "solution.py"
+    f.write_text(
+        "def add(a, b):\n"
+        "    return a + b\n"
+    )
+    score = score_complexity(str(tmp_path))
+    # Simple function with no branches = complexity 1 (grade A) = score 10.0
+    assert score == 10.0
