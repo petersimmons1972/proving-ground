@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proving Ground — Results</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0f0f0f;
+  color: #e8e8e8;
+  line-height: 1.6;
+}
+.page { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.subtitle { font-size: 1rem; color: #888; margin-bottom: 48px; }
+.verdict {
+  font-size: 1.4rem;
+  font-style: italic;
+  color: #d4a853;
+  border-left: 4px solid #d4a853;
+  padding: 16px 24px;
+  margin-bottom: 48px;
+  background: rgba(212, 168, 83, 0.08);
+}
+.scores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+.score-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.score-card .config-name {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin-bottom: 8px;
+}
+.score-card .score-value {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.score-card .tier-row {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+}
+.score-green { color: #2a9d5c; }
+.score-amber { color: #d4a853; }
+.score-red   { color: #e05252; }
+section { margin-bottom: 48px; }
+h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: 24px; color: #ccc; }
+.radar-container { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.radar-legend { display: flex; gap: 24px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #888; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid #2a2a2a;
+  font-size: 0.8rem;
+  color: #444;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Proving Ground</h1>
+  <p class="subtitle">Run {{ report.run_id }} &middot; Suite {{ report.task_suite_version }}</p>
+
+  <div class="verdict">{{ verdict }}</div>
+
+  <!-- Composite Scores -->
+  <section>
+    <h2>Overall Scores</h2>
+    <div class="scores-grid">
+      {% for config in report.configurations %}
+      {% set overall = report.scores[config]['overall'] %}
+      {% set color_class = 'score-green' if overall >= 7 else ('score-amber' if overall >= 5 else 'score-red') %}
+      <div class="score-card">
+        <div class="config-name">{{ config }}</div>
+        <div class="score-value {{ color_class }}">{{ "%.1f"|format(overall) }}</div>
+        <div class="tier-row">
+          T1: {{ "%.1f"|format(report.scores[config]['tier1']) }}
+          &middot;
+          T2: {{ "%.1f"|format(report.scores[config]['tier2']) }}
+          &middot;
+          T3: {{ "%.1f"|format(report.scores[config]['tier3']) }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Radar Chart — SVG rendered inline, no external assets -->
+  <section>
+    <h2>Dimension Breakdown</h2>
+    <div class="radar-container">
+      {{ radar_svg(radar_data, dimensions, config_colors, report.configurations) | safe }}
+    </div>
+    <div class="radar-legend">
+      {% for config in report.configurations %}
+      <div class="legend-item">
+        <div class="legend-dot" style="background: {{ config_colors.get(config, '#888') }}"></div>
+        {{ config }}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer>Proving Ground &middot; Task Suite {{ report.task_suite_version }}</footer>
+</div>
+</body>
+</html>
