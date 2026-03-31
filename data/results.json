@@ -1,0 +1,56 @@
+{
+  "run_id": "2026-03-30T17:57:56",
+  "task_suite_version": "v1",
+  "configurations": [
+    "zero",
+    "light",
+    "grace-hopper"
+  ],
+  "scores": {
+    "zero": {
+      "overall": 5.7,
+      "tier1": 5.6,
+      "tier2": 6.1,
+      "tier3": 5.4
+    },
+    "light": {
+      "overall": 5.7,
+      "tier1": 6.1,
+      "tier2": 6.4,
+      "tier3": 4.9
+    },
+    "grace-hopper": {
+      "overall": 6.3,
+      "tier1": 6.4,
+      "tier2": 6.6,
+      "tier3": 6.1
+    }
+  },
+  "dimension_scores": {
+    "zero": {
+      "correctness": 9.1,
+      "elegance": 5.8,
+      "discipline": 2.8,
+      "judgment": 6,
+      "creativity": 5.3,
+      "recovery": 5
+    },
+    "light": {
+      "correctness": 8.8,
+      "elegance": 5.6,
+      "discipline": 2.8,
+      "judgment": 6.9,
+      "creativity": 5.1,
+      "recovery": 5
+    },
+    "grace-hopper": {
+      "correctness": 9.0,
+      "elegance": 5.7,
+      "discipline": 3.4,
+      "judgment": 8.1,
+      "creativity": 6.1,
+      "recovery": 5.7
+    }
+  },
+  "history": null
+}
