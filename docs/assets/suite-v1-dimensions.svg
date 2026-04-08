@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 430" width="720" height="430">
+  <rect width="720" height="430" fill="#0A0F1E"/>
+  <rect width="720" height="4" fill="#F59E0B"/>
+  <rect x="0" y="0" width="720" height="430" fill="none" stroke="#1F2937" stroke-width="1"/>
+
+  <!-- header -->
+  <text x="16" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#374151" letter-spacing="3">DIMENSION ANALYSIS — SUITE v1</text>
+
+  <!-- legend -->
+  <rect x="370" y="16" width="10" height="10" fill="#F59E0B"/>
+  <text x="384" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#94a3b8">GRACE HOPPER</text>
+  <rect x="490" y="16" width="10" height="10" fill="#22D3EE"/>
+  <text x="504" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#94a3b8">LIGHT</text>
+  <rect x="554" y="16" width="10" height="10" fill="#64748B"/>
+  <text x="568" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#94a3b8">ZERO</text>
+
+  <!-- bar area guide: x=172 to x=648, width=476 -->
+  <!-- scale: 10pts = 476px, 1pt = 47.6px -->
+
+  <!-- CORRECTNESS: gh=9.0(428) li=8.8(419) z=9.1(433) — zero wins -->
+  <rect x="0" y="36" width="720" height="64" fill="#0D1117"/>
+  <text x="16" y="51" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2">CORRECTNESS</text>
+  <rect x="172" y="54" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="54" width="428" height="10" fill="#F59E0B" rx="1" opacity="0.55"/>
+  <text x="652" y="63" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" opacity="0.55" text-anchor="end">9.0</text>
+  <rect x="172" y="68" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="68" width="419" height="10" fill="#22D3EE" rx="1" opacity="0.55"/>
+  <text x="652" y="77" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" opacity="0.55" text-anchor="end">8.8</text>
+  <rect x="172" y="82" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="82" width="433" height="10" fill="#64748B" rx="1" opacity="1"/>
+  <text x="652" y="91" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" text-anchor="end">9.1</text>
+
+  <!-- ELEGANCE: gh=5.7(271) li=5.6(267) z=5.8(276) — zero wins -->
+  <text x="16" y="115" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2">ELEGANCE</text>
+  <rect x="172" y="118" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="118" width="271" height="10" fill="#F59E0B" rx="1" opacity="0.55"/>
+  <text x="652" y="127" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" opacity="0.55" text-anchor="end">5.7</text>
+  <rect x="172" y="132" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="132" width="267" height="10" fill="#22D3EE" rx="1" opacity="0.55"/>
+  <text x="652" y="141" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" opacity="0.55" text-anchor="end">5.6</text>
+  <rect x="172" y="146" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="146" width="276" height="10" fill="#64748B" rx="1" opacity="1"/>
+  <text x="652" y="155" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" text-anchor="end">5.8</text>
+
+  <!-- DISCIPLINE: gh=3.4(162) li=2.8(133) z=2.8(133) — gh wins -->
+  <rect x="0" y="164" width="720" height="64" fill="#0D1117"/>
+  <text x="16" y="179" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2">DISCIPLINE</text>
+  <rect x="172" y="182" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="182" width="162" height="10" fill="#F59E0B" rx="1" opacity="1"/>
+  <text x="652" y="191" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" text-anchor="end">3.4</text>
+  <rect x="172" y="196" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="196" width="133" height="10" fill="#22D3EE" rx="1" opacity="0.55"/>
+  <text x="652" y="205" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" opacity="0.55" text-anchor="end">2.8</text>
+  <rect x="172" y="210" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="210" width="133" height="10" fill="#64748B" rx="1" opacity="0.55"/>
+  <text x="652" y="219" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" opacity="0.55" text-anchor="end">2.8</text>
+
+  <!-- JUDGMENT: gh=8.1(386) li=6.9(328) z=6.0(286) — gh wins -->
+  <text x="16" y="243" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2">JUDGMENT</text>
+  <rect x="172" y="246" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="246" width="386" height="10" fill="#F59E0B" rx="1" opacity="1"/>
+  <text x="652" y="255" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" text-anchor="end">8.1</text>
+  <rect x="172" y="260" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="260" width="328" height="10" fill="#22D3EE" rx="1" opacity="0.55"/>
+  <text x="652" y="269" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" opacity="0.55" text-anchor="end">6.9</text>
+  <rect x="172" y="274" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="274" width="286" height="10" fill="#64748B" rx="1" opacity="0.55"/>
+  <text x="652" y="283" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" opacity="0.55" text-anchor="end">6.0</text>
+
+  <!-- CREATIVITY: gh=6.1(290) li=5.1(243) z=5.3(252) — gh wins -->
+  <rect x="0" y="292" width="720" height="64" fill="#0D1117"/>
+  <text x="16" y="307" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2">CREATIVITY</text>
+  <rect x="172" y="310" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="310" width="290" height="10" fill="#F59E0B" rx="1" opacity="1"/>
+  <text x="652" y="319" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" text-anchor="end">6.1</text>
+  <rect x="172" y="324" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="324" width="243" height="10" fill="#22D3EE" rx="1" opacity="0.55"/>
+  <text x="652" y="333" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" opacity="0.55" text-anchor="end">5.1</text>
+  <rect x="172" y="338" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="338" width="252" height="10" fill="#64748B" rx="1" opacity="0.55"/>
+  <text x="652" y="347" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" opacity="0.55" text-anchor="end">5.3</text>
+
+  <!-- RECOVERY: gh=5.7(271) li=5.0(238) z=5.0(238) — gh wins -->
+  <text x="16" y="371" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2">RECOVERY</text>
+  <rect x="172" y="374" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="374" width="271" height="10" fill="#F59E0B" rx="1" opacity="1"/>
+  <text x="652" y="383" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" text-anchor="end">5.7</text>
+  <rect x="172" y="388" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="388" width="238" height="10" fill="#22D3EE" rx="1" opacity="0.55"/>
+  <text x="652" y="397" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" opacity="0.55" text-anchor="end">5.0</text>
+  <rect x="172" y="402" width="476" height="10" fill="#1F2937" rx="1"/>
+  <rect x="172" y="402" width="238" height="10" fill="#64748B" rx="1" opacity="0.55"/>
+  <text x="652" y="411" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" opacity="0.55" text-anchor="end">5.0</text>
+</svg>

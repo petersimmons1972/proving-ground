@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 168" width="720" height="168">
+  <rect width="720" height="168" fill="#0A0F1E"/>
+  <rect width="720" height="4" fill="#F59E0B"/>
+  <rect x="0" y="0" width="720" height="168" fill="none" stroke="#1F2937" stroke-width="1"/>
+
+  <text x="16" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#374151" letter-spacing="3">OVERALL PERFORMANCE — SUITE v1 · 30 MARCH 2026</text>
+
+  <!-- grace-hopper -->
+  <text x="16" y="75" font-family="Courier New,Courier,monospace" font-size="13" fill="#F59E0B" letter-spacing="2">GRACE HOPPER</text>
+  <rect x="188" y="59" width="460" height="22" fill="#111827" rx="2"/>
+  <rect x="188" y="59" width="290" height="22" fill="#F59E0B" rx="2"/>
+  <text x="660" y="75" font-family="Courier New,Courier,monospace" font-size="15" fill="#F59E0B" text-anchor="end">6.3</text>
+
+  <!-- light -->
+  <text x="16" y="111" font-family="Courier New,Courier,monospace" font-size="13" fill="#22D3EE" letter-spacing="2">LIGHT</text>
+  <rect x="188" y="95" width="460" height="22" fill="#111827" rx="2"/>
+  <rect x="188" y="95" width="262" height="22" fill="#22D3EE" rx="2"/>
+  <text x="660" y="111" font-family="Courier New,Courier,monospace" font-size="15" fill="#22D3EE" text-anchor="end">5.7</text>
+
+  <!-- zero -->
+  <text x="16" y="147" font-family="Courier New,Courier,monospace" font-size="13" fill="#64748B" letter-spacing="2">ZERO</text>
+  <rect x="188" y="131" width="460" height="22" fill="#111827" rx="2"/>
+  <rect x="188" y="131" width="262" height="22" fill="#64748B" rx="2"/>
+  <text x="660" y="147" font-family="Courier New,Courier,monospace" font-size="15" fill="#64748B" text-anchor="end">5.7</text>
+</svg>

@@ -1,10 +1,30 @@
 # Proving Ground
 
-Does giving an AI agent a personality make it better at its job?
+**Does giving an AI agent a personality make it better at its job?**
 
-Proving Ground is a containerized benchmark that measures the effect of agent personality profiles on task execution quality. Run the same tasks with a blank agent, a lightly prompted agent, and your own profiled agent — then see exactly where personality makes the difference.
+We ran the same ten tasks with three agents — a blank slate, a lightly-prompted agent, and a fully realized character profile — scored every output across six dimensions, and tallied the results.
 
-**STATUS: experimental**
+**Yes. But not where you'd expect.**
+
+---
+
+## Suite v1 Results — March 2026
+
+![Overall Scores](docs/assets/suite-v1-scores.svg)
+
+The profiled agent outscored the blank agent by **0.6 points overall** (6.3 vs 5.7). The number is narrow. The dimension breakdown is not.
+
+![Dimension Analysis](docs/assets/suite-v1-dimensions.svg)
+
+**Correctness was nearly identical across all three agents** — 9.0, 8.8, 9.1. A blank AI can follow a spec. Personality adds almost nothing there.
+
+**Judgment diverged by 2.1 points.** When the spec was ambiguous and the agent had to decide, the profiled agent made better calls. The blank agent hedged or asked; the profiled agent committed. This is the decisive dimension.
+
+**Creativity diverged by nearly a point** (6.1 vs 5.1/5.3). Under open-ended prompts, the profiled agent generated more interesting solutions. The blank agent generated correct ones.
+
+**Discipline was low across the board** — all three agents over-built and under-stayed-in-scope. This is a finding about current AI agents generally, not about personality. A profile didn't fix it.
+
+→ **[Full narrative report](https://www.petersimmons.com/proving_ground.html)** — complete wartime technical brief with task-level analysis
 
 ---
 
@@ -13,6 +33,8 @@ Proving Ground is a containerized benchmark that measures the effect of agent pe
 ```bash
 docker run -e ANTHROPIC_API_KEY=sk-... -v ./data:/data provingground
 ```
+
+**STATUS: experimental**
 
 ## What It Measures
 
