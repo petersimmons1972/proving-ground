@@ -108,7 +108,7 @@ body {
     </div>
     <div style="margin: 32px 0 40px;">
       {% for config in report.configurations %}
-      {% set overall = report.scores[config]['overall'] %}
+      {% set overall = report.scores[config].get('overall', 0) %}
       {% set color = config_colors.get(config, '#888888') %}
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:{{ color }};">{{ config }}</div>
@@ -131,7 +131,7 @@ body {
     <div style="margin-bottom:32px;">
       <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">{{ tier_label }}</div>
       {% for config in report.configurations %}
-      {% set score = report.scores[config][tier_key] %}
+      {% set score = report.scores[config].get(tier_key, 0) %}
       {% set color = config_colors.get(config, '#888888') %}
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:{{ color }};">{{ config }}</div>
@@ -161,13 +161,13 @@ body {
       {% for dim in dimensions %}
       {% set ns = namespace(max_score=0) %}
       {% for config in report.configurations %}
-        {% set s = report.dimension_scores[config][dim] %}
+        {% set s = report.dimension_scores[config].get(dim, 0) %}
         {% if s > ns.max_score %}{% set ns.max_score = s %}{% endif %}
       {% endfor %}
       <div class="dim-row">
         <div class="dim-name">{{ dim }}</div>
         {% for config in report.configurations %}
-        {% set score = report.dimension_scores[config][dim] %}
+        {% set score = report.dimension_scores[config].get(dim, 0) %}
         {% set color = config_colors.get(config, '#888888') %}
         <div class="dim-bar-cell">
           <div class="dim-bar-wrap"><div class="dim-bar" style="width:{{ (score * 10) | int }}%;background:{{ color }};opacity:{% if score == ns.max_score %}1{% else %}0.55{% endif %};"></div></div>
