@@ -31,10 +31,17 @@ The profiled agent outscored the blank agent by **0.6 points overall** (6.3 vs 5
 ## Quick Start
 
 ```bash
-docker run -e ANTHROPIC_API_KEY=sk-... -v ./data:/data provingground
+docker run \
+  -e ANTHROPIC_API_KEY=sk-ant-... \
+  -v ./data:/data \
+  provingground
 ```
 
+Place your agent profile in `data/profiles/your-profile.txt` before running. It becomes a configuration alongside `zero` and `light`. **[Full usage guide →](docs/using.md)**
+
 **STATUS: experimental**
+
+---
 
 ## What It Measures
 
@@ -52,8 +59,16 @@ Scored across six dimensions: Correctness, Elegance, Discipline, Judgment, Creat
 2. The benchmark runs each task three times: blank agent, light prompt, your profile
 3. Automated metrics + LLM-as-judge score every dimension
 4. A single HTML results page shows exactly where your agent excels and where it falls short
-5. Run again after improving your profile — history tracking shows your progress
+5. Run again after improving your profile — history tracking shows your progress over time
+
+---
 
 ## Documentation
 
-- [Benchmark Design](docs/plans/2026-03-30-benchmark-design.md) — full architecture and task specifications
+| Document | What it covers |
+|----------|---------------|
+| **[Why this exists](docs/why.md)** | The hypothesis, the argument for and against personality, what the benchmark is designed to settle |
+| **[How to use it](docs/using.md)** | Running with Docker, providing your own profile, cost estimates, output files |
+| **[Reading the results](docs/interpreting.md)** | The three configurations, what each dimension actually measures, how to tell if your profile is working |
+| **[Suite v1 archive](docs/suite-v1-results.md)** | Full preserved results from the first run, including both historical runs, task-level analysis, and what changes in Suite v2 |
+| **[Benchmark design](docs/plans/2026-03-30-benchmark-design.md)** | Full architecture and task specifications |

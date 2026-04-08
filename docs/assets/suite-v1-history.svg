@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" width="720" height="220">
+  <rect width="720" height="220" fill="#0A0F1E"/>
+  <rect width="720" height="4" fill="#F59E0B"/>
+  <rect x="0" y="0" width="720" height="220" fill="none" stroke="#1F2937" stroke-width="1"/>
+
+  <text x="16" y="27" font-family="Courier New,Courier,monospace" font-size="10" fill="#374151" letter-spacing="3">RUN HISTORY — SUITE v1 · TWO RUNS · 30 MARCH 2026</text>
+
+  <!-- legend -->
+  <rect x="420" y="17" width="10" height="10" fill="#F59E0B"/>
+  <text x="434" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#94a3b8">GRACE HOPPER</text>
+  <rect x="530" y="17" width="10" height="10" fill="#22D3EE"/>
+  <text x="544" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#94a3b8">LIGHT</text>
+  <rect x="588" y="17" width="10" height="10" fill="#64748B"/>
+  <text x="602" y="26" font-family="Courier New,Courier,monospace" font-size="10" fill="#94a3b8">ZERO</text>
+
+  <!-- y-axis guide lines -->
+  <line x1="64" y1="44" x2="700" y2="44" stroke="#111827" stroke-width="1"/>
+  <text x="52" y="48" font-family="Courier New,Courier,monospace" font-size="9" fill="#374151" text-anchor="end">10</text>
+  <line x1="64" y1="80" x2="700" y2="80" stroke="#111827" stroke-width="1"/>
+  <text x="52" y="84" font-family="Courier New,Courier,monospace" font-size="9" fill="#374151" text-anchor="end">7</text>
+  <line x1="64" y1="116" x2="700" y2="116" stroke="#111827" stroke-width="1"/>
+  <text x="52" y="120" font-family="Courier New,Courier,monospace" font-size="9" fill="#374151" text-anchor="end">4</text>
+  <line x1="64" y1="152" x2="700" y2="152" stroke="#111827" stroke-width="1"/>
+  <text x="52" y="156" font-family="Courier New,Courier,monospace" font-size="9" fill="#374151" text-anchor="end">1</text>
+  <!-- baseline -->
+  <line x1="64" y1="164" x2="700" y2="164" stroke="#1F2937" stroke-width="1"/>
+
+  <!-- scale: 0–10 maps to y=164 (bottom) to y=44 (top), so 120px = 10pts, 12px/pt -->
+  <!-- bar bottom y=164, bar grows upward -->
+
+  <!-- RUN 1: 17:18 — grace-hopper=1.3, light=1.4, zero=1.4 -->
+  <!-- group center x=180, bars left: 120, 174, 228 -->
+  <text x="180" y="186" font-family="Courier New,Courier,monospace" font-size="9" fill="#475569" letter-spacing="2" text-anchor="middle">CALIBRATION</text>
+  <text x="180" y="197" font-family="Courier New,Courier,monospace" font-size="9" fill="#374151" text-anchor="middle">17:18</text>
+
+  <!-- gh bar: 1.3 * 12 = 15.6 → 16px tall, top y = 164-16=148 -->
+  <rect x="120" y="148" width="40" height="16" fill="#F59E0B" rx="2" opacity="0.7"/>
+  <text x="140" y="143" font-family="Courier New,Courier,monospace" font-size="9" fill="#F59E0B" text-anchor="middle" opacity="0.7">1.3</text>
+  <!-- light bar: 1.4 * 12 = 16.8 → 17px, top y=147 -->
+  <rect x="168" y="147" width="40" height="17" fill="#22D3EE" rx="2" opacity="0.7"/>
+  <text x="188" y="142" font-family="Courier New,Courier,monospace" font-size="9" fill="#22D3EE" text-anchor="middle" opacity="0.7">1.4</text>
+  <!-- zero bar: 1.4 * 12 = 17px, top y=147 -->
+  <rect x="216" y="147" width="40" height="17" fill="#64748B" rx="2" opacity="0.7"/>
+  <text x="236" y="142" font-family="Courier New,Courier,monospace" font-size="9" fill="#64748B" text-anchor="middle" opacity="0.7">1.4</text>
+
+  <!-- RUN 2: 17:57 — grace-hopper=6.3, light=5.7, zero=5.7 -->
+  <!-- group center x=500 -->
+  <text x="500" y="186" font-family="Courier New,Courier,monospace" font-size="9" fill="#94a3b8" letter-spacing="2" text-anchor="middle">FULL RUN</text>
+  <text x="500" y="197" font-family="Courier New,Courier,monospace" font-size="9" fill="#64748B" text-anchor="middle">17:57</text>
+
+  <!-- gh bar: 6.3 * 12 = 75.6 → 76px, top y = 164-76 = 88 -->
+  <rect x="440" y="88" width="40" height="76" fill="#F59E0B" rx="2"/>
+  <text x="460" y="83" font-family="Courier New,Courier,monospace" font-size="10" fill="#F59E0B" text-anchor="middle">6.3</text>
+  <!-- light bar: 5.7 * 12 = 68.4 → 68px, top y = 164-68 = 96 -->
+  <rect x="488" y="96" width="40" height="68" fill="#22D3EE" rx="2"/>
+  <text x="508" y="91" font-family="Courier New,Courier,monospace" font-size="10" fill="#22D3EE" text-anchor="middle">5.7</text>
+  <!-- zero bar: 5.7 * 12 = 68px, top y = 96 -->
+  <rect x="536" y="96" width="40" height="68" fill="#64748B" rx="2"/>
+  <text x="556" y="91" font-family="Courier New,Courier,monospace" font-size="10" fill="#64748B" text-anchor="middle">5.7</text>
+
+  <!-- connector line gh -->
+  <line x1="160" y1="156" x2="460" y2="91" stroke="#F59E0B" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <!-- connector line light -->
+  <line x1="208" y1="155" x2="508" y2="99" stroke="#22D3EE" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <!-- connector line zero -->
+  <line x1="256" y1="155" x2="556" y2="99" stroke="#64748B" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+</svg>
