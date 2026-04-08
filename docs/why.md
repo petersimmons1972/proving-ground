@@ -1,5 +1,7 @@
 # Why Proving Ground Exists
 
+![Decision Fork](assets/why-decision-fork.svg)
+
 ## The Question
 
 Engineers who give Claude a detailed personality profile — a character with history, habits, and known failure modes — consistently report better results on ambiguous tasks. The agent makes decisions more confidently. It writes code with a recognizable voice. It doesn't hedge when the spec is unclear; it commits.

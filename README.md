@@ -8,6 +8,8 @@ We ran the same ten tasks with three agents — a blank slate, a lightly-prompte
 
 ---
 
+![Benchmark Apparatus](docs/assets/readme-apparatus.svg)
+
 ## Suite v1 Results — March 2026
 
 ![Overall Scores](docs/assets/suite-v1-scores.svg)

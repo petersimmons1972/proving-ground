@@ -2,6 +2,8 @@
 
 ## The Three Configurations
 
+![Configuration Specifications](assets/interpreting-configurations.svg)
+
 Every run produces scores for at least three configurations. Here's what they mean.
 
 ---

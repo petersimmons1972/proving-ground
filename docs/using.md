@@ -78,6 +78,8 @@ You'll need Claude Code CLI installed and on your PATH. The benchmark uses it as
 
 ---
 
+![Execution Pipeline](assets/using-pipeline.svg)
+
 ## What Happens During a Run
 
 Each task is executed independently with each configuration. For a full run with one custom profile, that's 30 executions (10 tasks × 3 configurations). Each execution:

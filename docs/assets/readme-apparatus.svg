@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 720 180">
+
+  <!-- ============================================================
+       PAINT ORDER: 1-backgrounds, 2-geometry, 3-strokes, 4-text
+       ============================================================ -->
+
+  <!-- 1. BACKGROUNDS -->
+  <rect width="720" height="180" fill="#0A0F1E"/>
+
+  <!-- 2. GEOMETRY -->
+
+  <!-- Amber top accent bar -->
+  <rect x="0" y="0" width="720" height="4" fill="#F59E0B"/>
+
+  <!-- Outer border -->
+  <rect x="1" y="1" width="718" height="178" fill="none" stroke="#1F2937" stroke-width="1"/>
+
+  <!-- Corner registration ticks -->
+  <line x1="10" y1="4"  x2="10" y2="14"  stroke="#374151" stroke-width="1"/>
+  <line x1="4"  y1="10" x2="14" y2="10"  stroke="#374151" stroke-width="1"/>
+  <line x1="710" y1="4"  x2="710" y2="14"  stroke="#374151" stroke-width="1"/>
+  <line x1="706" y1="10" x2="716" y2="10"  stroke="#374151" stroke-width="1"/>
+  <line x1="10" y1="176" x2="10" y2="166"  stroke="#374151" stroke-width="1"/>
+  <line x1="4"  y1="170" x2="14" y2="170"  stroke="#374151" stroke-width="1"/>
+  <line x1="710" y1="176" x2="710" y2="166"  stroke="#374151" stroke-width="1"/>
+  <line x1="706" y1="170" x2="716" y2="170"  stroke="#374151" stroke-width="1"/>
+
+  <!-- Input boxes: x=20, y positions 47, 90, 133; w=130, h=28 -->
+  <!-- ZERO: y=47 -->
+  <rect x="20" y="47" width="130" height="28" fill="#0D1117"/>
+  <!-- LIGHT: y=90 -->
+  <rect x="20" y="90" width="130" height="28" fill="#0D1117"/>
+  <!-- PROFILED: y=133 -->
+  <rect x="20" y="133" width="130" height="28" fill="#0D1117"/>
+
+  <!-- Input box borders -->
+  <rect x="20" y="47" width="130" height="28" fill="none" stroke="#64748B" stroke-width="1"/>
+  <rect x="20" y="90" width="130" height="28" fill="none" stroke="#22D3EE" stroke-width="1"/>
+  <rect x="20" y="133" width="130" height="28" fill="none" stroke="#F59E0B" stroke-width="1"/>
+
+  <!-- Benchmark ENGINE box: x=330, y=80, w=160, h=40 -->
+  <rect x="330" y="80" width="160" height="40" fill="#111827"/>
+  <rect x="330" y="80" width="160" height="40" fill="none" stroke="#1F2937" stroke-width="1"/>
+
+  <!-- SCORES output box: x=570, y=80, w=130, h=40 -->
+  <rect x="570" y="80" width="130" height="40" fill="#0D1117"/>
+  <rect x="570" y="80" width="130" height="40" fill="none" stroke="#F59E0B" stroke-width="2"/>
+
+  <!-- Connecting lines and convergence -->
+  <!-- Three input lines go RIGHT from each box to convergence point x=296
+       ZERO center y=61, LIGHT center y=104, PROFILED center y=147
+       Each line goes from right edge of input box (x=150) horizontal to x=296 -->
+  <!-- ZERO right edge x=150, center y=61, horizontal to x=296 -->
+  <line x1="150" y1="61" x2="296" y2="61" stroke="#94a3b8" stroke-width="1"/>
+  <!-- ZERO vertical from y=61 down to y=100 -->
+  <line x1="296" y1="61" x2="296" y2="100" stroke="#94a3b8" stroke-width="1"/>
+
+  <!-- LIGHT right edge x=150, center y=104, horizontal to x=296 -->
+  <line x1="150" y1="104" x2="296" y2="104" stroke="#94a3b8" stroke-width="1"/>
+
+  <!-- PROFILED right edge x=150, center y=147, horizontal to x=296 -->
+  <line x1="150" y1="147" x2="296" y2="147" stroke="#94a3b8" stroke-width="1"/>
+  <!-- PROFILED vertical from y=147 up to y=104 -->
+  <line x1="296" y1="104" x2="296" y2="147" stroke="#94a3b8" stroke-width="1"/>
+
+  <!-- Single trunk line from x=296, y=100 to benchmark left edge x=330 -->
+  <!-- The three lines converge at x=296, backbone y=100 -->
+  <line x1="296" y1="100" x2="323" y2="100" stroke="#94a3b8" stroke-width="1"/>
+  <!-- Arrowhead at x=330, center y=100 -->
+  <polygon points="330,100 322,96 322,104" fill="#94a3b8"/>
+
+  <!-- Single line from benchmark right edge (x=490) to scores left edge (x=570) -->
+  <line x1="490" y1="100" x2="563" y2="100" stroke="#F59E0B" stroke-width="1"/>
+  <!-- Arrowhead at x=570 -->
+  <polygon points="570,100 562,96 562,104" fill="#F59E0B"/>
+
+  <!-- Bottom rule -->
+  <line x1="20" y1="160" x2="700" y2="160" stroke="#1F2937" stroke-width="1"/>
+
+  <!-- 3. STROKES -- embedded above -->
+
+  <!-- 4. TEXT -- always last -->
+
+  <!-- Header -->
+  <text x="360" y="24" font-family="Courier New, Courier, monospace" font-size="10"
+        letter-spacing="3" fill="#374151" text-anchor="middle">
+    AGENT PERSONALITY BENCHMARK -- EXPERIMENTAL APPARATUS
+  </text>
+
+  <!-- Input box labels -->
+  <!-- ZERO: centered in box x=20+65=85, y center=47+14=61, text baseline ~56+7=63 -->
+  <text x="85" y="65" font-family="Courier New, Courier, monospace" font-size="11"
+        letter-spacing="1" fill="#64748B" text-anchor="middle">
+    ZERO AGENT
+  </text>
+
+  <!-- LIGHT: center x=85, y=104+4=108 -->
+  <text x="85" y="108" font-family="Courier New, Courier, monospace" font-size="11"
+        letter-spacing="1" fill="#22D3EE" text-anchor="middle">
+    LIGHT PROMPT
+  </text>
+
+  <!-- PROFILED: center x=85, y=147+4=151 -->
+  <text x="85" y="151" font-family="Courier New, Courier, monospace" font-size="11"
+        letter-spacing="1" fill="#F59E0B" text-anchor="middle">
+    YOUR PROFILE
+  </text>
+
+  <!-- BENCHMARK ENGINE label: center of box x=330+80=410, y=80+20=100 -->
+  <text x="410" y="97" font-family="Courier New, Courier, monospace" font-size="11"
+        letter-spacing="1" fill="#94a3b8" text-anchor="middle">
+    BENCHMARK ENGINE
+  </text>
+  <text x="410" y="111" font-family="Courier New, Courier, monospace" font-size="11"
+        letter-spacing="1" fill="#64748B" text-anchor="middle">
+    10 TASKS
+  </text>
+
+  <!-- SCORES/RESULTS label: center of box x=570+65=635, y=80+20=100 -->
+  <text x="635" y="97" font-family="Courier New, Courier, monospace" font-size="12"
+        letter-spacing="1" fill="#F59E0B" text-anchor="middle">
+    RESULTS
+  </text>
+  <text x="635" y="111" font-family="Courier New, Courier, monospace" font-size="11"
+        letter-spacing="1" fill="#94a3b8" text-anchor="middle">
+    6 DIMENSIONS
+  </text>
+
+  <!-- Bottom tagline -->
+  <text x="360" y="173" font-family="Courier New, Courier, monospace" font-size="10"
+        letter-spacing="3" fill="#374151" text-anchor="middle">
+    SAME 10 TASKS. SAME JUDGE. THREE SYSTEM PROMPTS.
+  </text>
+
+</svg>

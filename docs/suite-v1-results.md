@@ -50,6 +50,8 @@ The bold entries are dimension winners. Grace Hopper won four of six — the fou
 
 ---
 
+![Suite v1 Findings](assets/suite-v1-findings.svg)
+
 ## What the Numbers Say
 
 **The hypothesis is confirmed — narrowly.**
