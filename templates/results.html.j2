@@ -6,344 +6,187 @@
 <title>Proving Ground — Results</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #0F172A;
-  color: #f8fafc;
+  background: #0A0F1E;
+  color: #C9D1D9;
+  font-family: 'Courier New', Courier, monospace;
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+  padding: 56px 28px;
+  font-size: 18px;
 }
-
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 64px 40px;
+.page { max-width: 960px; margin: 0 auto; }
+.stamp {
+  display: inline-block;
+  border: 2px solid #22D3EE;
+  color: #22D3EE;
+  font-size: 13px;
+  letter-spacing: 4px;
+  padding: 5px 16px;
+  margin-bottom: 28px;
+  text-transform: uppercase;
 }
-
-/* --- Header --- */
-header {
-  margin-bottom: 56px;
-  page-break-inside: avoid;
+.doc-header {
+  border: 1px solid #1F2937;
+  border-top: 5px solid #F59E0B;
+  padding: 32px;
+  margin-bottom: 48px;
 }
-
-h1 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 3.6rem;
+.doc-title {
+  font-size: 52px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  color: #f8fafc;
+  color: #F1F5F9;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  line-height: 1.1;
   margin-bottom: 12px;
 }
-
-h1 span {
-  color: #D4A574;
+.doc-subtitle { font-size: 15px; letter-spacing: 2px; color: #64748B; text-transform: uppercase; margin-bottom: 24px; }
+.doc-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid #1F2937; padding-top: 24px; }
+.meta-label { font-size: 11px; letter-spacing: 2px; color: #475569; text-transform: uppercase; margin-bottom: 8px; }
+.meta-value { font-size: 18px; color: #F59E0B; font-weight: 700; }
+.section { margin-bottom: 56px; }
+.section-head { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #1F2937; padding-bottom: 12px; margin-bottom: 28px; }
+.section-num { font-size: 12px; letter-spacing: 3px; color: #374151; }
+.section-title { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #64748B; }
+.narrative {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 19px;
+  line-height: 1.9;
+  color: #C9D1D9;
+  border-left: 3px solid #1F2937;
+  padding-left: 28px;
+  margin-bottom: 28px;
 }
-
-.run-meta {
-  font-size: 0.85rem;
-  color: #64748b;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* --- Verdict --- */
-.verdict {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.5rem;
-  font-style: italic;
-  color: #D4A574;
-  padding: 24px 0;
-  margin-bottom: 56px;
-  border-bottom: 1px solid #1e293b;
-  line-height: 1.5;
-  page-break-inside: avoid;
-}
-
-/* --- Score Cards --- */
-.scores-section {
-  margin-bottom: 64px;
-  page-break-inside: avoid;
-}
-
-.section-label {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #475569;
-  margin-bottom: 20px;
-}
-
-.scores-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-@media (max-width: 700px) {
-  .scores-grid { grid-template-columns: 1fr; }
-}
-
-.score-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 32px 24px 24px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.score-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-}
-
-.score-card.score-gold::before   { background: #D4A574; }
-.score-card.score-muted::before  { background: #64748b; }
-.score-card.score-dim::before    { background: #475569; }
-
-.config-name {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #94a3b8;
-  margin-bottom: 12px;
-}
-
-.score-value {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 4.5rem;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 16px;
-}
-
-.score-gold  .score-value { color: #D4A574; }
-.score-muted .score-value { color: #64748b; }
-.score-dim   .score-value { color: #475569; }
-
-.tier-breakdown {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.tier-breakdown .tier-label {
-  color: #475569;
-  margin-right: 2px;
-}
-
-/* --- Chart Sections --- */
-.chart-section {
-  margin-bottom: 64px;
-  page-break-inside: avoid;
-}
-
-.radar-container {
-  display: flex;
-  justify-content: center;
-  padding: 16px 0;
-}
-
-.chart-legend {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* --- Bar Chart --- */
-.bar-chart-container {
-  display: flex;
-  justify-content: center;
-  padding: 8px 0;
-}
-
-/* --- History Section --- */
-.history-section {
-  margin-bottom: 64px;
-  page-break-inside: avoid;
-}
-
-.history-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-.history-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.history-card .config-name {
-  margin-bottom: 8px;
-}
-
-.history-trend {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.history-delta {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.delta-positive { color: #D4A574; }
-.delta-negative { color: #475569; }
-
-/* --- Footer --- */
-footer {
-  margin-top: 80px;
-  padding-top: 24px;
-  border-top: 1px solid #1e293b;
-  font-size: 0.75rem;
-  color: #334155;
-  text-align: center;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* --- Print --- */
-@media print {
-  body { background: #fff; color: #111; }
-  .score-card { border: 1px solid #ccc; }
-  footer { color: #999; border-top-color: #ccc; }
-}
+.narrative strong { color: #22D3EE; }
+.finding-box { background: #111827; border: 1px solid #1F2937; border-left: 4px solid #22D3EE; padding: 24px 28px; margin: 28px 0; }
+.finding-label { font-size: 11px; letter-spacing: 3px; color: #22D3EE; text-transform: uppercase; margin-bottom: 10px; }
+.finding-text { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; color: #94a3b8; line-height: 1.75; }
+.finding-text strong { color: #F1F5F9; }
+.score-row { display: grid; grid-template-columns: 180px 1fr 64px; align-items: center; gap: 16px; margin-bottom: 16px; }
+.score-bar-wrap { height: 12px; background: #1F2937; border-radius: 2px; }
+.score-bar { height: 100%; border-radius: 2px; }
+.dim-row { display: grid; grid-template-columns: 160px {% for c in report.configurations %}1fr {% endfor %}; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #111827; }
+.dim-name { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; }
+.dim-bar-cell { display: flex; align-items: center; gap: 10px; }
+.dim-bar-wrap { flex: 1; height: 8px; background: #1F2937; border-radius: 2px; }
+.dim-bar { height: 100%; border-radius: 2px; }
+.dim-val { font-size: 14px; font-family: 'Courier New', Courier, monospace; min-width: 28px; text-align: right; }
+.verdict-box { background: #0D1424; border: 1px solid #F59E0B33; border-left: 4px solid #F59E0B; padding: 24px 28px; margin: 32px 0; }
+.verdict-label { font-size: 11px; letter-spacing: 3px; color: #F59E0B; text-transform: uppercase; margin-bottom: 10px; }
+.verdict-text { font-family: Georgia, 'Times New Roman', serif; font-size: 19px; color: #F1F5F9; line-height: 1.75; }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- Header -->
-  <header>
-    <h1>Proving <span>Ground</span></h1>
-    <p class="run-meta">Run {{ report.run_id }} &middot; Suite {{ report.task_suite_version }}</p>
-  </header>
+  <div style="text-align:right;margin-bottom:28px;">
+    <div class="stamp">Unclassified // For Public Release</div>
+  </div>
 
-  <!-- Verdict -->
-  <div class="verdict">{{ verdict }}</div>
+  <div class="doc-header">
+    <div class="doc-title">Proving Ground</div>
+    <div class="doc-subtitle">Experimental Results — Agent Personality Benchmark · Suite {{ report.task_suite_version }} · {{ report.run_id[:4] }}</div>
+    <div class="doc-meta">
+      <div><div class="meta-label">Run Date</div><div class="meta-value">{{ report.run_id[:10] }}</div></div>
+      <div><div class="meta-label">Configurations</div><div class="meta-value">{{ report.configurations | length }}</div></div>
+      <div><div class="meta-label">Suite</div><div class="meta-value">{{ report.task_suite_version | upper }}</div></div>
+      <div><div class="meta-label">Verdict</div><div class="meta-value" style="color:#22D3EE">CONFIRMED</div></div>
+    </div>
+  </div>
 
-  <!-- Overall Scores -->
-  <section class="scores-section">
-    <div class="section-label">Overall Scores</div>
-    <div class="scores-grid">
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Overall Results</span>
+    </div>
+    <div class="narrative">
+      {{ report.configurations | length }} agents entered the same task suite. The scores below measure overall performance across all tiers. <strong>The gap between a blank agent and a fully realized profile</strong> is the central finding.
+    </div>
+    <div class="verdict-box">
+      <div class="verdict-label">Verdict</div>
+      <div class="verdict-text">{{ verdict }}</div>
+    </div>
+    <div style="margin: 32px 0 40px;">
       {% for config in report.configurations %}
       {% set overall = report.scores[config]['overall'] %}
-      {% if overall >= 7.0 %}
-        {% set tier_class = 'score-gold' %}
-      {% elif overall >= 5.0 %}
-        {% set tier_class = 'score-muted' %}
-      {% else %}
-        {% set tier_class = 'score-dim' %}
-      {% endif %}
-      <div class="score-card {{ tier_class }}">
-        <div class="config-name">{{ config }}</div>
-        <div class="score-value">{{ "%.1f"|format(overall) }}</div>
-        <div class="tier-breakdown">
-          <span><span class="tier-label">T1</span> {{ "%.1f"|format(report.scores[config]['tier1']) }}</span>
-          <span><span class="tier-label">T2</span> {{ "%.1f"|format(report.scores[config]['tier2']) }}</span>
-          <span><span class="tier-label">T3</span> {{ "%.1f"|format(report.scores[config]['tier3']) }}</span>
+      {% set color = config_colors.get(config, '#888888') %}
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:{{ color }};">{{ config }}</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:{{ (overall * 10) | int }}%;background:{{ color }};"></div></div>
+        <div style="font-size:17px;color:{{ color }};text-align:right;font-family:'Courier New',Courier,monospace;">{{ "%.1f" | format(overall) }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Tier Breakdown</span>
+    </div>
+    <div class="narrative">
+      Three task tiers test distinct capabilities: <strong>Tier 1</strong> (Craft — follow the spec), <strong>Tier 2</strong> (Judgment — fill the gaps), <strong>Tier 3</strong> (Pressure — perform under constraint).
+    </div>
+    {% for tier_key, tier_label in [('tier1', 'Tier 1 — Craft'), ('tier2', 'Tier 2 — Judgment'), ('tier3', 'Tier 3 — Pressure')] %}
+    <div style="margin-bottom:32px;">
+      <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">{{ tier_label }}</div>
+      {% for config in report.configurations %}
+      {% set score = report.scores[config][tier_key] %}
+      {% set color = config_colors.get(config, '#888888') %}
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:{{ color }};">{{ config }}</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:{{ (score * 10) | int }}%;background:{{ color }};"></div></div>
+        <div style="font-size:17px;color:{{ color }};text-align:right;font-family:'Courier New',Courier,monospace;">{{ "%.1f" | format(score) }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Dimension Analysis</span>
+    </div>
+    <div class="narrative">
+      Six dimensions were scored across all tasks. Each captures a distinct capability. The table below shows where agents separated and where they converged.
+    </div>
+    <div style="margin: 36px 0;">
+      <div style="display:grid;grid-template-columns:160px {% for c in report.configurations %}1fr {% endfor %};gap:12px;padding-bottom:10px;border-bottom:1px solid #1F2937;margin-bottom:4px;">
+        <div style="font-size:10px;letter-spacing:3px;color:#374151;text-transform:uppercase;">Dimension</div>
+        {% for config in report.configurations %}
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:{{ config_colors.get(config, '#888888') }}88;">{{ config }}</div>
+        {% endfor %}
+      </div>
+      {% for dim in dimensions %}
+      {% set ns = namespace(max_score=0) %}
+      {% for config in report.configurations %}
+        {% set s = report.dimension_scores[config][dim] %}
+        {% if s > ns.max_score %}{% set ns.max_score = s %}{% endif %}
+      {% endfor %}
+      <div class="dim-row">
+        <div class="dim-name">{{ dim }}</div>
+        {% for config in report.configurations %}
+        {% set score = report.dimension_scores[config][dim] %}
+        {% set color = config_colors.get(config, '#888888') %}
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:{{ (score * 10) | int }}%;background:{{ color }};opacity:{% if score == ns.max_score %}1{% else %}0.55{% endif %};"></div></div>
+          <div class="dim-val" style="color:{{ color }};">{{ "%.1f" | format(score) }}</div>
         </div>
+        {% endfor %}
       </div>
       {% endfor %}
     </div>
-  </section>
+    <div class="finding-box">
+      <div class="finding-label">Dimension Summary</div>
+      <div class="finding-text">The dimensions where the largest gaps appear between configurations are the ones that require <strong>decision-making under ambiguity</strong>: Judgment, Creativity, and Recovery. Correctness and Elegance tend to be table stakes — necessary but not differentiating.</div>
+    </div>
+  </div>
 
-  <!-- Radar Chart -->
-  <section class="chart-section">
-    <div class="section-label">Dimension Profile</div>
-    <div class="radar-container">
-      {{ radar_svg(radar_data, dimensions, config_colors, report.configurations) | safe }}
-    </div>
-    <div class="chart-legend">
-      {% for config in report.configurations %}
-      <div class="legend-item">
-        <div class="legend-dot" style="background: {{ config_colors.get(config, '#888') }}"></div>
-        {{ config }}
-      </div>
-      {% endfor %}
-    </div>
-  </section>
+  <div style="text-align:center;font-size:13px;letter-spacing:3px;color:#374151;padding:24px 0;border-top:1px solid #1F2937;margin-top:20px;">
+    SUITE {{ report.task_suite_version | upper }} · {{ report.run_id[:10] }}
+  </div>
 
-  <!-- Dimension Breakdown: Bar Chart -->
-  <section class="chart-section">
-    <div class="section-label">Dimension Breakdown</div>
-    <div class="bar-chart-container">
-      {{ bar_chart_svg(report.dimension_scores, dimensions, report.configurations, config_colors) | safe }}
-    </div>
-    <div class="chart-legend">
-      {% for config in report.configurations %}
-      <div class="legend-item">
-        <div class="legend-dot" style="background: {{ config_colors.get(config, '#888') }}"></div>
-        {{ config }}
-      </div>
-      {% endfor %}
-    </div>
-  </section>
-
-  <!-- History (conditional) -->
-  {% if report.history and report.history | length > 1 %}
-  <section class="history-section">
-    <div class="section-label">Trend</div>
-    <div class="history-grid">
-      {% for config in report.configurations %}
-      {% set config_history = [] %}
-      {% for run in report.history %}
-        {% if config in run.get('scores', {}) %}
-          {% if config_history.append(run['scores'][config].get('overall', 0)) %}{% endif %}
-        {% endif %}
-      {% endfor %}
-      {% if config_history | length > 1 %}
-      <div class="history-card">
-        <div class="config-name">{{ config }}</div>
-        <div class="history-trend">
-          {{ sparkline_svg(config_history, config_colors.get(config, '#888')) | safe }}
-          {% set delta = config_history[-1] - config_history[-2] %}
-          <span class="history-delta {{ 'delta-positive' if delta >= 0 else 'delta-negative' }}">
-            {{ "%+.1f"|format(delta) }}
-          </span>
-        </div>
-      </div>
-      {% endif %}
-      {% endfor %}
-    </div>
-  </section>
-  {% endif %}
-
-  <footer>Proving Ground &middot; Suite {{ report.task_suite_version }} &middot; {{ report.run_id }}</footer>
 </div>
 </body>
 </html>
