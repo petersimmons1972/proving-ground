@@ -25,9 +25,9 @@ class ResultsReport:
 
 # Default color palette: dim for zero-context, muted blue for light, gold for user
 DEFAULT_CONFIG_COLORS = {
-    "zero": "#475569",
-    "light": "#64748b",
-    "user": "#D4A574",
+    "zero": "#64748b",    # slate — blank agent
+    "light": "#22D3EE",   # cyan — lightly prompted
+    "user": "#F59E0B",    # amber — fully realized profile
 }
 
 
