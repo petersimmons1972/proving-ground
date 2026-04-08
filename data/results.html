@@ -6,449 +6,580 @@
 <title>Proving Ground — Results</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #0F172A;
-  color: #f8fafc;
+  background: #0A0F1E;
+  color: #C9D1D9;
+  font-family: 'Courier New', Courier, monospace;
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+  padding: 56px 28px;
+  font-size: 18px;
 }
-
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 64px 40px;
+.page { max-width: 960px; margin: 0 auto; }
+.stamp {
+  display: inline-block;
+  border: 2px solid #22D3EE;
+  color: #22D3EE;
+  font-size: 13px;
+  letter-spacing: 4px;
+  padding: 5px 16px;
+  margin-bottom: 28px;
+  text-transform: uppercase;
 }
-
-/* --- Header --- */
-header {
-  margin-bottom: 56px;
-  page-break-inside: avoid;
+.doc-header {
+  border: 1px solid #1F2937;
+  border-top: 5px solid #F59E0B;
+  padding: 32px;
+  margin-bottom: 48px;
 }
-
-h1 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 3.6rem;
+.doc-title {
+  font-size: 52px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  color: #f8fafc;
+  color: #F1F5F9;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  line-height: 1.1;
   margin-bottom: 12px;
 }
-
-h1 span {
-  color: #D4A574;
+.doc-subtitle { font-size: 15px; letter-spacing: 2px; color: #64748B; text-transform: uppercase; margin-bottom: 24px; }
+.doc-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid #1F2937; padding-top: 24px; }
+.meta-label { font-size: 11px; letter-spacing: 2px; color: #475569; text-transform: uppercase; margin-bottom: 8px; }
+.meta-value { font-size: 18px; color: #F59E0B; font-weight: 700; }
+.section { margin-bottom: 56px; }
+.section-head { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #1F2937; padding-bottom: 12px; margin-bottom: 28px; }
+.section-num { font-size: 12px; letter-spacing: 3px; color: #374151; }
+.section-title { font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #64748B; }
+.narrative {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 19px;
+  line-height: 1.9;
+  color: #C9D1D9;
+  border-left: 3px solid #1F2937;
+  padding-left: 28px;
+  margin-bottom: 28px;
 }
-
-.run-meta {
-  font-size: 0.85rem;
-  color: #64748b;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* --- Verdict --- */
-.verdict {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.5rem;
-  font-style: italic;
-  color: #D4A574;
-  padding: 24px 0;
-  margin-bottom: 56px;
-  border-bottom: 1px solid #1e293b;
-  line-height: 1.5;
-  page-break-inside: avoid;
-}
-
-/* --- Score Cards --- */
-.scores-section {
-  margin-bottom: 64px;
-  page-break-inside: avoid;
-}
-
-.section-label {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #475569;
-  margin-bottom: 20px;
-}
-
-.scores-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-@media (max-width: 700px) {
-  .scores-grid { grid-template-columns: 1fr; }
-}
-
-.score-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 32px 24px 24px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.score-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-}
-
-.score-card.score-gold::before   { background: #D4A574; }
-.score-card.score-muted::before  { background: #64748b; }
-.score-card.score-dim::before    { background: #475569; }
-
-.config-name {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #94a3b8;
-  margin-bottom: 12px;
-}
-
-.score-value {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 4.5rem;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 16px;
-}
-
-.score-gold  .score-value { color: #D4A574; }
-.score-muted .score-value { color: #64748b; }
-.score-dim   .score-value { color: #475569; }
-
-.tier-breakdown {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.tier-breakdown .tier-label {
-  color: #475569;
-  margin-right: 2px;
-}
-
-/* --- Chart Sections --- */
-.chart-section {
-  margin-bottom: 64px;
-  page-break-inside: avoid;
-}
-
-.radar-container {
-  display: flex;
-  justify-content: center;
-  padding: 16px 0;
-}
-
-.chart-legend {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* --- Bar Chart --- */
-.bar-chart-container {
-  display: flex;
-  justify-content: center;
-  padding: 8px 0;
-}
-
-/* --- History Section --- */
-.history-section {
-  margin-bottom: 64px;
-  page-break-inside: avoid;
-}
-
-.history-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-.history-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.history-card .config-name {
-  margin-bottom: 8px;
-}
-
-.history-trend {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.history-delta {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.delta-positive { color: #D4A574; }
-.delta-negative { color: #475569; }
-
-/* --- Footer --- */
-footer {
-  margin-top: 80px;
-  padding-top: 24px;
-  border-top: 1px solid #1e293b;
-  font-size: 0.75rem;
-  color: #334155;
-  text-align: center;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* --- Print --- */
-@media print {
-  body { background: #fff; color: #111; }
-  .score-card { border: 1px solid #ccc; }
-  footer { color: #999; border-top-color: #ccc; }
-}
+.narrative strong { color: #22D3EE; }
+.finding-box { background: #111827; border: 1px solid #1F2937; border-left: 4px solid #22D3EE; padding: 24px 28px; margin: 28px 0; }
+.finding-label { font-size: 11px; letter-spacing: 3px; color: #22D3EE; text-transform: uppercase; margin-bottom: 10px; }
+.finding-text { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; color: #94a3b8; line-height: 1.75; }
+.finding-text strong { color: #F1F5F9; }
+.score-row { display: grid; grid-template-columns: 180px 1fr 64px; align-items: center; gap: 16px; margin-bottom: 16px; }
+.score-bar-wrap { height: 12px; background: #1F2937; border-radius: 2px; }
+.score-bar { height: 100%; border-radius: 2px; }
+.dim-row { display: grid; grid-template-columns: 160px 1fr 1fr 1fr 1fr ; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #111827; }
+.dim-name { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; }
+.dim-bar-cell { display: flex; align-items: center; gap: 10px; }
+.dim-bar-wrap { flex: 1; height: 8px; background: #1F2937; border-radius: 2px; }
+.dim-bar { height: 100%; border-radius: 2px; }
+.dim-val { font-size: 14px; font-family: 'Courier New', Courier, monospace; min-width: 28px; text-align: right; }
+.verdict-box { background: #0D1424; border: 1px solid #F59E0B33; border-left: 4px solid #F59E0B; padding: 24px 28px; margin: 32px 0; }
+.verdict-label { font-size: 11px; letter-spacing: 3px; color: #F59E0B; text-transform: uppercase; margin-bottom: 10px; }
+.verdict-text { font-family: Georgia, 'Times New Roman', serif; font-size: 19px; color: #F1F5F9; line-height: 1.75; }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- Header -->
-  <header>
-    <h1>Proving <span>Ground</span></h1>
-    <p class="run-meta">Run 2026-03-30T17:57:56 &middot; Suite v1</p>
-  </header>
+  <div style="text-align:right;margin-bottom:28px;">
+    <div class="stamp">Unclassified // For Public Release</div>
+  </div>
 
-  <!-- Verdict -->
-  <div class="verdict">Your grace-hopper agent outperformed the baseline by 0.6 points overall.</div>
+  <div class="doc-header">
+    <div class="doc-title">Proving Ground</div>
+    <div class="doc-subtitle">Experimental Results — Agent Personality Benchmark · Suite v1 · 2026</div>
+    <div class="doc-meta">
+      <div><div class="meta-label">Run Date</div><div class="meta-value">2026-04-08</div></div>
+      <div><div class="meta-label">Configurations</div><div class="meta-value">4</div></div>
+      <div><div class="meta-label">Suite</div><div class="meta-value">V1</div></div>
+      <div><div class="meta-label">Verdict</div><div class="meta-value" style="color:#22D3EE">CONFIRMED</div></div>
+    </div>
+  </div>
 
-  <!-- Overall Scores -->
-  <section class="scores-section">
-    <div class="section-label">Overall Scores</div>
-    <div class="scores-grid">
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Overall Results</span>
+    </div>
+    <div class="narrative">
+      4 agents entered the same task suite. The scores below measure overall performance across all tiers. <strong>The gap between a blank agent and a fully realized profile</strong> is the central finding.
+    </div>
+    <div class="verdict-box">
+      <div class="verdict-label">Verdict</div>
+      <div class="verdict-text">Your qa-army-group agent outperformed the baseline by 0.2 points overall.</div>
+    </div>
+    <div style="margin: 32px 0 40px;">
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#64748b;"></div></div>
+        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">6.0</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:63%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.3</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Tier Breakdown</span>
+    </div>
+    <div class="narrative">
+      Three task tiers test distinct capabilities: <strong>Tier 1</strong> (Craft — follow the spec), <strong>Tier 2</strong> (Judgment — fill the gaps), <strong>Tier 3</strong> (Pressure — perform under constraint).
+    </div>
+    
+    <div style="margin-bottom:32px;">
+      <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 1 — Craft</div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:58%;background:#64748b;"></div></div>
+        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.8</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
+      </div>
+      
+    </div>
+    
+    <div style="margin-bottom:32px;">
+      <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 2 — Judgment</div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:64%;background:#64748b;"></div></div>
+        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">6.4</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:63%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">6.3</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:63%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.3</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:65%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.5</div>
+      </div>
+      
+    </div>
+    
+    <div style="margin-bottom:32px;">
+      <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 3 — Pressure</div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:59%;background:#64748b;"></div></div>
+        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.9</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:59%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.9</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.0</div>
+      </div>
+      
+      
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:62%;background:#888888;"></div></div>
+        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.2</div>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Dimension Analysis</span>
+    </div>
+    <div class="narrative">
+      Six dimensions were scored across all tasks. Each captures a distinct capability. The table below shows where agents separated and where they converged.
+    </div>
+    <div style="margin: 36px 0;">
+      <div style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr ;gap:12px;padding-bottom:10px;border-bottom:1px solid #1F2937;margin-bottom:4px;">
+        <div style="font-size:10px;letter-spacing:3px;color:#374151;text-transform:uppercase;">Dimension</div>
+        
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#64748b88;">zero</div>
+        
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#22D3EE88;">light</div>
+        
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#88888888;">grace-hopper</div>
+        
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#88888888;">qa-army-group</div>
+        
+      </div>
       
       
       
         
+        
       
-      <div class="score-card score-muted">
-        <div class="config-name">zero</div>
-        <div class="score-value">5.7</div>
-        <div class="tier-breakdown">
-          <span><span class="tier-label">T1</span> 5.6</span>
-          <span><span class="tier-label">T2</span> 6.1</span>
-          <span><span class="tier-label">T3</span> 5.4</span>
+        
+        
+      
+        
+        
+      
+        
+        
+      
+      <div class="dim-row">
+        <div class="dim-name">correctness</div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:82%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">8.2</div>
         </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:83%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">8.3</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:89%;background:#888888;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#888888;">8.9</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:89%;background:#888888;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#888888;">8.9</div>
+        </div>
+        
       </div>
       
       
       
         
+        
       
-      <div class="score-card score-muted">
-        <div class="config-name">light</div>
-        <div class="score-value">5.7</div>
-        <div class="tier-breakdown">
-          <span><span class="tier-label">T1</span> 6.1</span>
-          <span><span class="tier-label">T2</span> 6.4</span>
-          <span><span class="tier-label">T3</span> 4.9</span>
+        
+        
+      
+        
+        
+      
+        
+        
+      
+      <div class="dim-row">
+        <div class="dim-name">elegance</div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:80%;background:#64748b;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#64748b;">8.0</div>
         </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:62%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">6.2</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:58%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">5.8</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:64%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">6.4</div>
+        </div>
+        
       </div>
       
       
       
         
+        
       
-      <div class="score-card score-muted">
-        <div class="config-name">grace-hopper</div>
-        <div class="score-value">6.3</div>
-        <div class="tier-breakdown">
-          <span><span class="tier-label">T1</span> 6.4</span>
-          <span><span class="tier-label">T2</span> 6.6</span>
-          <span><span class="tier-label">T3</span> 6.1</span>
+        
+        
+      
+        
+        
+      
+        
+        
+      
+      <div class="dim-row">
+        <div class="dim-name">discipline</div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:43%;background:#64748b;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#64748b;">4.3</div>
         </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:41%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">4.1</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:31%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">3.1</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:35%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">3.5</div>
+        </div>
+        
+      </div>
+      
+      
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+      <div class="dim-row">
+        <div class="dim-name">judgment</div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:59%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">5.9</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:67%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">6.7</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:70%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">7.0</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:71%;background:#888888;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#888888;">7.1</div>
+        </div>
+        
+      </div>
+      
+      
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+      <div class="dim-row">
+        <div class="dim-name">creativity</div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:45%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">4.5</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:46%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">4.6</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:54%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">5.4</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#888888;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#888888;">5.5</div>
+        </div>
+        
+      </div>
+      
+      
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+        
+        
+      
+      <div class="dim-row">
+        <div class="dim-name">recovery</div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:54%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">5.4</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:57%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">5.7</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:65%;background:#888888;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#888888;">6.5</div>
+        </div>
+        
+        
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:63%;background:#888888;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#888888;">6.3</div>
+        </div>
+        
       </div>
       
     </div>
-  </section>
+    <div class="finding-box">
+      <div class="finding-label">Dimension Summary</div>
+      <div class="finding-text">The dimensions where the largest gaps appear between configurations are the ones that require <strong>decision-making under ambiguity</strong>: Judgment, Creativity, and Recovery. Correctness and Elegance tend to be table stakes — necessary but not differentiating.</div>
+    </div>
+  </div>
 
-  <!-- Radar Chart -->
-  <section class="chart-section">
-    <div class="section-label">Dimension Profile</div>
-    <div class="radar-container">
-      <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
-<polygon points="200.0,170.0 226.0,185.0 226.0,215.0 200.0,230.0 174.0,215.0 174.0,185.0" fill="none" stroke="#1e293b" stroke-width="1"/>
-<polygon points="200.0,140.0 252.0,170.0 252.0,230.0 200.0,260.0 148.0,230.0 148.0,170.0" fill="none" stroke="#1e293b" stroke-width="1"/>
-<polygon points="200.0,110.0 277.9,155.0 277.9,245.0 200.0,290.0 122.1,245.0 122.1,155.0" fill="none" stroke="#1e293b" stroke-width="1"/>
-<polygon points="200.0,80.0 303.9,140.0 303.9,260.0 200.0,320.0 96.1,260.0 96.1,140.0" fill="none" stroke="#1e293b" stroke-width="1"/>
-<polygon points="200.0,50.0 329.9,125.0 329.9,275.0 200.0,350.0 70.1,275.0 70.1,125.0" fill="none" stroke="#1e293b" stroke-width="1"/>
-<text x="234.0" y="196.0" font-size="8" fill="#475569" font-family="sans-serif">20</text>
-<text x="264.0" y="196.0" font-size="8" fill="#475569" font-family="sans-serif">40</text>
-<text x="294.0" y="196.0" font-size="8" fill="#475569" font-family="sans-serif">60</text>
-<text x="324.0" y="196.0" font-size="8" fill="#475569" font-family="sans-serif">80</text>
-<text x="354.0" y="196.0" font-size="8" fill="#475569" font-family="sans-serif">100</text>
-<line x1="200" y1="200" x2="200.0" y2="50.0" stroke="#334155" stroke-width="1"/>
-<line x1="200" y1="200" x2="329.9" y2="125.0" stroke="#334155" stroke-width="1"/>
-<line x1="200" y1="200" x2="329.9" y2="275.0" stroke="#334155" stroke-width="1"/>
-<line x1="200" y1="200" x2="200.0" y2="350.0" stroke="#334155" stroke-width="1"/>
-<line x1="200" y1="200" x2="70.1" y2="275.0" stroke="#334155" stroke-width="1"/>
-<line x1="200" y1="200" x2="70.1" y2="125.0" stroke="#334155" stroke-width="1"/>
-<text x="200.0" y="19.0" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif">correctness</text>
-<text x="353.3" y="111.5" text-anchor="start" dominant-baseline="middle" font-size="10" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif">elegance</text>
-<text x="353.3" y="288.5" text-anchor="start" dominant-baseline="middle" font-size="10" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif">discipline</text>
-<text x="200.0" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif">judgment</text>
-<text x="46.7" y="288.5" text-anchor="end" dominant-baseline="middle" font-size="10" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif">creativity</text>
-<text x="46.7" y="111.5" text-anchor="end" dominant-baseline="middle" font-size="10" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif">recovery</text>
-<polygon points="200.0,63.5 275.3,156.5 236.4,221.0 200.0,290.0 131.2,239.8 135.0,162.5" fill="#475569" fill-opacity="0.15" stroke="#475569" stroke-width="2.5"/>
-<polygon points="200.0,68.0 272.7,158.0 236.4,221.0 200.0,303.5 133.7,238.3 135.0,162.5" fill="#64748b" fill-opacity="0.15" stroke="#64748b" stroke-width="2.5"/>
-<polygon points="200.0,65.0 274.0,157.2 244.2,225.5 200.0,321.5 120.8,245.8 126.0,157.2" fill="#888888" fill-opacity="0.15" stroke="#888888" stroke-width="2.5"/>
-</svg>
-    </div>
-    <div class="chart-legend">
-      
-      <div class="legend-item">
-        <div class="legend-dot" style="background: #475569"></div>
-        zero
-      </div>
-      
-      <div class="legend-item">
-        <div class="legend-dot" style="background: #64748b"></div>
-        light
-      </div>
-      
-      <div class="legend-item">
-        <div class="legend-dot" style="background: #888"></div>
-        grace-hopper
-      </div>
-      
-    </div>
-  </section>
+  <div style="text-align:center;font-size:13px;letter-spacing:3px;color:#374151;padding:24px 0;border-top:1px solid #1F2937;margin-top:20px;">
+    SUITE V1 · 2026-04-08
+  </div>
 
-  <!-- Dimension Breakdown: Bar Chart -->
-  <section class="chart-section">
-    <div class="section-label">Dimension Breakdown</div>
-    <div class="bar-chart-container">
-      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="384" viewBox="0 0 600 384">
-<text x="0" y="32.0" dominant-baseline="middle" font-size="11" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" text-transform="capitalize">correctness</text>
-<rect x="100" y="10.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="10.0" width="400.4" height="12" rx="2" fill="#475569" opacity="0.85"/>
-<text x="552.0" y="16.0" dominant-baseline="middle" font-size="10" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, sans-serif">9.1</text>
-<rect x="100" y="26.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="26.0" width="387.2" height="12" rx="2" fill="#64748b" opacity="0.85"/>
-<text x="552.0" y="32.0" dominant-baseline="middle" font-size="10" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif">8.8</text>
-<rect x="100" y="42.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="42.0" width="396.0" height="12" rx="2" fill="#888888" opacity="0.85"/>
-<text x="552.0" y="48.0" dominant-baseline="middle" font-size="10" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, sans-serif">9.0</text>
-<text x="0" y="96.0" dominant-baseline="middle" font-size="11" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" text-transform="capitalize">elegance</text>
-<rect x="100" y="74.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="74.0" width="255.2" height="12" rx="2" fill="#475569" opacity="0.85"/>
-<text x="552.0" y="80.0" dominant-baseline="middle" font-size="10" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.8</text>
-<rect x="100" y="90.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="90.0" width="246.4" height="12" rx="2" fill="#64748b" opacity="0.85"/>
-<text x="552.0" y="96.0" dominant-baseline="middle" font-size="10" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.6</text>
-<rect x="100" y="106.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="106.0" width="250.8" height="12" rx="2" fill="#888888" opacity="0.85"/>
-<text x="552.0" y="112.0" dominant-baseline="middle" font-size="10" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.7</text>
-<text x="0" y="160.0" dominant-baseline="middle" font-size="11" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" text-transform="capitalize">discipline</text>
-<rect x="100" y="138.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="138.0" width="123.2" height="12" rx="2" fill="#475569" opacity="0.85"/>
-<text x="552.0" y="144.0" dominant-baseline="middle" font-size="10" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, sans-serif">2.8</text>
-<rect x="100" y="154.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="154.0" width="123.2" height="12" rx="2" fill="#64748b" opacity="0.85"/>
-<text x="552.0" y="160.0" dominant-baseline="middle" font-size="10" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif">2.8</text>
-<rect x="100" y="170.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="170.0" width="149.6" height="12" rx="2" fill="#888888" opacity="0.85"/>
-<text x="552.0" y="176.0" dominant-baseline="middle" font-size="10" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, sans-serif">3.4</text>
-<text x="0" y="224.0" dominant-baseline="middle" font-size="11" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" text-transform="capitalize">judgment</text>
-<rect x="100" y="202.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="202.0" width="264.0" height="12" rx="2" fill="#475569" opacity="0.85"/>
-<text x="552.0" y="208.0" dominant-baseline="middle" font-size="10" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, sans-serif">6.0</text>
-<rect x="100" y="218.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="218.0" width="303.6" height="12" rx="2" fill="#64748b" opacity="0.85"/>
-<text x="552.0" y="224.0" dominant-baseline="middle" font-size="10" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif">6.9</text>
-<rect x="100" y="234.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="234.0" width="356.4" height="12" rx="2" fill="#888888" opacity="0.85"/>
-<text x="552.0" y="240.0" dominant-baseline="middle" font-size="10" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, sans-serif">8.1</text>
-<text x="0" y="288.0" dominant-baseline="middle" font-size="11" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" text-transform="capitalize">creativity</text>
-<rect x="100" y="266.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="266.0" width="233.2" height="12" rx="2" fill="#475569" opacity="0.85"/>
-<text x="552.0" y="272.0" dominant-baseline="middle" font-size="10" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.3</text>
-<rect x="100" y="282.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="282.0" width="224.4" height="12" rx="2" fill="#64748b" opacity="0.85"/>
-<text x="552.0" y="288.0" dominant-baseline="middle" font-size="10" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.1</text>
-<rect x="100" y="298.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="298.0" width="268.4" height="12" rx="2" fill="#888888" opacity="0.85"/>
-<text x="552.0" y="304.0" dominant-baseline="middle" font-size="10" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, sans-serif">6.1</text>
-<text x="0" y="352.0" dominant-baseline="middle" font-size="11" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" text-transform="capitalize">recovery</text>
-<rect x="100" y="330.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="330.0" width="220.0" height="12" rx="2" fill="#475569" opacity="0.85"/>
-<text x="552.0" y="336.0" dominant-baseline="middle" font-size="10" fill="#475569" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.0</text>
-<rect x="100" y="346.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="346.0" width="220.0" height="12" rx="2" fill="#64748b" opacity="0.85"/>
-<text x="552.0" y="352.0" dominant-baseline="middle" font-size="10" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.0</text>
-<rect x="100" y="362.0" width="440" height="12" rx="2" fill="#1e293b"/>
-<rect x="100" y="362.0" width="250.8" height="12" rx="2" fill="#888888" opacity="0.85"/>
-<text x="552.0" y="368.0" dominant-baseline="middle" font-size="10" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, sans-serif">5.7</text>
-</svg>
-    </div>
-    <div class="chart-legend">
-      
-      <div class="legend-item">
-        <div class="legend-dot" style="background: #475569"></div>
-        zero
-      </div>
-      
-      <div class="legend-item">
-        <div class="legend-dot" style="background: #64748b"></div>
-        light
-      </div>
-      
-      <div class="legend-item">
-        <div class="legend-dot" style="background: #888"></div>
-        grace-hopper
-      </div>
-      
-    </div>
-  </section>
-
-  <!-- History (conditional) -->
-  
-
-  <footer>Proving Ground &middot; Suite v1 &middot; 2026-03-30T17:57:56</footer>
 </div>
 </body>
 </html>

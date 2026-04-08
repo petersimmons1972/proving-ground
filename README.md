@@ -10,23 +10,41 @@ We ran the same ten tasks with three agents — a blank slate, a lightly-prompte
 
 ![Benchmark Apparatus](docs/assets/readme-apparatus.svg)
 
-## Suite v1 Results — March 2026
+## Latest Results — April 2026
 
-![Overall Scores](docs/assets/suite-v1-scores.svg)
+A new entrant was introduced in April: the **QA Army Group** — not a single personality, but a single prompt that runs five quality-validator lenses as one consciousness. Gordon Ramsay (technical specificity). Hyman Rickover (zero-defect). Raymond Spruance (full-suite TDD). A zero-context reviewer (fresh eyes). Eisenhower (coordinator, first to speak and last to synthesize). They argue with each other before any line of code is written.
 
-The profiled agent outscored the blank agent by **0.6 points overall** (6.3 vs 5.7). The number is narrow. The dimension breakdown is not.
+| Configuration  | Overall  | Tier 1 | Tier 2 | Tier 3 |
+|----------------|---------:|-------:|-------:|-------:|
+| **qa-army-group** | **6.3** ✅ | 6.1 | **6.5** | **6.2** |
+| grace-hopper   | 6.1      | 6.1    | 6.3    | 6.0    |
+| zero           | 6.1      | 5.8    | 6.4    | 5.9    |
+| light          | 6.0      | 5.7    | 6.3    | 5.9    |
 
-![Dimension Analysis](docs/assets/suite-v1-dimensions.svg)
+The QA Army Group is the new top scorer, by a narrow 0.2 margin. The margin is narrow. The dimension breakdown, again, is not.
 
-**Correctness was nearly identical across all three agents** — 9.0, 8.8, 9.1. A blank AI can follow a spec. Personality adds almost nothing there.
+| Dimension    | qa-army-group | grace-hopper | zero | Delta vs blank  |
+|--------------|--------------:|-------------:|-----:|----------------:|
+| Correctness  | **8.9**       | 8.9          | 8.2  | +0.7            |
+| Elegance     | 6.4           | 5.8          | **8.0** | −1.6 ⚠️       |
+| Discipline   | 3.5           | 3.1          | **4.3** | −0.8 ⚠️       |
+| **Judgment** | **7.1**       | 7.0          | 5.9  | **+1.2** ✅    |
+| **Creativity** | **5.5**     | 5.4          | 4.5  | **+1.0** ✅    |
+| Recovery     | 6.3           | **6.5**      | 5.4  | +0.9            |
 
-**Judgment diverged by 2.1 points.** When the spec was ambiguous and the agent had to decide, the profiled agent made better calls. The blank agent hedged or asked; the profiled agent committed. This is the decisive dimension.
+**Judgment moved by 1.2 points.** Under ambiguous specs — contradictory requirements, missing error handling, traps baiting scope creep — the composite profile named the unknowns, committed to a path, and explained the reasoning. The blank agent hedged. Judgment is the dimension that rewards a profile. The Army Group profile earned it.
 
-**Creativity diverged by nearly a point** (6.1 vs 5.1/5.3). Under open-ended prompts, the profiled agent generated more interesting solutions. The blank agent generated correct ones.
+**Elegance and discipline both fell below the blank baseline.** Five voices arguing produce more code, more comments, more explicit reasoning. This is the cost of the architecture, and the composite profile wears it. A blank agent, given the same parser task, wrote 41 lines. The QA Army Group wrote 57. Both correct; only one restrained.
 
-**Discipline was low across the board** — all three agents over-built and under-stayed-in-scope. This is a finding about current AI agents generally, not about personality. A profile didn't fix it.
+**The strongest tier was Judgment (Tier 2): 6.5.** That is where the five lenses land together — Eisenhower naming the unknowns, Ramsay locating the specific finding, Spruance explaining the reasoning. The architecture is for ambiguity, and ambiguity is where it wins.
 
-→ **[Full narrative report](https://www.petersimmons.com/proving_ground.html)** — complete wartime technical brief with task-level analysis
+→ **[Full narrative report](https://www.petersimmons.com/proving_ground.html)** — complete wartime technical brief
+
+---
+
+## Suite v1 Results — March 2026 (historical)
+
+The original Suite v1 run introduced the **Grace Hopper** profile against blank (`zero`) and lightly-prompted (`light`) controls. Grace Hopper won overall (6.3 vs 5.7), won judgment by 2.1 points, and held the top slot until the April run introduced a composite team profile that narrowly beat it. The full March analysis is preserved unchanged in the [Suite v1 archive](docs/suite-v1-results.md).
 
 ---
 

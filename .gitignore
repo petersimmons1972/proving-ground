@@ -5,3 +5,6 @@ __pycache__/
 .env
 .venv/
 node_modules/
+proving_ground.egg-info/
+# Stray solution/ files from benchmark runs that escape their run_dir (bug)
+/solution/

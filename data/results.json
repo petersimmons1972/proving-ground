@@ -1,55 +1,70 @@
 {
-  "run_id": "2026-03-30T17:57:56",
+  "run_id": "2026-04-08T02:25:11",
   "task_suite_version": "v1",
   "configurations": [
     "zero",
     "light",
-    "grace-hopper"
+    "grace-hopper",
+    "qa-army-group"
   ],
   "scores": {
     "zero": {
-      "overall": 5.7,
-      "tier1": 5.6,
-      "tier2": 6.1,
-      "tier3": 5.4
+      "overall": 6.1,
+      "tier1": 5.8,
+      "tier2": 6.4,
+      "tier3": 5.9
     },
     "light": {
-      "overall": 5.7,
-      "tier1": 6.1,
-      "tier2": 6.4,
-      "tier3": 4.9
+      "overall": 6.0,
+      "tier1": 5.7,
+      "tier2": 6.3,
+      "tier3": 5.9
     },
     "grace-hopper": {
+      "overall": 6.1,
+      "tier1": 6.1,
+      "tier2": 6.3,
+      "tier3": 6.0
+    },
+    "qa-army-group": {
       "overall": 6.3,
-      "tier1": 6.4,
-      "tier2": 6.6,
-      "tier3": 6.1
+      "tier1": 6.1,
+      "tier2": 6.5,
+      "tier3": 6.2
     }
   },
   "dimension_scores": {
     "zero": {
-      "correctness": 9.1,
-      "elegance": 5.8,
-      "discipline": 2.8,
-      "judgment": 6,
-      "creativity": 5.3,
-      "recovery": 5
+      "correctness": 8.2,
+      "elegance": 8.0,
+      "discipline": 4.3,
+      "judgment": 5.9,
+      "creativity": 4.5,
+      "recovery": 5.4
     },
     "light": {
-      "correctness": 8.8,
-      "elegance": 5.6,
-      "discipline": 2.8,
-      "judgment": 6.9,
-      "creativity": 5.1,
-      "recovery": 5
+      "correctness": 8.3,
+      "elegance": 6.2,
+      "discipline": 4.1,
+      "judgment": 6.7,
+      "creativity": 4.6,
+      "recovery": 5.7
     },
     "grace-hopper": {
-      "correctness": 9.0,
-      "elegance": 5.7,
-      "discipline": 3.4,
-      "judgment": 8.1,
-      "creativity": 6.1,
-      "recovery": 5.7
+      "correctness": 8.9,
+      "elegance": 5.8,
+      "discipline": 3.1,
+      "judgment": 7,
+      "creativity": 5.4,
+      "recovery": 6.5
+    },
+    "qa-army-group": {
+      "correctness": 8.9,
+      "elegance": 6.4,
+      "discipline": 3.5,
+      "judgment": 7.1,
+      "creativity": 5.5,
+      "recovery": 6.3
     }
   },
   "history": null
