@@ -1,128 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="240" viewBox="0 0 720 240">
-
-  <!-- ============================================================
-       PAINT ORDER: 1-backgrounds, 2-geometry, 3-strokes, 4-text
-       ============================================================ -->
-
-  <!-- 1. BACKGROUNDS -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240" width="720" height="240">
   <rect width="720" height="240" fill="#0A0F1E"/>
-
-  <!-- 2. GEOMETRY -->
-
-  <!-- Amber top bar -->
   <rect x="0" y="0" width="720" height="4" fill="#F59E0B"/>
-  <!-- Amber bottom bar -->
   <rect x="0" y="236" width="720" height="4" fill="#F59E0B"/>
-
-  <!-- Outer border: 2px -->
   <rect x="2" y="4" width="716" height="232" fill="none" stroke="#1F2937" stroke-width="2"/>
-  <!-- Inner border: 1px, inset 8px from outer (outer at x=2, inner at x=10) -->
   <rect x="10" y="12" width="700" height="216" fill="none" stroke="#374151" stroke-width="1"/>
-
-  <!-- Corner registration ticks -- 8px L-shapes -->
-  <!-- top-left -->
-  <line x1="18" y1="4"  x2="18" y2="22"  stroke="#374151" stroke-width="1"/>
-  <line x1="2"  y1="20" x2="26" y2="20"  stroke="#374151" stroke-width="1"/>
-  <!-- top-right -->
-  <line x1="702" y1="4"  x2="702" y2="22"  stroke="#374151" stroke-width="1"/>
-  <line x1="694" y1="20" x2="718" y2="20"  stroke="#374151" stroke-width="1"/>
-  <!-- bottom-left -->
-  <line x1="18" y1="236" x2="18" y2="218"  stroke="#374151" stroke-width="1"/>
-  <line x1="2"  y1="220" x2="26" y2="220"  stroke="#374151" stroke-width="1"/>
-  <!-- bottom-right -->
-  <line x1="702" y1="236" x2="702" y2="218"  stroke="#374151" stroke-width="1"/>
-  <line x1="694" y1="220" x2="718" y2="220"  stroke="#374151" stroke-width="1"/>
-
-  <!-- Classification stamp box: top right, inset from inner border -->
-  <!-- Positioned at x=490, y=16, w=214, h=20 -->
+  <line x1="18" y1="4" x2="18" y2="22" stroke="#374151" stroke-width="1"/>
+  <line x1="2" y1="20" x2="26" y2="20" stroke="#374151" stroke-width="1"/>
+  <line x1="702" y1="4" x2="702" y2="22" stroke="#374151" stroke-width="1"/>
+  <line x1="694" y1="20" x2="718" y2="20" stroke="#374151" stroke-width="1"/>
+  <line x1="18" y1="236" x2="18" y2="218" stroke="#374151" stroke-width="1"/>
+  <line x1="2" y1="220" x2="26" y2="220" stroke="#374151" stroke-width="1"/>
+  <line x1="702" y1="236" x2="702" y2="218" stroke="#374151" stroke-width="1"/>
+  <line x1="694" y1="220" x2="718" y2="220" stroke="#374151" stroke-width="1"/>
   <rect x="490" y="16" width="214" height="18" fill="#0A0F1E" stroke="#22D3EE" stroke-width="1"/>
-
-  <!-- Thin horizontal rules -->
-  <!-- Rule below BUREAU OF MACHINE INTELLIGENCE label, y=60 -->
   <line x1="20" y1="60" x2="700" y2="60" stroke="#1F2937" stroke-width="1"/>
-  <!-- Rule below EXPERIMENTAL FINDINGS, y=88 -->
   <line x1="20" y1="88" x2="700" y2="88" stroke="#1F2937" stroke-width="1"/>
-  <!-- Rule below HYPOTHESIS: CONFIRMED, y=126 -->
   <line x1="20" y1="126" x2="700" y2="126" stroke="#1F2937" stroke-width="1"/>
-
-  <!-- Three metric callout areas at y=158
-       Each is a simple vertical separator between regions
-       Dividers at x=290 and x=430 -->
   <line x1="290" y1="158" x2="290" y2="208" stroke="#374151" stroke-width="1"/>
   <line x1="430" y1="158" x2="430" y2="208" stroke="#374151" stroke-width="1"/>
-
-  <!-- Bottom rule above footer -->
   <line x1="20" y1="210" x2="700" y2="210" stroke="#1F2937" stroke-width="1"/>
-
-  <!-- 3. STROKES -- embedded above -->
-
-  <!-- 4. TEXT -- always last -->
-
-  <!-- Classification stamp text -->
-  <text x="597" y="28" font-family="Courier New, Courier, monospace" font-size="11"
-        letter-spacing="2" fill="#22D3EE" text-anchor="middle">
-    UNCLASSIFIED // FOR PUBLIC RELEASE
-  </text>
-
-  <!-- Bureau line -->
-  <text x="360" y="50" font-family="Courier New, Courier, monospace" font-size="10"
-        letter-spacing="4" fill="#374151" text-anchor="middle">
-    BUREAU OF MACHINE INTELLIGENCE
-  </text>
-
-  <!-- EXPERIMENTAL FINDINGS -->
-  <text x="360" y="80" font-family="Courier New, Courier, monospace" font-size="13"
-        letter-spacing="6" fill="#94a3b8" text-anchor="middle">
-    EXPERIMENTAL FINDINGS
-  </text>
-
-  <!-- HYPOTHESIS: CONFIRMED -- headline -->
-  <text x="360" y="118" font-family="Courier New, Courier, monospace" font-size="28"
-        letter-spacing="4" fill="#F59E0B" text-anchor="middle">
-    HYPOTHESIS: CONFIRMED
-  </text>
-
-  <!-- Body finding -->
-  <text x="360" y="144" font-family="Courier New, Courier, monospace" font-size="11"
-        letter-spacing="1" fill="#C9D1D9" text-anchor="middle">
-    PERSONALITY PRODUCES MEASURABLE ADVANTAGE: JUDGMENT +2.1 PTS, CREATIVITY +1.0 PTS
-  </text>
-
-  <!-- Three metric callouts -->
-  <!-- Callout 1: center x=145 -->
-  <text x="145" y="178" font-family="Courier New, Courier, monospace" font-size="20"
-        letter-spacing="2" fill="#F59E0B" text-anchor="middle">
-    4 OF 6
-  </text>
-  <text x="145" y="196" font-family="Courier New, Courier, monospace" font-size="11"
-        letter-spacing="2" fill="#94a3b8" text-anchor="middle">
-    DIMENSIONS WON
-  </text>
-
-  <!-- Callout 2: center x=360 -->
-  <text x="360" y="178" font-family="Courier New, Courier, monospace" font-size="20"
-        letter-spacing="2" fill="#F59E0B" text-anchor="middle">
-    8.1
-  </text>
-  <text x="360" y="196" font-family="Courier New, Courier, monospace" font-size="11"
-        letter-spacing="2" fill="#94a3b8" text-anchor="middle">
-    JUDGMENT SCORE
-  </text>
-
-  <!-- Callout 3: center x=575 -->
-  <text x="575" y="178" font-family="Courier New, Courier, monospace" font-size="20"
-        letter-spacing="2" fill="#22D3EE" text-anchor="middle">
-    +0.6
-  </text>
-  <text x="575" y="196" font-family="Courier New, Courier, monospace" font-size="11"
-        letter-spacing="2" fill="#94a3b8" text-anchor="middle">
-    OVERALL ADVANTAGE
-  </text>
-
-  <!-- Footer date line -->
-  <text x="360" y="224" font-family="Courier New, Courier, monospace" font-size="11"
-        letter-spacing="3" fill="#374151" text-anchor="middle">
-    SUITE v1 -- 30 MARCH 2026 -- 10 TASKS -- 3 CONFIGURATIONS
-  </text>
-
+  <text x="597" y="28" font-family="Courier New,Courier,monospace" font-size="11" fill="#22D3EE" letter-spacing="2" text-anchor="middle">UNCLASSIFIED // FOR PUBLIC RELEASE</text>
+  <text x="360" y="50" font-family="Courier New,Courier,monospace" font-size="10" fill="#374151" letter-spacing="4" text-anchor="middle">BUREAU OF MACHINE INTELLIGENCE</text>
+  <text x="360" y="80" font-family="Courier New,Courier,monospace" font-size="13" fill="#94a3b8" letter-spacing="6" text-anchor="middle">EXPERIMENTAL FINDINGS</text>
+  <text x="360" y="118" font-family="Courier New,Courier,monospace" font-size="28" fill="#F59E0B" letter-spacing="4" text-anchor="middle">HYPOTHESIS: CONFIRMED</text>
+  <text x="360" y="144" font-family="Courier New,Courier,monospace" font-size="11" fill="#C9D1D9" letter-spacing="1" text-anchor="middle">PERSONALITY PRODUCES MEASURABLE ADVANTAGE: JUDGMENT +2.1 PTS, CREATIVITY +1.0 PTS</text>
+  <text x="145" y="178" font-family="Courier New,Courier,monospace" font-size="20" fill="#F59E0B" letter-spacing="2" text-anchor="middle">4 OF 6</text>
+  <text x="145" y="196" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2" text-anchor="middle">DIMENSIONS WON</text>
+  <text x="360" y="178" font-family="Courier New,Courier,monospace" font-size="20" fill="#F59E0B" letter-spacing="2" text-anchor="middle">8.1</text>
+  <text x="360" y="196" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2" text-anchor="middle">JUDGMENT SCORE</text>
+  <text x="575" y="178" font-family="Courier New,Courier,monospace" font-size="20" fill="#22D3EE" letter-spacing="2" text-anchor="middle">+0.6</text>
+  <text x="575" y="196" font-family="Courier New,Courier,monospace" font-size="11" fill="#94a3b8" letter-spacing="2" text-anchor="middle">OVERALL ADVANTAGE</text>
+  <text x="360" y="224" font-family="Courier New,Courier,monospace" font-size="11" fill="#374151" letter-spacing="3" text-anchor="middle">SUITE v1 -- 30 MARCH 2026 -- 10 TASKS -- 3 CONFIGURATIONS</text>
 </svg>
