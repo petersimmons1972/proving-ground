@@ -72,14 +72,25 @@ def run_task(
     if system_prompt:
         cmd += ["--system-prompt", system_prompt]
 
-    result = subprocess.run(
-        cmd,
-        input=effective_spec,   # pipe spec via stdin — avoids CLI arg length limits
-        cwd=str(run_dir),
-        capture_output=True,
-        text=True,
-        timeout=timeout,
-    )
+    try:
+        result = subprocess.run(
+            cmd,
+            input=effective_spec,   # pipe spec via stdin — avoids CLI arg length limits
+            cwd=str(run_dir),
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return TaskResult(
+            task_id=task_id,
+            profile_name=profile_name,
+            exit_code=124,  # standard timeout exit code
+            stdout="",
+            stderr=f"TIMEOUT: claude process exceeded {timeout}s limit",
+            working_dir=str(run_dir),
+            files_written=[],
+        )
 
     # Collect every file Claude wrote in the run directory.
     files_written = [

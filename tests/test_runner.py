@@ -1,4 +1,5 @@
 import pytest
+import subprocess
 from unittest.mock import patch, MagicMock
 from src.runner import run_task, TaskResult
 
@@ -92,3 +93,12 @@ def test_spec_header_contains_absolute_run_dir(tmp_path):
     expected_run_dir = str((tmp_path / "t1-1" / "zero").absolute())
     assert expected_run_dir in piped
     assert "Never write files outside this directory" in piped
+
+
+def test_run_task_timeout_returns_result():
+    """TimeoutExpired should produce a TaskResult with non-zero exit code, not crash."""
+    with patch("src.runner.subprocess.run") as mock_run:
+        mock_run.side_effect = subprocess.TimeoutExpired(cmd="claude", timeout=300)
+        result = run_task("t1-1", "spec", "zero", "", "/tmp/test")
+    assert result.exit_code != 0
+    assert "timeout" in result.stderr.lower()
