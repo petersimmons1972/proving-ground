@@ -16,7 +16,7 @@ def load_tasks(tiers: list[str]) -> list[Task]:
     tasks = []
     for tier_str in tiers:
         tier = int(tier_str)
-        tier_dir = Path(f"tasks/tier{tier}")
+        tier_dir = Path(__file__).parent.parent / f"tasks/tier{tier}"
         for f in sorted(tier_dir.glob("*.md")):
             content = f.read_text()
             meta = _parse_frontmatter(content)

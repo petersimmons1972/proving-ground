@@ -34,3 +34,18 @@ def test_load_md_user_profile(tmp_path):
     profiles = load_profiles(Path("profiles"), user_dir=tmp_path)
     assert "my-agent" in profiles
     assert profiles["my-agent"] == text.strip()
+
+
+def test_user_profile_cannot_overwrite_controls(tmp_path):
+    """User file named 'zero.txt' must not overwrite the zero control baseline."""
+    (tmp_path / "zero.txt").write_text("I am not the zero profile")
+    profiles = load_profiles(Path("profiles"), user_dir=tmp_path)
+    assert profiles["zero"] == ""  # control must be preserved
+
+
+def test_user_profile_cannot_overwrite_light(tmp_path):
+    """User file named 'light.txt' must not overwrite the light control baseline."""
+    (tmp_path / "light.txt").write_text("I am not the light profile")
+    profiles = load_profiles(Path("profiles"), user_dir=tmp_path)
+    # light should still be the control version from profiles/light.txt
+    assert profiles["light"] != "I am not the light profile"

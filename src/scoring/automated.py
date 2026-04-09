@@ -16,7 +16,7 @@ def score_tests(exit_code: int, stdout: str) -> AutomatedScores:
     total = passed + failed
 
     if total == 0:
-        rate = 1.0 if exit_code == 0 else 0.0
+        rate = 0.0  # no tests found = no evidence of correctness
     else:
         rate = passed / total
 

@@ -97,3 +97,9 @@ def test_score_tests_does_not_carry_dead_fields():
     assert scores.tests_pass == 10.0
     # These fields should not exist or should not be zero if used in arithmetic
     assert not hasattr(scores, 'scope_score') or scores.scope_score is None
+
+
+def test_score_tests_no_tests_found_exit_zero():
+    """No tests detected with exit 0 should NOT award perfect score."""
+    scores = score_tests(exit_code=0, stdout="All done, no tests to run")
+    assert scores.tests_pass == 0.0  # absence of tests != perfect score
