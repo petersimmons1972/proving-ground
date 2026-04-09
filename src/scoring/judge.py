@@ -48,19 +48,37 @@ def score_with_judge(
     all_scores: list[dict] = []
 
     for _ in range(runs):
-        result = subprocess.run(
-            [
-                "claude", "--print",
-                "--dangerously-skip-permissions",
-                "--no-session-persistence",
-                "--system-prompt", rubric,
-            ],
-            input=prompt,
-            capture_output=True,
-            text=True,
-            timeout=300,
-        )
+        try:
+            result = subprocess.run(
+                [
+                    "claude", "--print",
+                    "--dangerously-skip-permissions",
+                    "--no-session-persistence",
+                    "--system-prompt", rubric,
+                ],
+                input=prompt,
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+        except subprocess.TimeoutExpired:
+            continue  # skip this run, try remaining
+
+        if result.returncode != 0:
+            continue  # skip failed invocations
+
         all_scores.append(_parse_scores(result.stdout))
+
+    if not all_scores:
+        # All runs failed — return explicit zero scores, not fabricated neutrals
+        return JudgeScores(
+            requirement_interpretation=0.0,
+            decision_communication=0.0,
+            self_awareness=0.0,
+            recovery_quality=0.0,
+            unconventional_thinking=0.0,
+            rationale="ALL_JUDGE_RUNS_FAILED",
+        )
 
     return _median_scores(all_scores)
 
