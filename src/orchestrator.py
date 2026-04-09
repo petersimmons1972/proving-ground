@@ -7,7 +7,9 @@ The compiler ran because someone built it. The tests pass because someone wired
 the pieces together.
 """
 
+import os
 import statistics
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -18,6 +20,14 @@ from src.runner import run_task
 from src.scoring.automated import score_tests, score_lines_of_code, score_complexity, score_scope
 from src.scoring.judge import score_with_judge
 from src.tasks import load_tasks
+
+# Max profiles run in parallel within a single task. Each profile makes one
+# claude --print call for the task run plus three for the judge (12+ claude
+# subprocesses per task at full parallelism). Cap via PROVING_GROUND_MAX_WORKERS
+# env var if rate-limited. Default 4 matches the standard 4-profile suite
+# (zero + light + grace-hopper + qa-army-group) so each task runs one batch
+# of four simultaneously rather than four sequential batches of one.
+_MAX_WORKERS = int(os.environ.get("PROVING_GROUND_MAX_WORKERS", "4"))
 
 # Per-task LOC references: (minimal, verbose) — tuned to each task type.
 # Minimal = fewest non-comment lines a correct solution needs.
@@ -62,46 +72,59 @@ def run_benchmark(data_dir: str, tiers: list[str]) -> None:
     # Accumulate per-task dimension scores: config -> list of score dicts
     all_task_scores: dict[str, list[dict]] = {name: [] for name in profiles}
 
+    def _run_and_score_profile(task, profile_name, system_prompt):
+        """Run one profile on one task and return (profile_name, task_score_dict).
+
+        Inner unit of work used by the per-task ThreadPoolExecutor. Each call
+        performs one claude --print invocation for the task run plus three
+        more for the judge. Tasks still run sequentially in the outer loop;
+        only profiles-within-a-task are parallelized.
+        """
+        result = run_task(
+            task_id=task.id,
+            task_spec=task.spec,
+            profile_name=profile_name,
+            system_prompt=system_prompt,
+            working_dir=str(runs_path / run_id),
+        )
+
+        auto = score_tests(exit_code=result.exit_code, stdout=result.stdout)
+        loc_min, loc_verb = _LOC_REFS.get(task.id, (10, 80))
+        loc = score_lines_of_code(result.working_dir, loc_min, loc_verb)
+        complexity = score_complexity(result.working_dir)
+        scope = score_scope(
+            allowed_files=["solution/"],
+            files_written=result.files_written,
+        )
+        judge = score_with_judge(
+            session_transcript=result.stdout,
+            task_spec=task.spec,
+        )
+
+        return profile_name, {
+            "task_id": task.id,
+            "tier": task.tier,
+            "correctness": (auto.tests_pass + judge.requirement_interpretation) / 2,
+            "elegance": (loc + complexity) / 2,
+            "discipline": (auto.scope_score + scope) / 2,
+            "judgment": judge.decision_communication,
+            "creativity": judge.unconventional_thinking,
+            "recovery": judge.recovery_quality,
+        }
+
     for task in tasks:
-        for profile_name, system_prompt in profiles.items():
-            result = run_task(
-                task_id=task.id,
-                task_spec=task.spec,
-                profile_name=profile_name,
-                system_prompt=system_prompt,
-                working_dir=str(runs_path / run_id),
-            )
-
-            # Automated scoring — score_tests returns only tests_pass populated;
-            # loc/complexity/scope are computed separately (require working_dir).
-            auto = score_tests(exit_code=result.exit_code, stdout=result.stdout)
-            loc_min, loc_verb = _LOC_REFS.get(task.id, (10, 80))
-            loc = score_lines_of_code(result.working_dir, loc_min, loc_verb)
-            complexity = score_complexity(result.working_dir)
-            scope = score_scope(
-                allowed_files=["solution/"],
-                files_written=result.files_written,
-            )
-
-            # Judge scoring — uses the session transcript + task spec
-            judge = score_with_judge(
-                session_transcript=result.stdout,
-                task_spec=task.spec,
-            )
-
-            task_scores = {
-                "correctness": (auto.tests_pass + judge.requirement_interpretation) / 2,
-                "elegance": (loc + complexity) / 2,
-                "discipline": (auto.scope_score + scope) / 2,
-                "judgment": judge.decision_communication,
-                "creativity": judge.unconventional_thinking,
-                "recovery": judge.recovery_quality,
-            }
-            all_task_scores[profile_name].append({
-                "task_id": task.id,
-                "tier": task.tier,
-                **task_scores,
-            })
+        # Run all profiles for this task in parallel. Tasks remain sequential
+        # so log output stays readable and the orchestrator can still reason
+        # about progress one task at a time. Within a task, a 4-profile suite
+        # runs in roughly the time of a single profile.
+        with ThreadPoolExecutor(max_workers=_MAX_WORKERS) as pool:
+            futures = [
+                pool.submit(_run_and_score_profile, task, name, prompt)
+                for name, prompt in profiles.items()
+            ]
+            for future in futures:
+                profile_name, task_score = future.result()
+                all_task_scores[profile_name].append(task_score)
 
     # Aggregate scores per config across all tasks, weighted by tier.
     scores: dict[str, dict[str, float]] = {}

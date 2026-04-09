@@ -38,9 +38,31 @@ def run_task(
     Captures stdout, stderr, exit code, and files written to the run directory.
 
     Each call creates an isolated subdirectory: working_dir/task_id/profile_name.
+
+    Path anchoring (fix for #2): the task spec is prepended with an absolute
+    WORKING DIRECTORY header before being piped to claude. The zero profile
+    (empty system_prompt) already writes correctly to the subprocess cwd, but
+    profiles with long system prompts were observed to sometimes write their
+    solution/ directory at the repo root instead of the run_dir. Prepending
+    an explicit absolute path and "write every file inside this directory"
+    directive overrides whatever path resolution the agent was doing and
+    anchors file operations to the intended run_dir.
     """
     run_dir = Path(working_dir) / task_id / profile_name
     run_dir.mkdir(parents=True, exist_ok=True)
+
+    # Prepend explicit working-directory guidance. This is the preventive
+    # fix for the stray-files-at-repo-root leak documented in issue #2.
+    effective_spec = (
+        f"WORKING DIRECTORY: {run_dir.absolute()}\n"
+        f"All file paths referenced in the task below are RELATIVE to this "
+        f"directory. Write every file you produce inside this directory. "
+        f"Never write files outside this directory.\n"
+        f"\n"
+        f"---\n"
+        f"\n"
+        f"{task_spec}"
+    )
 
     cmd = [
         "claude", "--print",
@@ -52,7 +74,7 @@ def run_task(
 
     result = subprocess.run(
         cmd,
-        input=task_spec,        # pipe spec via stdin — avoids CLI arg length limits
+        input=effective_spec,   # pipe spec via stdin — avoids CLI arg length limits
         cwd=str(run_dir),
         capture_output=True,
         text=True,
