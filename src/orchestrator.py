@@ -106,7 +106,7 @@ def run_benchmark(data_dir: str, tiers: list[str]) -> None:
             "tier": task.tier,
             "correctness": (auto.tests_pass + judge.requirement_interpretation) / 2,
             "elegance": (loc + complexity) / 2,
-            "discipline": (auto.scope_score + scope) / 2,
+            "discipline": scope,
             "judgment": judge.decision_communication,
             "creativity": judge.unconventional_thinking,
             "recovery": judge.recovery_quality,

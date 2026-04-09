@@ -89,3 +89,11 @@ def test_score_complexity_simple_function(tmp_path):
     score = score_complexity(str(tmp_path))
     # Simple function with no branches = complexity 1 (grade A) = score 10.0
     assert score == 10.0
+
+
+def test_score_tests_does_not_carry_dead_fields():
+    """score_tests should only return tests_pass — no dead zero fields that corrupt downstream math."""
+    scores = score_tests(exit_code=0, stdout="5 passed")
+    assert scores.tests_pass == 10.0
+    # These fields should not exist or should not be zero if used in arithmetic
+    assert not hasattr(scores, 'scope_score') or scores.scope_score is None

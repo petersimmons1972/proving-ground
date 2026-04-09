@@ -6,10 +6,7 @@ from pathlib import Path
 
 @dataclass
 class AutomatedScores:
-    tests_pass: float       # 0-10: test pass rate
-    loc_score: float        # 0-10: fewer non-comment lines = higher score
-    complexity_score: float # 0-10: lower cyclomatic complexity = higher score
-    scope_score: float      # 0-10: fewer out-of-scope files = higher score
+    tests_pass: float  # 0-10: test pass rate
 
 
 def score_tests(exit_code: int, stdout: str) -> AutomatedScores:
@@ -23,12 +20,7 @@ def score_tests(exit_code: int, stdout: str) -> AutomatedScores:
     else:
         rate = passed / total
 
-    return AutomatedScores(
-        tests_pass=round(rate * 10, 1),
-        loc_score=0.0,
-        complexity_score=0.0,
-        scope_score=0.0,
-    )
+    return AutomatedScores(tests_pass=round(rate * 10, 1))
 
 
 def score_lines_of_code(
