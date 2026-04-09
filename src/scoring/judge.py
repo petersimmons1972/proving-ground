@@ -95,7 +95,7 @@ def _parse_scores(text: str) -> dict:
     scores: dict = {}
     for dim in dimensions:
         match = re.search(rf"{dim}:\s*(\d+)", text)
-        scores[dim] = int(match.group(1)) if match else 5  # default to neutral
+        scores[dim] = min(10, max(0, int(match.group(1)))) if match else 5  # default to neutral
 
     rationale_match = re.search(r"RATIONALE:\s*(.+)", text)
     scores["RATIONALE"] = rationale_match.group(1).strip() if rationale_match else ""
