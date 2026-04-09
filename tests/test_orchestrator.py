@@ -68,3 +68,30 @@ def test_run_benchmark_appends_history(tmp_path):
         run_benchmark(data_dir=str(tmp_path), tiers=["1"])
 
     assert (tmp_path / "history.jsonl").exists()
+
+
+def test_run_benchmark_survives_task_failure(tmp_path):
+    """A failing task should not abort the entire benchmark."""
+    profiles_dir = tmp_path / "profiles"
+    profiles_dir.mkdir()
+
+    call_count = 0
+    def flaky_run_task(**kwargs):
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            raise RuntimeError("Simulated failure")
+        return MagicMock(exit_code=0, stdout="1 passed", stderr="",
+                         files_written=[], working_dir=str(tmp_path))
+
+    mock_judge = MagicMock(
+        requirement_interpretation=7, decision_communication=6,
+        self_awareness=7, recovery_quality=6, unconventional_thinking=5, rationale="ok"
+    )
+
+    with patch("src.orchestrator.run_task", side_effect=flaky_run_task), \
+         patch("src.orchestrator.score_with_judge", return_value=mock_judge):
+        run_benchmark(data_dir=str(tmp_path), tiers=["1"])
+
+    # Should still produce results despite one failure
+    assert (tmp_path / "results.html").exists()

@@ -123,8 +123,12 @@ def run_benchmark(data_dir: str, tiers: list[str]) -> None:
                 for name, prompt in profiles.items()
             ]
             for future in futures:
-                profile_name, task_score = future.result()
-                all_task_scores[profile_name].append(task_score)
+                try:
+                    profile_name, task_score = future.result()
+                    all_task_scores[profile_name].append(task_score)
+                except Exception as e:
+                    # Log and continue — one failed profile should not kill the run
+                    print(f"WARNING: profile failed on {task.id}: {e}")
 
     # Aggregate scores per config across all tasks, weighted by tier.
     scores: dict[str, dict[str, float]] = {}
