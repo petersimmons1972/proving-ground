@@ -1,0 +1,39 @@
+#!/bin/sh
+# Fake claude binary for parity testing.
+# Writes a minimal solution file and outputs a transcript that scores cleanly.
+
+# Create a solution directory with a minimal Python file (for LOC scoring)
+mkdir -p solution
+cat > solution/solution.py << 'PYEOF'
+def solve(x):
+    return x * 2
+PYEOF
+
+# Output a transcript that looks like a real claude run
+cat << 'EOF'
+Task: Write a solution
+
+I'll implement the solution now.
+
+<bash>
+python -m pytest tests/ -v
+</bash>
+
+Output:
+test_solution.py::test_basic PASSED
+1 passed in 0.1s
+
+The implementation is complete. I've written a clean solution that:
+1. Handles the core requirement
+2. Passes all tests
+
+RATIONALE: Clean, minimal implementation. No unnecessary complexity.
+
+Dimension scores:
+correctness: 9
+elegance: 8
+discipline: 8
+judgment: 7
+creativity: 6
+recovery: 7
+EOF

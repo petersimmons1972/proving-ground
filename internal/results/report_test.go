@@ -1,6 +1,7 @@
 package results_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -122,6 +123,35 @@ func TestJSONOutputIsValid(t *testing.T) {
 	}
 	if got := parsed.Scores["user"]["overall"]; got != 8.3 {
 		t.Errorf("scores.user.overall = %v, want 8.3", got)
+	}
+
+	// Verify "run_id" key is present.
+	if !bytes.Contains(data, []byte(`"run_id"`)) {
+		t.Error("results.json missing run_id key")
+	}
+
+	// Verify Configurations order in "scores": zero before light before user.
+	idxZero := bytes.Index(data, []byte(`"zero"`))
+	idxLight := bytes.Index(data, []byte(`"light"`))
+	idxUser := bytes.Index(data, []byte(`"user"`))
+	if !(idxZero < idxLight && idxLight < idxUser) {
+		t.Errorf("scores key order wrong: zero=%d light=%d user=%d; want zero < light < user",
+			idxZero, idxLight, idxUser)
+	}
+
+	// Verify DimensionNames order in "dimension_scores": correctness before elegance before discipline.
+	// Find the dimension_scores section first, then check order within it.
+	dimIdx := bytes.Index(data, []byte(`"dimension_scores"`))
+	if dimIdx < 0 {
+		t.Fatal("dimension_scores key not found in JSON")
+	}
+	dimSection := data[dimIdx:]
+	idxCorrectness := bytes.Index(dimSection, []byte(`"correctness"`))
+	idxElegance := bytes.Index(dimSection, []byte(`"elegance"`))
+	idxDiscipline := bytes.Index(dimSection, []byte(`"discipline"`))
+	if !(idxCorrectness < idxElegance && idxElegance < idxDiscipline) {
+		t.Errorf("dimension_scores inner key order wrong: correctness=%d elegance=%d discipline=%d; want correctness < elegance < discipline",
+			idxCorrectness, idxElegance, idxDiscipline)
 	}
 }
 
