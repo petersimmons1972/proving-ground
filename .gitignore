@@ -1,3 +1,7 @@
 /out
 *.test
 coverage.out
+/proving-ground
+/.worktrees/
+/data/runs/
+/solution/
