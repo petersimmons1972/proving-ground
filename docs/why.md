@@ -1,6 +1,7 @@
 # Why Proving Ground Exists
 
-<!-- POSTER: poster-why-decision.jpg -->
+![WAAF radar operator Denise Miley plotting aircraft on a cathode ray tube, Bawdsey Chain Home station, May 1945](assets/posters/poster-why-decision.jpg)
+*Source: WAAF Radar Operator Denise Miley, Receiver Room, Bawdsey Chain Home Station, Flt Lt Goodchild (RAF official photographer), May 1945 — Imperial War Museums, IWM CH 15332 (Public Domain)*
 
 ![Decision Fork](assets/why-decision-fork.svg)
 

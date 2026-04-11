@@ -1,6 +1,7 @@
 # Proving Ground
 
-<!-- POSTER: poster-readme-identity.jpg -->
+![RAF radar operators at the 10 Group Operations Room, Box, Colerne, 1939–1945](docs/assets/posters/poster-readme-identity.jpg)
+*Source: Aircraft Navigation and Guidance: The Operations Room at 10 Group, Box, Colerne, Royal Air Force official photographer, 1939–1945 — Imperial War Museums, IWM CH 13680 (Public Domain)*
 
 **Does giving an AI agent a personality make it better at its job?**
 

@@ -1,6 +1,7 @@
 # Suite v1 Results Archive
 
-<!-- POSTER: poster-suite-v1-debrief.jpg -->
+![Grace Hopper, naval computing pioneer, 1940s](assets/posters/poster-suite-v1-debrief.webp)
+*Source: Grace Hopper in the 1940s, photographer unknown, c. 1945 — Public Domain (US copyright not renewed)*
 
 **Run date:** 30 March 2026  
 **Profile under test:** Grace Hopper  

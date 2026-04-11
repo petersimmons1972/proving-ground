@@ -1,6 +1,7 @@
 # Using Proving Ground
 
-<!-- POSTER: poster-using-launch.jpg -->
+![Mark 3 Console installed in a receiver room of an East Coast Chain Home radar station, 1939–1945](assets/posters/poster-using-launch.jpg)
+*Source: Royal Air Force Radar 1939–1945, Mark 3 Console Receiver Room, RAF official photographer, 1939–1945 — Imperial War Museums, IWM CH 15178 (Public Domain)*
 
 ![Execution Pipeline](assets/using-pipeline.svg)
 

@@ -1,6 +1,7 @@
 # Reading the Results
 
-<!-- POSTER: poster-interpreting-gauges.jpg -->
+![Avro Lancaster WWII heavy bomber instrument panel, Elsham Wolds Association Memorial Room](assets/posters/poster-interpreting-gauges.jpg)
+*Source: Avro Lancaster Instrument Panel, David Wright, 2010 — Elsham Wolds Association Memorial Room ([CC BY 2.0](https://creativecommons.org/licenses/by/2.0/))*
 
 ## The Three Configurations
 
