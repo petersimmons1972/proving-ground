@@ -1,5 +1,7 @@
 # Proving Ground
 
+<!-- POSTER: poster-readme-identity.jpg -->
+
 **Does giving an AI agent a personality make it better at its job?**
 
 We ran the same ten tasks with three agents — a blank slate, a lightly-prompted agent, and a fully realized character profile — scored every output across six dimensions, and tallied the results.
@@ -21,7 +23,7 @@ A new entrant was introduced in April: the **QA Army Group** — not a single pe
 | zero           | 6.1      | 5.8    | 6.4    | 5.9    |
 | light          | 6.0      | 5.7    | 6.3    | 5.9    |
 
-The QA Army Group is the new top scorer, by a narrow 0.2 margin. The margin is narrow. The dimension breakdown, again, is not.
+The QA Army Group is the new top scorer, by a narrow 0.2 margin. The dimension breakdown is not.
 
 | Dimension    | qa-army-group | grace-hopper | zero | Delta vs blank  |
 |--------------|--------------:|-------------:|-----:|----------------:|
@@ -34,7 +36,7 @@ The QA Army Group is the new top scorer, by a narrow 0.2 margin. The margin is n
 
 **Judgment moved by 1.2 points.** Under ambiguous specs — contradictory requirements, missing error handling, traps baiting scope creep — the composite profile named the unknowns, committed to a path, and explained the reasoning. The blank agent hedged. Judgment is the dimension that rewards a profile. The Army Group profile earned it.
 
-**Elegance and discipline both fell below the blank baseline.** Five voices arguing produce more code, more comments, more explicit reasoning. This is the cost of the architecture, and the composite profile wears it. A blank agent, given the same parser task, wrote 41 lines. The QA Army Group wrote 57. Both correct; only one restrained.
+**Elegance and discipline both fell below the blank baseline.** Five voices arguing produce more code, more comments, more explicit reasoning. You get better decisions; you pay in verbosity and sprawl. A blank agent, given the same parser task, wrote 41 lines. The QA Army Group wrote 57. Both correct; only one restrained.
 
 **The strongest tier was Judgment (Tier 2): 6.5.** That is where the five lenses land together — Eisenhower naming the unknowns, Ramsay locating the specific finding, Spruance explaining the reasoning. The architecture is for ambiguity, and ambiguity is where it wins.
 
@@ -80,6 +82,8 @@ Scored across six dimensions: Correctness, Elegance, Discipline, Judgment, Creat
 3. Automated metrics + LLM-as-judge score every dimension
 4. A single HTML results page shows exactly where your agent excels and where it falls short
 5. Run again after improving your profile — history tracking shows your progress over time
+
+Run it before you ship your next agent to production.
 
 ---
 

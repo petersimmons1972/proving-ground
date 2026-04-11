@@ -1,5 +1,7 @@
 # Why Proving Ground Exists
 
+<!-- POSTER: poster-why-decision.jpg -->
+
 ![Decision Fork](assets/why-decision-fork.svg)
 
 ## The Question
@@ -38,7 +40,7 @@ These are fair objections. Proving Ground was designed with them in mind.
 
 The ten tasks are not chosen randomly. They're specifically designed to probe the dimensions where personality should matter — and to avoid confounding the result.
 
-**Tier 1 — Craft**: Tasks with clear specs and unambiguous success criteria. A log parser, a refactor, a safe division function. Personality should barely matter here. If a profiled agent scores dramatically better on correctness in Tier 1, something is wrong with the methodology.
+**Tier 1 — Craft**: Tasks with clear specs and unambiguous success criteria. A log parser, a refactor, a safe division function. Personality should barely matter here — this is the control that makes Tier 2 believable. If a profiled agent scores dramatically better on correctness in Tier 1, something is wrong with the methodology.
 
 **Tier 2 — Judgment**: Tasks with deliberate gaps. Contradictory requirements that the spec never resolves. A scope creep trap with visible bugs the agent is supposed to ignore. Missing error-handling requirements that the agent must notice and document. This is where the hypothesis lives.
 
@@ -50,11 +52,13 @@ The scoring is designed to match: Correctness is partially automated (test resul
 
 ## What This Settles (and What It Doesn't)
 
-If personality produces a measurable lift on Judgment and Creativity dimensions while leaving Correctness flat, the hypothesis is confirmed: **profiles improve decisions, not execution**.
+Three outcomes, each readable:
 
-If the scores are flat across all three configurations, the argument-against wins: personality is theater.
+**Judgment up, Correctness flat** — the hypothesis confirmed. Profiles improve decisions, not execution. Your profile is doing its job.
 
-If the profiled agent scores higher on Correctness but not on Judgment, the methodology has a problem — or the profile is doing something unexpected (domain-specific priors affecting technical execution).
+**All three configurations score flat** — the argument-against wins. Personality is theater. Either the profile isn't reaching the model, or role-framing doesn't generalize to this task class.
+
+**Correctness up, Judgment flat** — the methodology has a problem, or the profile is doing something unexpected (domain-specific priors bleeding into technical execution in a way that flatters the wrong dimension).
 
 Proving Ground doesn't tell you which personality profile to use. It tells you whether your profile is doing anything useful, and in which dimensions.
 

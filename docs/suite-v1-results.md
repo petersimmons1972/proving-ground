@@ -1,5 +1,7 @@
 # Suite v1 Results Archive
 
+<!-- POSTER: poster-suite-v1-debrief.jpg -->
+
 **Run date:** 30 March 2026  
 **Profile under test:** Grace Hopper  
 **Tasks:** 10 across three tiers  
@@ -25,6 +27,8 @@ The second run (17:57) was the full benchmark. Everything ran to completion. The
 
 ### Overall Scores
 
+![Overall Scores](assets/suite-v1-scores.svg)
+
 | Configuration | Overall | Tier 1 | Tier 2 | Tier 3 |
 |--------------|---------|--------|--------|--------|
 | **grace-hopper** | **6.3** | 6.4 | 6.6 | 6.1 |
@@ -36,6 +40,8 @@ Grace Hopper won on overall score and across all three tiers. The most significa
 The light profile's Tier 3 score (4.9) was the lowest of any configuration on any tier. The instruction to "ask a clarifying question before proceeding" is directly counterproductive under pressure tasks that have no opportunity to ask.
 
 ### Dimension Scores
+
+![Dimension Breakdown](assets/suite-v1-dimensions.svg)
 
 | Dimension | grace-hopper | light | zero | Notes |
 |-----------|-------------|-------|------|-------|

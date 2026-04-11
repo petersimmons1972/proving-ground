@@ -1,5 +1,7 @@
 # Reading the Results
 
+<!-- POSTER: poster-interpreting-gauges.jpg -->
+
 ## The Three Configurations
 
 ![Configuration Specifications](assets/interpreting-configurations.svg)
@@ -123,3 +125,20 @@ Overall score = (Tier 1 × 0.25) + (Tier 2 × 0.35) + (Tier 3 × 0.40). Tier 3 i
 A 0.6-point overall gap (6.3 vs 5.7 in Suite v1) sounds narrow. It is narrow. But look at the dimension that drives it — Judgment at +2.1 — and it becomes clear that the aggregate obscures the signal. The benchmark is measuring something real in that dimension, and the overall score averages it with correctness (where all agents are close) and discipline (where all agents struggle).
 
 The overall score is a summary. The dimension breakdown is the finding.
+
+---
+
+## Quick Reference
+
+Six dimensions, at a glance. When you get results back and want to know where to look first, this is the cheat sheet. Each row tells you what the dimension actually measures, whether your profile can move it, and what range to expect so you know when a score is surprising.
+
+| Dimension    | Automated?                  | Profile-responsive? | Suite v1 range | Key signal                                          |
+|--------------|-----------------------------|---------------------|----------------|-----------------------------------------------------|
+| Correctness  | Partial (tests + judge)     | Barely              | 8.8–9.1        | Capability question, not personality                |
+| Elegance     | Yes (LOC + complexity)      | Marginally          | 5.6–5.8        | Style baked into training                           |
+| Discipline   | Yes (scope adherence)       | Visibly             | 2.8–3.4        | Over-building is universal                          |
+| Judgment     | No (judge × 3)              | Yes                 | 6.0–8.1        | **The dimension profiles are built for**            |
+| Creativity   | No (judge × 3)              | Yes                 | 5.1–6.1        | Priors transfer to unconventional solutions         |
+| Recovery     | No (judge × 3)              | Modestly            | 5.0–5.7        | Meta-cognitive; hardest to move                     |
+
+If Judgment is high but Discipline is low, your profile is working — and spending. If Correctness is the highest dimension for your profile, you haven't moved the needle on anything a blank agent couldn't do.
