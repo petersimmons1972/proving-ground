@@ -97,8 +97,14 @@ func (r ResultsReport) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("marshal configurations: %w", err)
 	}
 
-	runIDJSON, _ := json.Marshal(r.RunID)
-	versionJSON, _ := json.Marshal(r.TaskSuiteVersion)
+	runIDJSON, err := json.Marshal(r.RunID)
+	if err != nil {
+		return nil, fmt.Errorf("marshal run_id: %w", err)
+	}
+	versionJSON, err := json.Marshal(r.TaskSuiteVersion)
+	if err != nil {
+		return nil, fmt.Errorf("marshal task_suite_version: %w", err)
+	}
 
 	var buf bytes.Buffer
 	buf.WriteString(`{"run_id":`)

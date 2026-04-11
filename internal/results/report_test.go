@@ -131,12 +131,24 @@ func TestJSONOutputIsValid(t *testing.T) {
 	}
 
 	// Verify Configurations order in "scores": zero before light before user.
-	idxZero := bytes.Index(data, []byte(`"zero"`))
-	idxLight := bytes.Index(data, []byte(`"light"`))
-	idxUser := bytes.Index(data, []byte(`"user"`))
-	if !(idxZero < idxLight && idxLight < idxUser) {
-		t.Errorf("scores key order wrong: zero=%d light=%d user=%d; want zero < light < user",
-			idxZero, idxLight, idxUser)
+	// Scope the search to the scores section only (before dimension_scores)
+	// so that keys appearing in dimension_scores don't produce false positives.
+	rawJSON := data
+	scoresStart := bytes.Index(rawJSON, []byte(`"scores":`))
+	if scoresStart == -1 {
+		t.Fatal("scores section not found")
+	}
+	dimStart := bytes.Index(rawJSON, []byte(`"dimension_scores":`))
+	if dimStart == -1 {
+		t.Fatal("dimension_scores section not found")
+	}
+	scoresSection := rawJSON[scoresStart:dimStart]
+
+	zeroIdx := bytes.Index(scoresSection, []byte(`"zero"`))
+	lightIdx := bytes.Index(scoresSection, []byte(`"light"`))
+	userIdx := bytes.Index(scoresSection, []byte(`"user"`))
+	if !(zeroIdx < lightIdx && lightIdx < userIdx) {
+		t.Errorf("scores keys not in Configurations order: zero=%d light=%d user=%d", zeroIdx, lightIdx, userIdx)
 	}
 
 	// Verify DimensionNames order in "dimension_scores": correctness before elegance before discipline.
