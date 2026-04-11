@@ -15,11 +15,10 @@ import (
 
 const judgeTimeout = 300 * time.Second
 
-// JudgeScores holds the five LLM-as-judge dimension scores.
+// JudgeScores holds the four LLM-as-judge dimension scores.
 type JudgeScores struct {
 	RequirementInterpretation float64
 	DecisionCommunication     float64
-	SelfAwareness             float64
 	RecoveryQuality           float64
 	UnconventionalThinking    float64
 	Rationale                 string
@@ -34,7 +33,6 @@ type judgeRaw struct {
 var judgeRe = map[string]*regexp.Regexp{
 	"REQUIREMENT_INTERPRETATION": regexp.MustCompile(`REQUIREMENT_INTERPRETATION:\s*(\d+)`),
 	"DECISION_COMMUNICATION":     regexp.MustCompile(`DECISION_COMMUNICATION:\s*(\d+)`),
-	"SELF_AWARENESS":             regexp.MustCompile(`SELF_AWARENESS:\s*(\d+)`),
 	"RECOVERY_QUALITY":           regexp.MustCompile(`RECOVERY_QUALITY:\s*(\d+)`),
 	"UNCONVENTIONAL_THINKING":    regexp.MustCompile(`UNCONVENTIONAL_THINKING:\s*(\d+)`),
 }
@@ -81,7 +79,6 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 		return &JudgeScores{
 			RequirementInterpretation: 0,
 			DecisionCommunication:     0,
-			SelfAwareness:             0,
 			RecoveryQuality:           0,
 			UnconventionalThinking:    0,
 			Rationale:                 "ALL_JUDGE_RUNS_FAILED",
@@ -137,12 +134,21 @@ func medianJudgeScores(all []judgeRaw) *JudgeScores {
 		}
 		return vals
 	}
+
+	// Sort by REQUIREMENT_INTERPRETATION ascending and take the middle element's
+	// rationale — so the rationale comes from the median-scoring run, not always run 0.
+	sorted := make([]judgeRaw, len(all))
+	copy(sorted, all)
+	sort.Slice(sorted, func(i, j int) bool {
+		return sorted[i].dims["REQUIREMENT_INTERPRETATION"] < sorted[j].dims["REQUIREMENT_INTERPRETATION"]
+	})
+	medianRationale := sorted[len(sorted)/2].rationale
+
 	return &JudgeScores{
 		RequirementInterpretation: medianInt(extract("REQUIREMENT_INTERPRETATION")),
 		DecisionCommunication:     medianInt(extract("DECISION_COMMUNICATION")),
-		SelfAwareness:             medianInt(extract("SELF_AWARENESS")),
 		RecoveryQuality:           medianInt(extract("RECOVERY_QUALITY")),
 		UnconventionalThinking:    medianInt(extract("UNCONVENTIONAL_THINKING")),
-		Rationale:                 all[0].rationale,
+		Rationale:                 medianRationale,
 	}
 }

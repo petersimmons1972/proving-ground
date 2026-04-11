@@ -33,13 +33,21 @@ var defaultConfigColors = map[string]string{
 	"user":  "#F59E0B",
 }
 
-// colorFor returns the brand color for a configuration name,
-// falling back to neutral gray for unknown configurations.
-func colorFor(config string) string {
-	if c, ok := defaultConfigColors[config]; ok {
+// colorPalette is used as a fallback for configuration names not in defaultConfigColors.
+var colorPalette = []string{
+	"#4e79a7", "#f28e2b", "#e15759", "#76b7b2",
+	"#59a14f", "#edc948", "#b07aa1", "#ff9da7",
+}
+
+// colorFor returns the brand color for a configuration name.
+// Known names (zero, light, user) use their exact brand colors.
+// Unknown names fall back to a palette indexed by idx, cycling through
+// colorPalette to ensure distinct colors for different indices.
+func colorFor(name string, idx int) string {
+	if c, ok := defaultConfigColors[name]; ok {
 		return c
 	}
-	return "#888888"
+	return colorPalette[idx%len(colorPalette)]
 }
 
 // buildVerdict produces the one-sentence verdict line shown at the top

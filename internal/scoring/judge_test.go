@@ -36,7 +36,7 @@ func setupFakeJudgeClaude(t *testing.T, script string) (rubricPath string, clean
 
 func TestJudgeReturnsJudgeScores(t *testing.T) {
 	rubric, cleanup := setupFakeJudgeClaude(t,
-		`printf 'REQUIREMENT_INTERPRETATION: 8\nDECISION_COMMUNICATION: 7\nSELF_AWARENESS: 6\nRECOVERY_QUALITY: 5\nUNCONVENTIONAL_THINKING: 9\nRATIONALE: Agent reframed the problem elegantly.\n'; exit 0`)
+		`printf 'REQUIREMENT_INTERPRETATION: 8\nDECISION_COMMUNICATION: 7\nRECOVERY_QUALITY: 5\nUNCONVENTIONAL_THINKING: 9\nRATIONALE: Agent reframed the problem elegantly.\n'; exit 0`)
 	defer cleanup()
 
 	scores, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 1)
@@ -48,9 +48,6 @@ func TestJudgeReturnsJudgeScores(t *testing.T) {
 	}
 	if scores.DecisionCommunication != 7 {
 		t.Errorf("DecisionCommunication = %f, want 7", scores.DecisionCommunication)
-	}
-	if scores.SelfAwareness != 6 {
-		t.Errorf("SelfAwareness = %f, want 6", scores.SelfAwareness)
 	}
 	if scores.RecoveryQuality != 5 {
 		t.Errorf("RecoveryQuality = %f, want 5", scores.RecoveryQuality)
@@ -170,6 +167,52 @@ exit 0`, counterFile, counterFile)
 	scores, _ := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubricPath, 2)
 	if scores.RequirementInterpretation != 8 {
 		t.Errorf("RequirementInterpretation = %f, want 8 (from successful run)", scores.RequirementInterpretation)
+	}
+}
+
+// TestJudgeRationaleFromMedianRun verifies that the rationale comes from the
+// median-scoring run (by REQUIREMENT_INTERPRETATION), not always all[0].
+// Three runs: scores 3, 7, 5 — median is 5, so rationale must be "rationale-mid".
+func TestJudgeRationaleFromMedianRun(t *testing.T) {
+	// Run 0: RI=3, rationale "rationale-low"
+	// Run 1: RI=7, rationale "rationale-high"
+	// Run 2: RI=5, rationale "rationale-mid"
+	// After sorting by RI ascending: [3, 5, 7] → index 1 (len=3, 3/2=1) → RI=5 → "rationale-mid"
+	responses := []string{
+		"REQUIREMENT_INTERPRETATION: 3\nDECISION_COMMUNICATION: 6\nRECOVERY_QUALITY: 5\nUNCONVENTIONAL_THINKING: 7\nRATIONALE: rationale-low\n",
+		"REQUIREMENT_INTERPRETATION: 7\nDECISION_COMMUNICATION: 6\nRECOVERY_QUALITY: 5\nUNCONVENTIONAL_THINKING: 7\nRATIONALE: rationale-high\n",
+		"REQUIREMENT_INTERPRETATION: 5\nDECISION_COMMUNICATION: 6\nRECOVERY_QUALITY: 5\nUNCONVENTIONAL_THINKING: 7\nRATIONALE: rationale-mid\n",
+	}
+
+	rubricDir := t.TempDir()
+	rubricPath := filepath.Join(rubricDir, "judge-rubric.md")
+	os.WriteFile(rubricPath, []byte("# Rubric"), 0644)
+
+	binDir := t.TempDir()
+	for i, r := range responses {
+		os.WriteFile(filepath.Join(binDir, fmt.Sprintf("resp%d.txt", i)), []byte(r), 0644)
+	}
+
+	counterFile := filepath.Join(binDir, "counter")
+	os.WriteFile(counterFile, []byte("0"), 0644)
+
+	script := fmt.Sprintf(`#!/bin/sh
+N=$(cat %s)
+cat %s/resp${N}.txt
+echo $((N+1)) > %s
+exit 0`, counterFile, binDir, counterFile)
+	os.WriteFile(filepath.Join(binDir, "claude"), []byte(script), 0755)
+
+	origPath := os.Getenv("PATH")
+	os.Setenv("PATH", binDir+":"+origPath)
+	defer os.Setenv("PATH", origPath)
+
+	scores, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubricPath, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if scores.Rationale != "rationale-mid" {
+		t.Errorf("Rationale = %q, want %q (median run's rationale)", scores.Rationale, "rationale-mid")
 	}
 }
 

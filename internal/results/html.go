@@ -92,9 +92,9 @@ func buildTemplateData(report ResultsReport, verdict string) TemplateData {
 
 	// Overall Results rows.
 	configs := make([]ConfigRow, 0, configCount)
-	for _, name := range report.Configurations {
+	for i, name := range report.Configurations {
 		overall := report.Scores[name]["overall"]
-		color := colorFor(name)
+		color := colorFor(name, i)
 		configs = append(configs, ConfigRow{
 			Name:       name,
 			Color:      color,
@@ -108,9 +108,9 @@ func buildTemplateData(report ResultsReport, verdict string) TemplateData {
 	tiers := make([]TierSection, 0, len(tierKeys))
 	for _, tk := range tierKeys {
 		rows := make([]TierRow, 0, configCount)
-		for _, name := range report.Configurations {
+		for i, name := range report.Configurations {
 			score := report.Scores[name][tk.Key]
-			color := colorFor(name)
+			color := colorFor(name, i)
 			rows = append(rows, TierRow{
 				Name:     name,
 				Color:    color,
@@ -135,7 +135,7 @@ func buildTemplateData(report ResultsReport, verdict string) TemplateData {
 		}
 
 		cells := make([]DimensionCell, 0, configCount)
-		for _, name := range report.Configurations {
+		for i, name := range report.Configurations {
 			score := report.DimensionScores[name][dim]
 			opacity := "0.55"
 			if score == maxScore {
@@ -144,7 +144,7 @@ func buildTemplateData(report ResultsReport, verdict string) TemplateData {
 			cells = append(cells, DimensionCell{
 				Score:    fmt.Sprintf("%.1f", score),
 				ScorePct: int(score * 10),
-				Color:    colorFor(name),
+				Color:    colorFor(name, i),
 				Opacity:  opacity,
 			})
 		}

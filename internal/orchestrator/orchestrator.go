@@ -10,6 +10,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"sort"
 	"sync"
 	"time"
 
@@ -30,6 +31,38 @@ type Config struct {
 	ControlsDir string   // path to built-in profiles/ directory (zero.txt, light.txt)
 	TemplateDir string   // path to templates/ directory
 	PromptDir   string   // path to prompts/ directory (for judge-rubric.md)
+}
+
+// taskScore holds the computed scores for one task × profile combination.
+// Using a typed struct eliminates unprotected type assertions on map[string]interface{}.
+type taskScore struct {
+	taskID      string
+	tier        int
+	correctness float64
+	elegance    float64
+	discipline  float64
+	judgment    float64
+	creativity  float64
+	recovery    float64
+}
+
+// dim returns the named dimension score. Returns 0 for unknown names.
+func (t taskScore) dim(name string) float64 {
+	switch name {
+	case "correctness":
+		return t.correctness
+	case "elegance":
+		return t.elegance
+	case "discipline":
+		return t.discipline
+	case "judgment":
+		return t.judgment
+	case "creativity":
+		return t.creativity
+	case "recovery":
+		return t.recovery
+	}
+	return 0
 }
 
 // These are package-level vars so tests can replace them without an interface layer.
@@ -70,8 +103,8 @@ func Run(ctx context.Context, cfg Config) error {
 	rubricPath := filepath.Join(cfg.PromptDir, "judge-rubric.md")
 
 	// allTaskScores accumulates per-profile scored results.
-	// Key: profile name. Value: list of per-task score maps.
-	allTaskScores := make(map[string][]map[string]interface{})
+	// Key: profile name. Value: list of per-task typed scores.
+	allTaskScores := make(map[string][]taskScore)
 	for name := range profileMap {
 		allTaskScores[name] = nil
 	}
@@ -83,7 +116,7 @@ func Run(ctx context.Context, cfg Config) error {
 
 	type profileResult struct {
 		name  string
-		score map[string]interface{}
+		score taskScore
 	}
 
 	for _, task := range taskList {
@@ -128,21 +161,16 @@ func Run(ctx context.Context, cfg Config) error {
 		}
 
 		for _, ts := range taskScoreList {
-			tier := ts["tier"].(int)
 			// per-task overall = mean of the 6 dimension scores
 			var dimScores []float64
 			for _, dim := range config.DimensionNames {
-				if v, ok := ts[dim].(float64); ok {
-					dimScores = append(dimScores, v)
-				}
+				dimScores = append(dimScores, ts.dim(dim))
 			}
 			overall := mean(dimScores)
-			tierAverages[tier] = append(tierAverages[tier], overall)
+			tierAverages[ts.tier] = append(tierAverages[ts.tier], overall)
 
 			for _, dim := range config.DimensionNames {
-				if v, ok := ts[dim].(float64); ok {
-					dimValues[dim] = append(dimValues[dim], v)
-				}
+				dimValues[dim] = append(dimValues[dim], ts.dim(dim))
 			}
 		}
 
@@ -152,10 +180,25 @@ func Run(ctx context.Context, cfg Config) error {
 			tierScores[t] = mean(tierAverages[t])
 		}
 
-		// weighted overall = tier_scores[1]*0.25 + tier_scores[2]*0.35 + tier_scores[3]*0.40
+		// Renormalize weights for partial-tier runs.
+		// A tier is "present" only if it has at least one task result.
+		// Dividing by totalWeight ensures the present tiers sum to 1.0.
+		totalWeight := 0.0
+		presentTierCount := 0
+		for t := 1; t <= 3; t++ {
+			if len(tierAverages[t]) > 0 {
+				totalWeight += config.TierWeights[t]
+				presentTierCount++
+			}
+		}
+		if presentTierCount < 3 {
+			fmt.Fprintf(os.Stderr, "WARNING: only %d of 3 tiers have results; renormalizing weights\n", presentTierCount)
+		}
 		weighted := 0.0
-		for t, w := range config.TierWeights {
-			weighted += tierScores[t] * w
+		for t := 1; t <= 3; t++ {
+			if len(tierAverages[t]) > 0 && totalWeight > 0 {
+				weighted += tierScores[t] * (config.TierWeights[t] / totalWeight)
+			}
 		}
 
 		scoresByConfig[profileName] = map[string]float64{
@@ -177,6 +220,7 @@ func Run(ctx context.Context, cfg Config) error {
 	for name := range profileMap {
 		configNames = append(configNames, name)
 	}
+	sort.Strings(configNames)
 
 	report := results.ResultsReport{
 		RunID:            runID,
@@ -208,14 +252,14 @@ func Run(ctx context.Context, cfg Config) error {
 	return nil
 }
 
-// runAndScore executes one task+profile combination and returns a scored map.
+// runAndScore executes one task+profile combination and returns a typed taskScore.
 // Mirrors Python's _run_and_score_profile inner function.
 func runAndScore(
 	ctx context.Context,
 	task tasks.Task,
 	profileName, systemPrompt string,
 	runsPath, runID, rubricPath string,
-) (map[string]interface{}, error) {
+) (taskScore, error) {
 	result, err := runTaskFn(ctx, runner.RunTaskArgs{
 		TaskID:       task.ID,
 		TaskSpec:     task.Spec,
@@ -224,7 +268,7 @@ func runAndScore(
 		WorkingDir:   filepath.Join(runsPath, runID),
 	})
 	if err != nil {
-		return nil, fmt.Errorf("run_task: %w", err)
+		return taskScore{}, fmt.Errorf("run_task: %w", err)
 	}
 
 	auto := scoring.ScoreTests(result.ExitCode, result.Stdout)
@@ -233,24 +277,24 @@ func runAndScore(
 	if !ok {
 		locRef = [2]int{10, 80}
 	}
-	loc := scoring.ScoreLinesOfCode(result.WorkingDir, locRef[0], locRef[1])
-	complexity := scoring.ScoreComplexity(ctx, result.WorkingDir)
+	loc := scoring.ScoreLinesOfCode(filepath.Join(result.WorkingDir, "solution"), locRef[0], locRef[1])
+	complexity := scoring.ScoreComplexity(ctx, filepath.Join(result.WorkingDir, "solution"))
 	scope := scoring.ScoreScope([]string{"solution/"}, result.FilesWritten)
 
 	judge, err := scoreWithJudgeFn(ctx, result.Stdout, task.Spec, rubricPath, config.JudgeRuns())
 	if err != nil {
-		return nil, fmt.Errorf("score_with_judge: %w", err)
+		return taskScore{}, fmt.Errorf("score_with_judge: %w", err)
 	}
 
-	return map[string]interface{}{
-		"task_id":    task.ID,
-		"tier":       task.Tier,
-		"correctness": (auto.TestsPass + judge.RequirementInterpretation) / 2,
-		"elegance":    (loc + complexity) / 2,
-		"discipline":  scope,
-		"judgment":    judge.DecisionCommunication,
-		"creativity":  judge.UnconventionalThinking,
-		"recovery":    judge.RecoveryQuality,
+	return taskScore{
+		taskID:      task.ID,
+		tier:        task.Tier,
+		correctness: (auto.TestsPass + judge.RequirementInterpretation) / 2,
+		elegance:    (loc + complexity) / 2,
+		discipline:  scope,
+		judgment:    judge.DecisionCommunication,
+		creativity:  judge.UnconventionalThinking,
+		recovery:    judge.RecoveryQuality,
 	}, nil
 }
 

@@ -17,12 +17,6 @@ Score each dimension from 0-10. Respond ONLY in the exact format below — no pr
 - 8: Clearly explained why for non-obvious choices
 - 10: Proactively surfaced tradeoffs the user didn't ask about
 
-**SELF_AWARENESS** (0-10)
-- 2: Overconfident, no acknowledgment of uncertainty
-- 5: Some hedging but inconsistent
-- 8: Accurately flagged what it was unsure about
-- 10: Calibrated confidence — certain where justified, uncertain where not
-
 **RECOVERY_QUALITY** (0-10)
 - 2: Gave up or brute-forced through failure
 - 5: Recovered but lost work or repeated mistakes
@@ -38,7 +32,6 @@ Score each dimension from 0-10. Respond ONLY in the exact format below — no pr
 ## Response Format (EXACT — no deviations)
 REQUIREMENT_INTERPRETATION: <0-10>
 DECISION_COMMUNICATION: <0-10>
-SELF_AWARENESS: <0-10>
 RECOVERY_QUALITY: <0-10>
 UNCONVENTIONAL_THINKING: <0-10>
 RATIONALE: <one sentence>
