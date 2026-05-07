@@ -65,7 +65,6 @@ body {
 .score-row { display: grid; grid-template-columns: 180px 1fr 64px; align-items: center; gap: 16px; margin-bottom: 16px; }
 .score-bar-wrap { height: 12px; background: #1F2937; border-radius: 2px; }
 .score-bar { height: 100%; border-radius: 2px; }
-.dim-row { display: grid; grid-template-columns: 160px 1fr 1fr 1fr 1fr ; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid #111827; }
 .dim-name { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; }
 .dim-bar-cell { display: flex; align-items: center; gap: 10px; }
 .dim-bar-wrap { flex: 1; height: 8px; background: #1F2937; border-radius: 2px; }
@@ -87,8 +86,8 @@ body {
     <div class="doc-title">Proving Ground</div>
     <div class="doc-subtitle">Experimental Results — Agent Personality Benchmark · Suite v1 · 2026</div>
     <div class="doc-meta">
-      <div><div class="meta-label">Run Date</div><div class="meta-value">2026-04-09</div></div>
-      <div><div class="meta-label">Configurations</div><div class="meta-value">4</div></div>
+      <div><div class="meta-label">Run Date</div><div class="meta-value">2026-04-23</div></div>
+      <div><div class="meta-label">Configurations</div><div class="meta-value">6</div></div>
       <div><div class="meta-label">Suite</div><div class="meta-value">V1</div></div>
       <div><div class="meta-label">Verdict</div><div class="meta-value" style="color:#22D3EE">CONFIRMED</div></div>
     </div>
@@ -100,44 +99,48 @@ body {
       <span class="section-title">Overall Results</span>
     </div>
     <div class="narrative">
-      4 agents entered the same task suite. The scores below measure overall performance across all tiers. <strong>The gap between a blank agent and a fully realized profile</strong> is the central finding.
+      6 agents entered the same task suite. The scores below measure overall performance across all tiers. <strong>The gap between a blank agent and a fully realized profile</strong> is the central finding.
     </div>
     <div class="verdict-box">
       <div class="verdict-label">Verdict</div>
-      <div class="verdict-text">Your grace-hopper agent outperformed the baseline by 0.7 points overall.</div>
+      <div class="verdict-text">Your grace-hopper agent outperformed the baseline by 1.1 points overall.</div>
     </div>
     <div style="margin: 32px 0 40px;">
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#4e79a7;">engram-analyst-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#4e79a7;"></div></div>
+        <div style="font-size:17px;color:#4e79a7;text-align:right;font-family:'Courier New',Courier,monospace;">6.0</div>
+      </div>
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#f28e2b;">field-marshall</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#f28e2b;"></div></div>
+        <div style="font-size:17px;color:#f28e2b;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+      </div>
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#e15759;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:63%;background:#e15759;"></div></div>
+        <div style="font-size:17px;color:#e15759;text-align:right;font-family:'Courier New',Courier,monospace;">6.3</div>
+      </div>
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+      </div>
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#59a14f;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:63%;background:#59a14f;"></div></div>
+        <div style="font-size:17px;color:#59a14f;text-align:right;font-family:'Courier New',Courier,monospace;">6.3</div>
+      </div>
       
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
         <div class="score-bar-wrap"><div class="score-bar" style="width:52%;background:#64748b;"></div></div>
         <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.2</div>
-      </div>
-      
-      
-      
-      <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:55%;background:#22D3EE;"></div></div>
-        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.5</div>
-      </div>
-      
-      
-      
-      <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:59%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">5.9</div>
-      </div>
-      
-      
-      
-      <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:59%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">5.9</div>
       </div>
       
     </div>
@@ -155,36 +158,40 @@ body {
     <div style="margin-bottom:32px;">
       <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 1 — Craft</div>
       
-      
-      
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:46%;background:#64748b;"></div></div>
-        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">4.6</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#4e79a7;">engram-analyst-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:58%;background:#4e79a7;"></div></div>
+        <div style="font-size:17px;color:#4e79a7;text-align:right;font-family:'Courier New',Courier,monospace;">5.8</div>
       </div>
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#f28e2b;">field-marshall</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:55%;background:#f28e2b;"></div></div>
+        <div style="font-size:17px;color:#f28e2b;text-align:right;font-family:'Courier New',Courier,monospace;">5.5</div>
+      </div>
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#e15759;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:59%;background:#e15759;"></div></div>
+        <div style="font-size:17px;color:#e15759;text-align:right;font-family:'Courier New',Courier,monospace;">5.9</div>
+      </div>
       
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#22D3EE;"></div></div>
-        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
       </div>
       
-      
-      
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:56%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">5.6</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#59a14f;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#59a14f;"></div></div>
+        <div style="font-size:17px;color:#59a14f;text-align:right;font-family:'Courier New',Courier,monospace;">6.0</div>
       </div>
       
-      
-      
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:56%;background:#64748b;"></div></div>
+        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.6</div>
       </div>
       
     </div>
@@ -192,44 +199,35 @@ body {
     <div style="margin-bottom:32px;">
       <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 2 — Judgment</div>
       
-      
-      
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:59%;background:#64748b;"></div></div>
-        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.9</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#4e79a7;">engram-analyst-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#4e79a7;"></div></div>
+        <div style="font-size:17px;color:#4e79a7;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
       </div>
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#f28e2b;">field-marshall</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#f28e2b;"></div></div>
+        <div style="font-size:17px;color:#f28e2b;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+      </div>
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#e15759;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:64%;background:#e15759;"></div></div>
+        <div style="font-size:17px;color:#e15759;text-align:right;font-family:'Courier New',Courier,monospace;">6.4</div>
+      </div>
       
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#22D3EE;"></div></div>
-        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">6.0</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:55%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.5</div>
       </div>
-      
-      
       
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:65%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.5</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#59a14f;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:64%;background:#59a14f;"></div></div>
+        <div style="font-size:17px;color:#59a14f;text-align:right;font-family:'Courier New',Courier,monospace;">6.4</div>
       </div>
-      
-      
-      
-      <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:67%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">6.7</div>
-      </div>
-      
-    </div>
-    
-    <div style="margin-bottom:32px;">
-      <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 3 — Pressure</div>
-      
-      
       
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
@@ -237,28 +235,45 @@ body {
         <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.1</div>
       </div>
       
+    </div>
+    
+    <div style="margin-bottom:32px;">
+      <div style="font-size:12px;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #111827;">Tier 3 — Pressure</div>
       
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#4e79a7;">engram-analyst-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:61%;background:#4e79a7;"></div></div>
+        <div style="font-size:17px;color:#4e79a7;text-align:right;font-family:'Courier New',Courier,monospace;">6.1</div>
+      </div>
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#f28e2b;">field-marshall</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:58%;background:#f28e2b;"></div></div>
+        <div style="font-size:17px;color:#f28e2b;text-align:right;font-family:'Courier New',Courier,monospace;">5.8</div>
+      </div>
+      
+      <div class="score-row">
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#e15759;">grace-hopper</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:64%;background:#e15759;"></div></div>
+        <div style="font-size:17px;color:#e15759;text-align:right;font-family:'Courier New',Courier,monospace;">6.4</div>
+      </div>
       
       <div class="score-row">
         <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#22D3EE;">light</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:50%;background:#22D3EE;"></div></div>
-        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.0</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:55%;background:#22D3EE;"></div></div>
+        <div style="font-size:17px;color:#22D3EE;text-align:right;font-family:'Courier New',Courier,monospace;">5.5</div>
       </div>
       
-      
-      
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">grace-hopper</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:57%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">5.7</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#59a14f;">qa-army-group</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:63%;background:#59a14f;"></div></div>
+        <div style="font-size:17px;color:#59a14f;text-align:right;font-family:'Courier New',Courier,monospace;">6.3</div>
       </div>
       
-      
-      
       <div class="score-row">
-        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888888;">qa-army-group</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:53%;background:#888888;"></div></div>
-        <div style="font-size:17px;color:#888888;text-align:right;font-family:'Courier New',Courier,monospace;">5.3</div>
+        <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#64748b;">zero</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:51%;background:#64748b;"></div></div>
+        <div style="font-size:17px;color:#64748b;text-align:right;font-family:'Courier New',Courier,monospace;">5.1</div>
       </div>
       
     </div>
@@ -274,297 +289,229 @@ body {
       Six dimensions were scored across all tasks. Each captures a distinct capability. The table below shows where agents separated and where they converged.
     </div>
     <div style="margin: 36px 0;">
-      <div style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr ;gap:12px;padding-bottom:10px;border-bottom:1px solid #1F2937;margin-bottom:4px;">
+      <div style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;padding-bottom:10px;border-bottom:1px solid #1F2937;margin-bottom:4px;">
         <div style="font-size:10px;letter-spacing:3px;color:#374151;text-transform:uppercase;">Dimension</div>
         
-        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#64748b88;">zero</div>
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#4e79a788;">engram-analyst-group</div>
+        
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#f28e2b88;">field-marshall</div>
+        
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#e1575988;">grace-hopper</div>
         
         <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#22D3EE88;">light</div>
         
-        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#88888888;">grace-hopper</div>
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#59a14f88;">qa-army-group</div>
         
-        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#88888888;">qa-army-group</div>
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:right;color:#64748b88;">zero</div>
         
       </div>
       
-      
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-      <div class="dim-row">
+      <div class="dim-row" style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #111827;">
         <div class="dim-name">correctness</div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:42%;background:#64748b;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#64748b;">4.2</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:48%;background:#4e79a7;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#4e79a7;">4.8</div>
         </div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:38%;background:#22D3EE;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#22D3EE;">3.8</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:47%;background:#f28e2b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#f28e2b;">4.7</div>
         </div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#888888;opacity:1;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.5</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:53%;background:#e15759;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#e15759;">5.3</div>
         </div>
         
-        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:46%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">4.6</div>
+        </div>
         
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:53%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.3</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:64%;background:#59a14f;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#59a14f;">6.4</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:35%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">3.5</div>
         </div>
         
       </div>
       
-      
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-      <div class="dim-row">
+      <div class="dim-row" style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #111827;">
         <div class="dim-name">elegance</div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:60%;background:#64748b;opacity:1;"></div></div>
-          <div class="dim-val" style="color:#64748b;">6.0</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:72%;background:#4e79a7;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#4e79a7;">7.2</div>
         </div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#22D3EE;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#22D3EE;">5.5</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:64%;background:#f28e2b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#f28e2b;">6.4</div>
         </div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.5</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:72%;background:#e15759;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#e15759;">7.2</div>
         </div>
         
-        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:72%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">7.2</div>
+        </div>
         
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:54%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.4</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:67%;background:#59a14f;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#59a14f;">6.7</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:89%;background:#64748b;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#64748b;">8.9</div>
         </div>
         
       </div>
       
-      
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-      <div class="dim-row">
+      <div class="dim-row" style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #111827;">
         <div class="dim-name">discipline</div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:51%;background:#64748b;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#64748b;">5.1</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:31%;background:#4e79a7;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#4e79a7;">3.1</div>
         </div>
         
-        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:25%;background:#f28e2b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#f28e2b;">2.5</div>
+        </div>
         
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:63%;background:#22D3EE;opacity:1;"></div></div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:29%;background:#e15759;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#e15759;">2.9</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:25%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">2.5</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:30%;background:#59a14f;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#59a14f;">3.0</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:23%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">2.3</div>
+        </div>
+        
+      </div>
+      
+      <div class="dim-row" style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #111827;">
+        <div class="dim-name">judgment</div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:82%;background:#4e79a7;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#4e79a7;">8.2</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:81%;background:#f28e2b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#f28e2b;">8.1</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:86%;background:#e15759;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#e15759;">8.6</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:80%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">8.0</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:85%;background:#59a14f;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#59a14f;">8.5</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:63%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">6.3</div>
+        </div>
+        
+      </div>
+      
+      <div class="dim-row" style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #111827;">
+        <div class="dim-name">creativity</div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:63%;background:#4e79a7;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#4e79a7;">6.3</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:57%;background:#f28e2b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#f28e2b;">5.7</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:63%;background:#e15759;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#e15759;">6.3</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:57%;background:#22D3EE;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#22D3EE;">5.7</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:60%;background:#59a14f;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#59a14f;">6.0</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:49%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">4.9</div>
+        </div>
+        
+      </div>
+      
+      <div class="dim-row" style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr 1fr ;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #111827;">
+        <div class="dim-name">recovery</div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:64%;background:#4e79a7;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#4e79a7;">6.4</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:68%;background:#f28e2b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#f28e2b;">6.8</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:71%;background:#e15759;opacity:1;"></div></div>
+          <div class="dim-val" style="color:#e15759;">7.1</div>
+        </div>
+        
+        <div class="dim-bar-cell">
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:63%;background:#22D3EE;opacity:0.55;"></div></div>
           <div class="dim-val" style="color:#22D3EE;">6.3</div>
         </div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.5</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:69%;background:#59a14f;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#59a14f;">6.9</div>
         </div>
         
-        
-        
         <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.5</div>
-        </div>
-        
-      </div>
-      
-      
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-      <div class="dim-row">
-        <div class="dim-name">judgment</div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:52%;background:#64748b;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#64748b;">5.2</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:62%;background:#22D3EE;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#22D3EE;">6.2</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:76%;background:#888888;opacity:1;"></div></div>
-          <div class="dim-val" style="color:#888888;">7.6</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:76%;background:#888888;opacity:1;"></div></div>
-          <div class="dim-val" style="color:#888888;">7.6</div>
-        </div>
-        
-      </div>
-      
-      
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-      <div class="dim-row">
-        <div class="dim-name">creativity</div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:52%;background:#64748b;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#64748b;">5.2</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:56%;background:#22D3EE;opacity:1;"></div></div>
-          <div class="dim-val" style="color:#22D3EE;">5.6</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.5</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:48%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">4.8</div>
-        </div>
-        
-      </div>
-      
-      
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-        
-        
-      
-      <div class="dim-row">
-        <div class="dim-name">recovery</div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:53%;background:#64748b;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#64748b;">5.3</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:56%;background:#22D3EE;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#22D3EE;">5.6</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:58%;background:#888888;opacity:0.55;"></div></div>
-          <div class="dim-val" style="color:#888888;">5.8</div>
-        </div>
-        
-        
-        
-        <div class="dim-bar-cell">
-          <div class="dim-bar-wrap"><div class="dim-bar" style="width:64%;background:#888888;opacity:1;"></div></div>
-          <div class="dim-val" style="color:#888888;">6.4</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:55%;background:#64748b;opacity:0.55;"></div></div>
+          <div class="dim-val" style="color:#64748b;">5.5</div>
         </div>
         
       </div>
@@ -577,7 +524,7 @@ body {
   </div>
 
   <div style="text-align:center;font-size:13px;letter-spacing:3px;color:#374151;padding:24px 0;border-top:1px solid #1F2937;margin-top:20px;">
-    SUITE V1 · 2026-04-09
+    SUITE V1 · 2026-04-23
   </div>
 
 </div>

@@ -1,70 +1,100 @@
 {
-  "run_id": "2026-04-09T11:02:50",
+  "run_id": "2026-04-23T07:10:33",
   "task_suite_version": "v1",
   "configurations": [
-    "zero",
-    "light",
+    "engram-analyst-group",
+    "field-marshall",
     "grace-hopper",
-    "qa-army-group"
+    "light",
+    "qa-army-group",
+    "zero"
   ],
   "scores": {
-    "zero": {
-      "overall": 5.2,
-      "tier1": 4.6,
-      "tier2": 5.9,
-      "tier3": 5.1
+    "engram-analyst-group": {
+      "overall": 6.0,
+      "tier1": 5.8,
+      "tier2": 6.1,
+      "tier3": 6.1
     },
-    "light": {
-      "overall": 5.5,
-      "tier1": 5.7,
-      "tier2": 6.0,
-      "tier3": 5.0
+    "field-marshall": {
+      "overall": 5.7,
+      "tier1": 5.5,
+      "tier2": 5.7,
+      "tier3": 5.8
     },
     "grace-hopper": {
-      "overall": 5.9,
-      "tier1": 5.6,
-      "tier2": 6.5,
-      "tier3": 5.7
+      "overall": 6.3,
+      "tier1": 5.9,
+      "tier2": 6.4,
+      "tier3": 6.4
+    },
+    "light": {
+      "overall": 5.7,
+      "tier1": 6.1,
+      "tier2": 5.5,
+      "tier3": 5.5
     },
     "qa-army-group": {
-      "overall": 5.9,
-      "tier1": 5.7,
-      "tier2": 6.7,
-      "tier3": 5.3
+      "overall": 6.3,
+      "tier1": 6.0,
+      "tier2": 6.4,
+      "tier3": 6.3
+    },
+    "zero": {
+      "overall": 5.2,
+      "tier1": 5.6,
+      "tier2": 5.1,
+      "tier3": 5.1
     }
   },
   "dimension_scores": {
-    "zero": {
-      "correctness": 4.2,
-      "elegance": 6.0,
-      "discipline": 5.1,
-      "judgment": 5.2,
-      "creativity": 5.2,
-      "recovery": 5.3
+    "engram-analyst-group": {
+      "correctness": 4.8,
+      "elegance": 7.2,
+      "discipline": 3.1,
+      "judgment": 8.2,
+      "creativity": 6.3,
+      "recovery": 6.4
     },
-    "light": {
-      "correctness": 3.8,
-      "elegance": 5.5,
-      "discipline": 6.3,
-      "judgment": 6.2,
-      "creativity": 5.6,
-      "recovery": 5.6
+    "field-marshall": {
+      "correctness": 4.7,
+      "elegance": 6.4,
+      "discipline": 2.5,
+      "judgment": 8.1,
+      "creativity": 5.7,
+      "recovery": 6.8
     },
     "grace-hopper": {
-      "correctness": 5.5,
-      "elegance": 5.5,
-      "discipline": 5.5,
-      "judgment": 7.6,
-      "creativity": 5.5,
-      "recovery": 5.8
+      "correctness": 5.3,
+      "elegance": 7.2,
+      "discipline": 2.9,
+      "judgment": 8.6,
+      "creativity": 6.3,
+      "recovery": 7.1
+    },
+    "light": {
+      "correctness": 4.6,
+      "elegance": 7.2,
+      "discipline": 2.5,
+      "judgment": 8.0,
+      "creativity": 5.7,
+      "recovery": 6.3
     },
     "qa-army-group": {
-      "correctness": 5.3,
-      "elegance": 5.4,
-      "discipline": 5.5,
-      "judgment": 7.6,
-      "creativity": 4.8,
-      "recovery": 6.4
+      "correctness": 6.4,
+      "elegance": 6.7,
+      "discipline": 3.0,
+      "judgment": 8.5,
+      "creativity": 6.0,
+      "recovery": 6.9
+    },
+    "zero": {
+      "correctness": 3.5,
+      "elegance": 8.9,
+      "discipline": 2.3,
+      "judgment": 6.3,
+      "creativity": 4.9,
+      "recovery": 5.5
     }
   },
   "history": null

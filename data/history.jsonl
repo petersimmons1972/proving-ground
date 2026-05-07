@@ -2,3 +2,5 @@
 {"run_id": "2026-03-30T17:57:56", "scores": {"zero": 5.7, "light": 5.7, "grace-hopper": 6.3}}
 {"run_id": "2026-04-08T02:25:11", "scores": {"zero": 6.1, "light": 6.0, "grace-hopper": 6.1, "qa-army-group": 6.3}}
 {"run_id": "2026-04-09T11:02:50", "scores": {"zero": 5.2, "light": 5.5, "grace-hopper": 5.9, "qa-army-group": 5.9}}
+{"run_id":"2026-04-23T02:03:49","scores":{"engram-analyst-group":5.5,"grace-hopper":5.8,"light":5.3,"qa-army-group":6,"zero":5}}
+{"run_id":"2026-04-23T07:10:33","scores":{"engram-analyst-group":6,"field-marshall":5.7,"grace-hopper":6.3,"light":5.7,"qa-army-group":6.3,"zero":5.2}}
