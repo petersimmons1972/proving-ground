@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -91,10 +92,22 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 		cancel()
 
 		if runCtx.Err() == context.DeadlineExceeded || runErr != nil {
-			continue // skip failed run
+			stderrStr := stderr.String()
+			if stderrStr != "" {
+				log.Printf("judge: run %d/%d failed (exit_code=%v): stderr=%q",
+					i+1, runs, runErr, truncateJudge(stderrStr, 300))
+			} else {
+				log.Printf("judge: run %d/%d failed: %v", i+1, runs, runErr)
+			}
+			continue
 		}
 
 		allScores = append(allScores, parseJudgeOutput(stdout.String()))
+	}
+
+	if len(allScores) < runs && len(allScores) > 0 {
+		log.Printf("judge: WARNING degraded quality — %d/%d runs succeeded; scores based on partial sample",
+			len(allScores), runs)
 	}
 
 	if len(allScores) == 0 {
@@ -130,6 +143,15 @@ func parseJudgeOutput(text string) judgeRaw {
 		rationale = strings.TrimSpace(m[1])
 	}
 	return judgeRaw{dims: dims, rationale: rationale}
+}
+
+// truncateJudge returns s truncated to n bytes with a suffix if it was cut.
+// Used to keep log lines readable when judge subprocess stderr is verbose.
+func truncateJudge(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n] + "...(truncated)"
 }
 
 func medianInt(vals []int) float64 {

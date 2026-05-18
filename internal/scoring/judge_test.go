@@ -1,8 +1,10 @@
 package scoring_test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -279,5 +281,70 @@ func TestJudgeClampsHighScore(t *testing.T) {
 	scores, _ := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 1)
 	if scores.RequirementInterpretation != 10 {
 		t.Errorf("RequirementInterpretation = %f, want 10 (clamped from 85)", scores.RequirementInterpretation)
+	}
+}
+
+// TestScoreWithJudge_PartialFailures_LogsWarning verifies B-R3-2: when some
+// (but not all) judge runs fail, a WARNING log is emitted indicating degraded
+// quality so callers can detect that the sample size is smaller than requested.
+func TestScoreWithJudge_PartialFailures_LogsWarning(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	// First 2 runs fail (exit 1), last 3 succeed.
+	rubricDir := t.TempDir()
+	rubricPath := filepath.Join(rubricDir, "judge-rubric.md")
+	os.WriteFile(rubricPath, []byte("# Rubric"), 0644)
+
+	binDir := t.TempDir()
+	counterFile := filepath.Join(binDir, "counter")
+	os.WriteFile(counterFile, []byte("0"), 0644)
+
+	script := fmt.Sprintf(`#!/bin/sh
+N=$(cat %s)
+echo $((N+1)) > %s
+if [ "$N" -lt "2" ]; then
+  exit 1
+fi
+printf 'REQUIREMENT_INTERPRETATION: 7\nDECISION_COMMUNICATION: 7\nRECOVERY_QUALITY: 7\nUNCONVENTIONAL_THINKING: 7\nRATIONALE: ok\n'
+exit 0`, counterFile, counterFile)
+	os.WriteFile(filepath.Join(binDir, "claude"), []byte(script), 0755)
+
+	origPath := os.Getenv("PATH")
+	os.Setenv("PATH", binDir+":"+origPath)
+	defer os.Setenv("PATH", origPath)
+
+	_, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubricPath, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logOut := buf.String()
+	if !strings.Contains(logOut, "degraded") && !strings.Contains(logOut, "WARNING") {
+		t.Errorf("expected log to contain 'degraded' or 'WARNING' for partial failures, got: %q", logOut)
+	}
+}
+
+// TestScoreWithJudge_FailedRun_LogsStderr verifies B-R3-3: stderr from a
+// failed judge invocation is logged, mirroring runner.go behavior.
+func TestScoreWithJudge_FailedRun_LogsStderr(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	// The fake judge writes to stderr and exits non-zero.
+	rubric, cleanup := setupFakeJudgeClaude(t,
+		`printf 'judge error: model overloaded\n' >&2; exit 1`)
+	defer cleanup()
+
+	_, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logOut := buf.String()
+	if !strings.Contains(logOut, "judge error: model overloaded") {
+		t.Errorf("expected log to contain stderr text 'judge error: model overloaded', got: %q", logOut)
 	}
 }
