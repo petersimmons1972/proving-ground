@@ -47,7 +47,7 @@ The ten tasks are not chosen randomly. They're specifically designed to probe th
 
 **Tier 3 — Pressure**: Coordination, performance, and recovery problems. Multi-component pipelines, O(n²) traps, APIs that don't exist. The agent can't ask for help. It has to commit.
 
-The scoring is designed to match: Correctness is partially automated (test results, LOC, complexity) so it can't be gamed by a fluent-sounding excuse. Judgment, Creativity, and Recovery are judge-scored but run three times with median-taking, reducing individual variance.
+The scoring is designed to match: Correctness is partially automated (test results, LOC, complexity) so it can't be gamed by a fluent-sounding excuse. Judgment, Creativity, and Recovery are judge-scored but run five times by default (configurable via `PROVING_GROUND_JUDGE_RUNS`) with median-taking, reducing individual variance.
 
 ---
 
