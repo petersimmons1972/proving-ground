@@ -12,6 +12,10 @@ import (
 	"github.com/petersimmons1972/proving-ground/internal/scoring"
 )
 
+// safeIDRe matches only alphanumeric characters, hyphens, and underscores.
+// Task IDs that do not match are rejected to prevent path traversal.
+var safeIDRe = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+
 // Task represents one benchmark task.
 type Task struct {
 	ID          string
@@ -53,6 +57,13 @@ func LoadTasks(tasksDir string, tiers []string) ([]Task, error) {
 			if err != nil {
 				return nil, fmt.Errorf("parsing frontmatter in %s: %w", path, err)
 			}
+			// Sanitize task ID to prevent path traversal in filepath.Join.
+			taskID := filepath.Base(strings.TrimSpace(meta["id"]))
+			if taskID == "" || taskID == "." || !safeIDRe.MatchString(taskID) {
+				log.Printf("tasks: skipping %s — invalid or unsafe task ID %q", path, meta["id"])
+				continue
+			}
+
 			testCmd := parseTestCommand(string(content))
 			if err := scoring.ValidateTestCmd(testCmd); err != nil {
 				// Log the invalid command but continue; set TestCommand to "" so it scores 0.
@@ -60,7 +71,7 @@ func LoadTasks(tasksDir string, tiers []string) ([]Task, error) {
 				testCmd = ""
 			}
 			tasks = append(tasks, Task{
-				ID:          meta["id"],
+				ID:          taskID,
 				Tier:        tier,
 				Title:       meta["title"],
 				Spec:        string(content),
