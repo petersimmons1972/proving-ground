@@ -91,16 +91,38 @@ You don't need 184 lines. But you need more than three sentences.
 
 ## How Do You Build and Run Without Docker?
 
-```bash
-# Build from source
-go install github.com/petersimmons1972/proving-ground/cmd/proving-ground@latest
+**Option 1 — Build locally (recommended):**
 
-# Or build locally
+```bash
+git clone https://github.com/petersimmons1972/proving-ground.git
+cd proving-ground
 go build ./cmd/proving-ground
 
-# Run
 export ANTHROPIC_API_KEY=sk-ant-...
 ./proving-ground --tier all --data-dir ./data
+```
+
+Run from the repo root and the binary finds its assets (`tasks/`, `profiles/`, `prompts/`, `templates/`) automatically.
+
+**Option 2 — `go install`:**
+
+```bash
+go install github.com/petersimmons1972/proving-ground/cmd/proving-ground@latest
+```
+
+When installed this way, the binary lands in `$GOPATH/bin` with no assets alongside it. You must tell it where to find them using explicit flags:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+REPO=/path/to/cloned/proving-ground
+
+proving-ground \
+  --tasks-dir     $REPO/tasks \
+  --profiles-dir  $REPO/profiles \
+  --prompts-dir   $REPO/prompts \
+  --templates-dir $REPO/templates \
+  --data-dir      ./data \
+  --tier all
 ```
 
 You'll need Claude Code CLI installed and on your PATH. The benchmark uses it as the execution engine — each task is sent to `claude --print --dangerously-skip-permissions` with the task spec piped via stdin and your profile passed as `--system-prompt`.
