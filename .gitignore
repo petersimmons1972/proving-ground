@@ -10,3 +10,6 @@ data/results.html
 data/results.json
 data/history.jsonl
 data/runs/
+
+# Local environment — contains real ANTHROPIC_API_KEY, never commit
+.env
