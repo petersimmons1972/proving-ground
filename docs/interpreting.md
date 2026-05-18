@@ -140,8 +140,8 @@ Six dimensions, at a glance. When you get results back and want to know where to
 | Correctness  | Partial (tests + judge)     | Barely              | 8.8–9.1                     | Capability question, not personality                |
 | Elegance     | Yes (LOC + complexity)      | Marginally          | 5.6–5.8                     | Style baked into training                           |
 | Discipline   | Yes (scope adherence)       | Visibly             | 2.8–3.4                     | Over-building is universal                          |
-| Judgment     | No (judge × 3)              | Yes                 | 6.0–8.1                     | **The dimension profiles are built for**            |
-| Creativity   | No (judge × 3)              | Yes                 | 5.1–6.1                     | Priors transfer to unconventional solutions         |
-| Recovery     | No (judge × 3)              | Modestly            | 5.0–5.7                     | Meta-cognitive; hardest to move                     |
+| Judgment     | No (judge × 5, default)     | Yes                 | 6.0–8.1                     | **The dimension profiles are built for**            |
+| Creativity   | No (judge × 5, default)     | Yes                 | 5.1–6.1                     | Priors transfer to unconventional solutions         |
+| Recovery     | No (judge × 5, default)     | Modestly            | 5.0–5.7                     | Meta-cognitive; hardest to move                     |
 
 If Judgment is high but Discipline is low, your profile is working — and spending. If Correctness is the highest dimension for your profile, you haven't moved the needle on anything a blank agent couldn't do.

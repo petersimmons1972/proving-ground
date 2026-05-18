@@ -126,6 +126,38 @@ func TestScoreTests_NoShellInterpolation(t *testing.T) {
 	}
 }
 
+// TestScoreTests_SpoofedReportIgnored verifies that a pre-existing
+// .pytest_report.json placed by an agent before ScoreTests is called does not
+// inflate the returned score. The file must be removed before pytest runs so
+// the harness always works from a fresh report.
+func TestScoreTests_SpoofedReportIgnored(t *testing.T) {
+	dir := t.TempDir()
+	// Agent pre-writes a fake perfect-score report.
+	spoofed := []byte(`{"summary":{"passed":100,"total":100}}`)
+	if err := os.WriteFile(filepath.Join(dir, ".pytest_report.json"), spoofed, 0644); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	// testCmd is empty — ScoreTests must return 0.0 (not 10.0 from the spoofed file).
+	score := scoring.ScoreTests(context.Background(), dir, "")
+	if score != 0.0 {
+		t.Errorf("expected 0.0 (empty testCmd), got %f — spoofed report may have been used", score)
+	}
+}
+
+// TestScoreTests_ReportFileRemovedAfterScoring verifies that the harness-generated
+// .pytest_report.json is cleaned up after ScoreTests returns, so it never
+// appears in FilesWritten and does not penalize the agent's Discipline score.
+func TestScoreTests_ReportFileRemovedAfterScoring(t *testing.T) {
+	dir := t.TempDir()
+	// Run with a testCmd that will fail to find pytest but still exercises the
+	// cleanup path. A failing command is fine — we only check file cleanup.
+	_ = scoring.ScoreTests(context.Background(), dir, "pytest nonexistent_tests/")
+	reportPath := filepath.Join(dir, ".pytest_report.json")
+	if _, err := os.Stat(reportPath); !os.IsNotExist(err) {
+		t.Error(".pytest_report.json must not exist after ScoreTests returns")
+	}
+}
+
 // TestValidateTestCmd_AcceptsLegitimateCommands verifies that real pytest
 // commands are not rejected.
 func TestValidateTestCmd_AcceptsLegitimateCommands(t *testing.T) {

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 )
@@ -31,21 +32,25 @@ var LocRefs = map[string][2]int{
 // MaxWorkers returns the max parallel profiles per task.
 // Controlled by PROVING_GROUND_MAX_WORKERS env var, default 4.
 func MaxWorkers() int {
+	const defaultVal = 4
 	if v := os.Getenv("PROVING_GROUND_MAX_WORKERS"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 {
 			return n
 		}
+		log.Printf("WARNING: invalid PROVING_GROUND_MAX_WORKERS=%q, using default %d", v, defaultVal)
 	}
-	return 4
+	return defaultVal
 }
 
 // JudgeRuns returns how many times to invoke the judge per task.
 // Controlled by PROVING_GROUND_JUDGE_RUNS env var, default 5.
 func JudgeRuns() int {
+	const defaultVal = 5
 	if v := os.Getenv("PROVING_GROUND_JUDGE_RUNS"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 {
 			return n
 		}
+		log.Printf("WARNING: invalid PROVING_GROUND_JUDGE_RUNS=%q, using default %d", v, defaultVal)
 	}
-	return 5
+	return defaultVal
 }
