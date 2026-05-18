@@ -5,4 +5,9 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     volumes:
       - ./data:/data
+    # seccomp:unconfined as first pass per advisory Option C recommendation.
+    # Tighten to a custom seccomp profile post-audit once syscall surface is
+    # established (tracked in #18).
+    security_opt:
+      - seccomp:unconfined
     command: []

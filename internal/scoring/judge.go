@@ -44,6 +44,19 @@ var judgeRe = map[string]*regexp.Regexp{
 
 var rationaleRe = regexp.MustCompile(`RATIONALE:\s*(.+)`)
 
+// BuildJudgeArgs returns the command-line arguments for a judge subprocess invocation.
+// The judge is a read-only evaluator: it reads a transcript and outputs scores.
+// It deliberately omits --dangerously-skip-permissions because feeding untrusted
+// agent transcripts to a process with shell-execute permissions creates a
+// prompt-injection risk (B-4, #21).
+func BuildJudgeArgs(rubric string) []string {
+	return []string{
+		"--print",
+		"--no-session-persistence",
+		"--system-prompt", rubric,
+	}
+}
+
 // ScoreWithJudge invokes claude as LLM judge `runs` times and returns median scores.
 // rubricPath is the absolute path to prompts/judge-rubric.md.
 func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string, runs int) (*JudgeScores, error) {
@@ -59,12 +72,8 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 
 	for i := 0; i < runs; i++ {
 		runCtx, cancel := context.WithTimeout(ctx, judgeTimeout)
-		cmd := exec.CommandContext(runCtx, "claude",
-			"--print",
-			"--dangerously-skip-permissions",
-			"--no-session-persistence",
-			"--system-prompt", rubric,
-		)
+		args := BuildJudgeArgs(rubric)
+		cmd := exec.CommandContext(runCtx, "claude", args...)
 		cmd.Stdin = strings.NewReader(prompt)
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout

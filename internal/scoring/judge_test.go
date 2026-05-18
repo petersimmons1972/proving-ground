@@ -256,6 +256,20 @@ exit 0`, counterFile, binDir, counterFile)
 	}
 }
 
+// TestJudge_Args_DoNotContainDangerousPermissions verifies the judge subprocess
+// does not run with --dangerously-skip-permissions.
+// The judge is a read-only evaluator — it reads transcripts and outputs scores.
+// Feeding it untrusted agent transcripts with shell-execute permissions in place
+// creates a prompt-injection-into-executable-process risk (B-4, #21).
+func TestJudge_Args_DoNotContainDangerousPermissions(t *testing.T) {
+	args := scoring.BuildJudgeArgs("rubric text")
+	for _, a := range args {
+		if a == "--dangerously-skip-permissions" {
+			t.Errorf("judge args contain --dangerously-skip-permissions; this flag must not be present on the read-only judge subprocess")
+		}
+	}
+}
+
 func TestJudgeClampsHighScore(t *testing.T) {
 	// Score of 85 should be clamped to 10.
 	rubric, cleanup := setupFakeJudgeClaude(t,

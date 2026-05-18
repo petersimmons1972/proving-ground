@@ -39,6 +39,14 @@ WORKDIR /app
 # Data volume — user profiles, results, history
 VOLUME ["/data"]
 
+# Non-root user — eliminates root execution of agent subprocesses inside
+# the container (B-1, #18). The /data directory is pre-owned so the volume
+# mount does not require root at runtime.
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN mkdir -p /data && chown appuser:appgroup /data
+
+USER appuser
+
 # Default entrypoint
 ENTRYPOINT ["/usr/local/bin/proving-ground", "--data-dir", "/data"]
 CMD []
