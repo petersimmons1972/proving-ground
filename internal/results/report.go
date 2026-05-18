@@ -39,7 +39,7 @@ type ResultsReport struct {
 	Configurations   []string                      `json:"configurations"`
 	Scores           map[string]map[string]float64 `json:"scores"`
 	DimensionScores  map[string]map[string]float64 `json:"dimension_scores"`
-	History          interface{}                   `json:"history"`
+	History          any                              `json:"history"`
 	Metadata         RunMetadata                   `json:"metadata"`
 }
 
