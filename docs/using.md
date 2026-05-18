@@ -72,7 +72,7 @@ You don't need 184 lines. But you need more than three sentences.
 
 ```bash
 # Build from source
-go install github.com/psimmons/proving-ground/cmd/proving-ground@latest
+go install github.com/petersimmons1972/proving-ground/cmd/proving-ground@latest
 
 # Or build locally
 go build ./cmd/proving-ground

@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/psimmons/proving-ground/internal/config"
+	"github.com/petersimmons1972/proving-ground/internal/config"
 )
 
 // ResultsReport holds all scored data for a benchmark run.

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/results"
+	"github.com/petersimmons1972/proving-ground/internal/results"
 )
 
 func sampleRadarData() map[string][]float64 {

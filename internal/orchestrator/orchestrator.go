@@ -14,13 +14,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/psimmons/proving-ground/internal/config"
-	"github.com/psimmons/proving-ground/internal/history"
-	"github.com/psimmons/proving-ground/internal/profiles"
-	"github.com/psimmons/proving-ground/internal/results"
-	"github.com/psimmons/proving-ground/internal/runner"
-	"github.com/psimmons/proving-ground/internal/scoring"
-	"github.com/psimmons/proving-ground/internal/tasks"
+	"github.com/petersimmons1972/proving-ground/internal/config"
+	"github.com/petersimmons1972/proving-ground/internal/history"
+	"github.com/petersimmons1972/proving-ground/internal/profiles"
+	"github.com/petersimmons1972/proving-ground/internal/results"
+	"github.com/petersimmons1972/proving-ground/internal/runner"
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
+	"github.com/petersimmons1972/proving-ground/internal/tasks"
 )
 
 // Config holds all directory paths and runtime settings for a benchmark run.

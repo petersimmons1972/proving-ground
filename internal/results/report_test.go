@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/results"
+	"github.com/petersimmons1972/proving-ground/internal/results"
 )
 
 // makeSampleReport mirrors _make_sample_report from tests/test_results.py.

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/scoring"
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
 )
 
 func TestScoreTestsAllPass(t *testing.T) {

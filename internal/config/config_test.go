@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/config"
+	"github.com/petersimmons1972/proving-ground/internal/config"
 )
 
 func TestDefaults(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/history"
+	"github.com/petersimmons1972/proving-ground/internal/history"
 )
 
 func TestAppendCreatesFile(t *testing.T) {

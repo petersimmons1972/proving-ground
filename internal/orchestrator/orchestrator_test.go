@@ -9,9 +9,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/runner"
-	"github.com/psimmons/proving-ground/internal/scoring"
-	"github.com/psimmons/proving-ground/internal/tasks"
+	"github.com/petersimmons1972/proving-ground/internal/runner"
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
+	"github.com/petersimmons1972/proving-ground/internal/tasks"
 )
 
 // findWorktreeRoot walks up from the test directory to find the worktree root

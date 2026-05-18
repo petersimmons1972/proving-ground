@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/profiles"
+	"github.com/petersimmons1972/proving-ground/internal/profiles"
 )
 
 // controlsDir is the profiles/ directory in the worktree (contains light.txt).
