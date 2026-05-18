@@ -124,5 +124,5 @@ Run it before you ship your next agent to production.
 | **[How to use it](docs/using.md)** | Running with Docker, providing your own profile, cost estimates, output files |
 | **[Reading the results](docs/interpreting.md)** | The three configurations, what each dimension actually measures, how to tell if your profile is working |
 | **[Suite v1 archive](docs/suite-v1-results.md)** | Full preserved results from the first run, including both historical runs, task-level analysis, and what changes in Suite v2 |
-| [docs/suite-v2-results.md](docs/suite-v2-results.md) | Full archived results from the April 2026 (Suite v2) run |
+| **[Suite v2 archive](docs/suite-v2-results.md)** | Full preserved results from the April 2026 run, including the qa-army-group introduction, task-level analysis, and dimension shifts from Suite v1 |
 | **[Benchmark design](docs/plans/2026-03-30-benchmark-design.md)** | Full architecture and task specifications |

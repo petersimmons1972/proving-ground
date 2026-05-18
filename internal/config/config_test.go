@@ -31,6 +31,34 @@ func TestEnvOverrides(t *testing.T) {
 	}
 }
 
+func TestInvalidMaxWorkersFallsBackToDefault(t *testing.T) {
+	t.Setenv("PROVING_GROUND_MAX_WORKERS", "not-a-number")
+	if got := config.MaxWorkers(); got != 4 {
+		t.Errorf("MaxWorkers() = %d, want 4 (default) for invalid env var", got)
+	}
+}
+
+func TestZeroMaxWorkersFallsBackToDefault(t *testing.T) {
+	t.Setenv("PROVING_GROUND_MAX_WORKERS", "0")
+	if got := config.MaxWorkers(); got != 4 {
+		t.Errorf("MaxWorkers() = %d, want 4 (default) for zero value", got)
+	}
+}
+
+func TestInvalidJudgeRunsFallsBackToDefault(t *testing.T) {
+	t.Setenv("PROVING_GROUND_JUDGE_RUNS", "banana")
+	if got := config.JudgeRuns(); got != 5 {
+		t.Errorf("JudgeRuns() = %d, want 5 (default) for invalid env var", got)
+	}
+}
+
+func TestNegativeJudgeRunsFallsBackToDefault(t *testing.T) {
+	t.Setenv("PROVING_GROUND_JUDGE_RUNS", "-1")
+	if got := config.JudgeRuns(); got != 5 {
+		t.Errorf("JudgeRuns() = %d, want 5 (default) for negative value", got)
+	}
+}
+
 func TestTierWeights(t *testing.T) {
 	total := config.TierWeights[1] + config.TierWeights[2] + config.TierWeights[3]
 	if total < 0.999 || total > 1.001 {
