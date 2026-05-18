@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/petersimmons1972/proving-ground/internal/runner"
 	"github.com/petersimmons1972/proving-ground/internal/scoring"
@@ -605,6 +606,55 @@ func TestRun_PartialTaskFailure_RecordsMetadata(t *testing.T) {
 	}
 	if parsed.Metadata.TasksFailed == 0 {
 		t.Error("metadata.tasks_failed = 0, want > 0 (one task was injected to fail)")
+	}
+}
+
+// TestRun_ScoringPanic_DoesNotHangOrCrash verifies that a panic inside the
+// scoring goroutine is caught, recorded as a task failure, and does not
+// prevent the benchmark from completing.
+func TestRun_ScoringPanic_DoesNotHangOrCrash(t *testing.T) {
+	dataDir := t.TempDir()
+
+	orig1, orig2 := runTaskFn, scoreWithJudgeFn
+	defer func() { runTaskFn, scoreWithJudgeFn = orig1, orig2 }()
+
+	runTaskFn = func(ctx context.Context, args runner.RunTaskArgs) (*runner.TaskResult, error) {
+		r := *mockTaskResult
+		r.WorkingDir = t.TempDir()
+		return &r, nil
+	}
+	// scoreWithJudgeFn panics — simulates a scoring function crash.
+	scoreWithJudgeFn = func(ctx context.Context, transcript, taskSpec, rubricPath string, runs int) (*scoring.JudgeScores, error) {
+		panic("injected panic in scoring goroutine")
+	}
+
+	cfg := Config{
+		DataDir:     dataDir,
+		Tiers:       []string{"1"},
+		TasksDir:    findTasksDir(t),
+		ControlsDir: findControlsDir(t),
+		TemplateDir: findTemplateDir(t),
+		PromptDir:   findPromptDir(t),
+	}
+
+	done := make(chan error, 1)
+	go func() {
+		done <- Run(context.Background(), cfg)
+	}()
+
+	select {
+	case err := <-done:
+		// Run must return a non-nil error because all task/profile pairs panicked.
+		if err == nil {
+			t.Error("Run() returned nil, want non-nil error when scoring goroutine panics")
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Run() did not return within 5 seconds — likely hung in wg.Wait()")
+	}
+
+	// Partial results.json must still be written.
+	if _, err := os.Stat(filepath.Join(dataDir, "results.json")); err != nil {
+		t.Error("results.json missing after scoring panic — partial results must still be written")
 	}
 }
 

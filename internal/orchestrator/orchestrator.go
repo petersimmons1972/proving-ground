@@ -10,6 +10,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"sort"
 	"sync"
 	"time"
@@ -139,6 +140,19 @@ func Run(ctx context.Context, cfg Config) error {
 			go func(name, prompt string) {
 				defer wg.Done()
 				defer func() { <-sem }()
+				defer func() {
+					if r := recover(); r != nil {
+						log.Printf("orchestrator: PANIC in task=%s profile=%s: %v\nstack:\n%s",
+							task.ID, name, r, debug.Stack())
+						failuresMu.Lock()
+						taskFailures = append(taskFailures, results.TaskFailure{
+							TaskID:  task.ID,
+							Profile: name,
+							Reason:  fmt.Sprintf("panic: %v", r),
+						})
+						failuresMu.Unlock()
+					}
+				}()
 
 				ts, err := runAndScore(ctx, task, name, prompt, runsPath, runID, rubricPath)
 				if err != nil {

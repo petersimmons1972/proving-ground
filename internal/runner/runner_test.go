@@ -1,9 +1,12 @@
 package runner_test
 
 import (
+	"bytes"
 	"context"
+	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -172,5 +175,69 @@ func TestRunTaskTimeoutReturnsResult(t *testing.T) {
 	}
 	if !strings.Contains(strings.ToLower(res.Stderr), "timeout") {
 		t.Errorf("Stderr = %q, want timeout message", res.Stderr)
+	}
+}
+
+// TestRunTask_LogsOnNonZeroExit verifies that a non-zero exit code produces
+// a log line containing the task ID, profile name, and exit code.
+func TestRunTask_LogsOnNonZeroExit(t *testing.T) {
+	cleanup := setupFakeClaude(t, `echo "error output" >&2; exit 2`)
+	defer cleanup()
+
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	tmp := t.TempDir()
+	res, err := runner.RunTask(context.Background(), runner.RunTaskArgs{
+		TaskID: "task-log-01", TaskSpec: "spec", ProfileName: "myprofile", WorkingDir: tmp,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.ExitCode != 2 {
+		t.Fatalf("ExitCode = %d, want 2", res.ExitCode)
+	}
+
+	logged := buf.String()
+	if !strings.Contains(logged, "task-log-01") {
+		t.Errorf("log output missing task ID %q: %s", "task-log-01", logged)
+	}
+	if !strings.Contains(logged, "myprofile") {
+		t.Errorf("log output missing profile name %q: %s", "myprofile", logged)
+	}
+	if !strings.Contains(logged, strconv.Itoa(res.ExitCode)) {
+		t.Errorf("log output missing exit code %d: %s", res.ExitCode, logged)
+	}
+}
+
+// TestRunTask_LogsOnTimeout verifies that a timeout (ExitCode 124) produces
+// a log line indicating the task timed out.
+func TestRunTask_LogsOnTimeout(t *testing.T) {
+	cleanup := setupFakeClaude(t, `sleep 999; exit 0`)
+	defer cleanup()
+
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	tmp := t.TempDir()
+	res, err := runner.RunTask(context.Background(), runner.RunTaskArgs{
+		TaskID: "task-timeout-01", TaskSpec: "spec", ProfileName: "myprofile", WorkingDir: tmp,
+		Timeout: 50 * time.Millisecond,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.ExitCode != 124 {
+		t.Fatalf("ExitCode = %d, want 124", res.ExitCode)
+	}
+
+	logged := buf.String()
+	if !strings.Contains(strings.ToUpper(logged), "TIMEOUT") {
+		t.Errorf("log output missing TIMEOUT keyword: %s", logged)
+	}
+	if !strings.Contains(logged, "task-timeout-01") {
+		t.Errorf("log output missing task ID: %s", logged)
 	}
 }

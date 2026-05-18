@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -118,10 +119,16 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
+	start := time.Now()
 	runErr := cmd.Run()
+	elapsed := time.Since(start) //nolint:govet
 
 	// Distinguish timeout from other errors.
 	if runCtx.Err() == context.DeadlineExceeded {
+		log.Printf("runner: task=%s profile=%s exit_code=%d elapsed=%s",
+			args.TaskID, args.ProfileName, 124, elapsed)
+		log.Printf("runner: task=%s profile=%s TIMEOUT after %s",
+			args.TaskID, args.ProfileName, timeout)
 		return &TaskResult{
 			TaskID:       args.TaskID,
 			ProfileName:  args.ProfileName,
@@ -140,6 +147,13 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 		} else {
 			exitCode = 1
 		}
+	}
+
+	log.Printf("runner: task=%s profile=%s exit_code=%d elapsed=%s",
+		args.TaskID, args.ProfileName, exitCode, elapsed)
+	if exitCode != 0 {
+		log.Printf("runner: task=%s profile=%s FAILED exit_code=%d stderr=%q",
+			args.TaskID, args.ProfileName, exitCode, truncate(stderr.String(), 200))
 	}
 
 	// Collect files written under run dir.
@@ -162,4 +176,12 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 		WorkingDir:   absRunDir,
 		FilesWritten: filesWritten,
 	}, nil
+}
+
+// truncate returns at most n characters of s. Prevents multi-MB stderr from flooding logs.
+func truncate(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n]
 }
