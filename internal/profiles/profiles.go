@@ -2,6 +2,7 @@ package profiles
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -45,7 +46,7 @@ func LoadProfiles(controlsDir, userDir string) (map[string]string, error) {
 	for _, path := range files {
 		stem := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
 		if controlNames[stem] {
-			fmt.Printf("WARNING: skipping user profile '%s' — collides with control baseline\n", filepath.Base(path))
+			log.Printf("WARNING: skipping user profile %q — collides with control baseline", filepath.Base(path))
 			continue
 		}
 		content, err := os.ReadFile(path)
