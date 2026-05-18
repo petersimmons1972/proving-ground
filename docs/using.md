@@ -56,6 +56,8 @@ docker-compose run proving-ground --tier 1
 
 To run all tiers: `docker-compose run proving-ground` (no `--tier` flag runs all tiers).
 
+> **Security**: The container runs as a non-root user and uses Docker's default seccomp profile, which blocks dangerous syscalls including `ptrace`, `perf_event_open`, and `kexec_load`. This workload does not require network access — add `--network none` if isolation is desired.
+
 ---
 
 ## How Do You Provide Your Own Profile?
