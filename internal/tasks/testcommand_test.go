@@ -49,15 +49,39 @@ command: python -m pytest solution/ --json-report
 // TestTask_TestCommandEmptyWhenMissing verifies that tasks without a ## Tests
 // section have an empty TestCommand (not a panic or error).
 func TestTask_TestCommandEmptyWhenMissing(t *testing.T) {
-	// The real tier-1 tasks don't have ## Tests sections yet; verify LoadTasks
-	// returns them without error and TestCommand is empty string.
-	ts, err := tasks.LoadTasks(tasksDir, []string{"1"})
+	// Create a task markdown WITHOUT a ## Tests section.
+	dir := t.TempDir()
+	tierDir := filepath.Join(dir, "tier1")
+	if err := os.MkdirAll(tierDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	content := `---
+id: t1-no-tests
+tier: 1
+title: "Task Without Tests"
+---
+
+# Task: Example
+
+## Spec
+
+Write something.
+`
+	taskFile := filepath.Join(tierDir, "task-1-no-tests-example.md")
+	if err := os.WriteFile(taskFile, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Load the task and verify TestCommand is empty.
+	ts, err := tasks.LoadTasks(dir, []string{"1"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, task := range ts {
-		// After the ## Tests sections are added these will be non-empty,
-		// but the field must always be present (no panic).
-		_ = task.TestCommand // must compile
+	if len(ts) != 1 {
+		t.Fatalf("expected 1 task, got %d", len(ts))
+	}
+	if ts[0].TestCommand != "" {
+		t.Errorf("TestCommand = %q, want empty string for task without ## Tests section", ts[0].TestCommand)
 	}
 }

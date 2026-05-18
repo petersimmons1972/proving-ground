@@ -11,11 +11,6 @@ import (
 	"strings"
 )
 
-// AutomatedScores holds scores derived from running pytest independently.
-type AutomatedScores struct {
-	TestsPass float64
-}
-
 // ScoreTests runs pytest independently against solutionDir using testCmd.
 // Agent stdout is ignored — the harness always computes the ground-truth score.
 // testCmd is the raw command string from the task spec (e.g. "python -m pytest solution/ --json-report").
@@ -25,7 +20,7 @@ func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 		return 0.0
 	}
 	reportFile := filepath.Join(solutionDir, ".pytest_report.json")
-	// Append --json-report flags; use %q for shell-safe path quoting.
+	// Append --json-report flags; use shellQuote for shell-safe path quoting.
 	shellCmd := fmt.Sprintf("cd %s && %s --json-report --json-report-file=%s",
 		shellQuote(solutionDir), testCmd, shellQuote(reportFile))
 	cmd := exec.CommandContext(ctx, "sh", "-c", shellCmd)
