@@ -129,6 +129,20 @@ You'll need Claude Code CLI installed and on your PATH. The benchmark uses it as
 
 ---
 
+## Configuration
+
+Beyond `--tier` and `--data-dir`, three environment variables tune benchmark behavior:
+
+| Variable | Default | Effect |
+|----------|---------|--------|
+| `PROVING_GROUND_MODEL` | CLI default | Claude model for both runner and judge. Set to pin model for reproducibility (e.g. `claude-3-5-sonnet-20241022`). |
+| `PROVING_GROUND_JUDGE_RUNS` | `5` | Judge invocations per task. Reduce to `1` for fast iteration; increase for lower variance. |
+| `PROVING_GROUND_MAX_WORKERS` | `4` | Parallel task workers. Reduce to `1` for debugging; increase to run faster (higher API cost). |
+
+Set via `--env-file .env` or `-e VAR=value` in Docker, or `export VAR=value` for the native binary.
+
+---
+
 ## What Happens During a Run?
 
 Each task executes independently with each configuration. For a full run with one custom profile, that's 30 executions (10 tasks × 3 configurations). Each execution:

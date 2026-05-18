@@ -67,11 +67,16 @@ func main() {
 	rootCmd := &cobra.Command{
 		Use:   "proving-ground",
 		Short: "Proving Ground — AI agent personality benchmark.",
-		Long: `Proving Ground — AI agent personality benchmark.
+		Long: `Proving Ground benchmarks AI agent profiles against programming tasks.
 
-Measures whether agent personality profiles improve task execution
-quality across correctness, elegance, discipline, judgment,
-creativity, and recovery.`,
+Environment variables (not shown in --help flags):
+  PROVING_GROUND_MODEL        Claude model for runner and judge (default: CLI default)
+  PROVING_GROUND_JUDGE_RUNS   Judge invocations per task, default 5
+  PROVING_GROUND_MAX_WORKERS  Parallel task workers, default 4
+  ANTHROPIC_API_KEY           Required — your Anthropic API key
+
+Asset path overrides (for go install or custom layouts):
+  --tasks-dir, --profiles-dir, --prompts-dir, --templates-dir`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Pre-flight: verify API key and required binaries before doing any work.
 			if err := runPreFlight(); err != nil {
@@ -105,7 +110,7 @@ creativity, and recovery.`,
 				PromptDir:   resolveAssetDir(promptsDir, "prompts"),
 			}
 
-			fmt.Printf("Proving Ground — running tiers=%v, data=%s\n", tiers, dataDir)
+			log.Printf("Proving Ground — running tiers=%v, data=%s", tiers, dataDir)
 
 			// Create a cancellable context that responds to SIGTERM and SIGINT.
 			ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
@@ -124,7 +129,7 @@ creativity, and recovery.`,
 				os.Exit(1)
 			}
 
-			fmt.Printf("Done. Results at %s/results.html\n", dataDir)
+			log.Printf("Done. Results: html=%s/results.html json=%s/results.json", dataDir, dataDir)
 			return nil
 		},
 	}
