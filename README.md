@@ -107,7 +107,7 @@ Scored across six dimensions: Correctness, Elegance, Discipline, Judgment, Creat
 ## How It Works
 
 1. Provide your API key and optionally your agent profile
-2. The benchmark runs each task three times: blank agent, light prompt, your profile
+2. The benchmark runs each task once per configuration — always including the blank-agent (`zero`) and light-prompt controls, plus any custom profiles you add to `data/profiles/`. With one custom profile that is three configurations; with two profiles, four.
 3. Automated metrics + LLM-as-judge score every dimension
 4. A single HTML results page shows exactly where your agent excels and where it falls short
 5. Run again after improving your profile — history tracking shows your progress over time

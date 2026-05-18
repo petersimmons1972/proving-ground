@@ -125,7 +125,9 @@ proving-ground \
   --tier all
 ```
 
-You'll need Claude Code CLI installed and on your PATH. The benchmark uses it as the execution engine — each task is sent to `claude --print --dangerously-skip-permissions` with the task spec piped via stdin and your profile passed as `--system-prompt`.
+You'll need Claude Code CLI installed and on your PATH. The benchmark was built with `@anthropic-ai/claude-code@1.0.3`. Install a specific version: `npm install -g @anthropic-ai/claude-code@1.0.3`. Check your installed version: `claude --version`.
+
+Claude Code runs in headless `--print` mode. The `--dangerously-skip-permissions` flag is **not** used — Claude Code enforces its standard permission system. If tasks produce empty output, the agent may need explicit permission grants.
 
 ---
 
@@ -151,7 +153,7 @@ Each task executes independently with each configuration. For a full run with on
 2. Launches Claude Code with the task spec
 3. Captures the full session transcript and all files written
 4. Scores the output: automated metrics first (pytest, LOC, complexity, scope), then LLM-as-judge
-5. Judge scoring runs 3 times; median is taken for each dimension to reduce variance
+5. Judge scoring runs 5 times by default (configurable via `PROVING_GROUND_JUDGE_RUNS`); the median across runs is taken for each dimension to reduce variance
 
 You'll see progress logged to stdout. Expect 45–90 minutes for a full run.
 
@@ -193,5 +195,7 @@ The history file lets you track progress across runs. Don't delete it. Every run
 | `--tier 1`  | 3     | Craft, execution, correctness    | $4–10           |
 | `--tier 2`  | 3     | Judgment, ambiguity, scope       | $6–15           |
 | `--tier 3`  | 4     | Pressure, coordination, recovery | $8–20           |
+
+`--tier all` (or omitting `--tier` entirely) runs all three tiers sequentially. These are equivalent — `all` is the default.
 
 Tier 2 is the best single-tier run if you're trying to evaluate whether your profile improves decision-making. Tier 1 results are relatively unsurprising. Tier 3 results are the most interesting and the most expensive.
