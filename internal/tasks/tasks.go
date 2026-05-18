@@ -107,9 +107,9 @@ func parseFrontmatter(content string) (map[string]string, error) {
 	}
 	meta := map[string]string{}
 	for _, line := range strings.Split(m[1], "\n") {
-		if idx := strings.Index(line, ":"); idx >= 0 {
-			k := strings.TrimSpace(line[:idx])
-			v := strings.TrimSpace(line[idx+1:])
+		if k, v, ok := strings.Cut(line, ":"); ok {
+			k = strings.TrimSpace(k)
+			v = strings.TrimSpace(v)
 			v = strings.Trim(v, `"`)
 			meta[k] = v
 		}
