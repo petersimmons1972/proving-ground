@@ -14,13 +14,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/psimmons/proving-ground/internal/config"
-	"github.com/psimmons/proving-ground/internal/history"
-	"github.com/psimmons/proving-ground/internal/profiles"
-	"github.com/psimmons/proving-ground/internal/results"
-	"github.com/psimmons/proving-ground/internal/runner"
-	"github.com/psimmons/proving-ground/internal/scoring"
-	"github.com/psimmons/proving-ground/internal/tasks"
+	"github.com/petersimmons1972/proving-ground/internal/config"
+	"github.com/petersimmons1972/proving-ground/internal/history"
+	"github.com/petersimmons1972/proving-ground/internal/profiles"
+	"github.com/petersimmons1972/proving-ground/internal/results"
+	"github.com/petersimmons1972/proving-ground/internal/runner"
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
+	"github.com/petersimmons1972/proving-ground/internal/tasks"
 )
 
 // Config holds all directory paths and runtime settings for a benchmark run.
@@ -109,6 +109,13 @@ func Run(ctx context.Context, cfg Config) error {
 		allTaskScores[name] = nil
 	}
 
+	// taskFailures accumulates per-task-profile failures for schema v2 metadata.
+	var (
+		failuresMu   sync.Mutex
+		taskFailures []results.TaskFailure
+		tasksAttempted int
+	)
+
 	// Concurrency: tasks run sequentially in outer loop;
 	// profiles-within-a-task run in parallel via goroutines + semaphore + WaitGroup.
 	// This mirrors Python's ThreadPoolExecutor(max_workers=_MAX_WORKERS) per task.
@@ -126,16 +133,26 @@ func Run(ctx context.Context, cfg Config) error {
 		for name, prompt := range profileMap {
 			wg.Add(1)
 			sem <- struct{}{}
+			failuresMu.Lock()
+			tasksAttempted++
+			failuresMu.Unlock()
 			go func(name, prompt string) {
 				defer wg.Done()
 				defer func() { <-sem }()
 
-				taskScore, err := runAndScore(ctx, task, name, prompt, runsPath, runID, rubricPath)
+				ts, err := runAndScore(ctx, task, name, prompt, runsPath, runID, rubricPath)
 				if err != nil {
 					log.Printf("WARNING: profile %q failed on %s: %v", name, task.ID, err)
+					failuresMu.Lock()
+					taskFailures = append(taskFailures, results.TaskFailure{
+						TaskID:  task.ID,
+						Profile: name,
+						Reason:  err.Error(),
+					})
+					failuresMu.Unlock()
 					return
 				}
-				resultsCh <- profileResult{name: name, score: taskScore}
+				resultsCh <- profileResult{name: name, score: ts}
 			}(name, prompt)
 		}
 
@@ -229,6 +246,12 @@ func Run(ctx context.Context, cfg Config) error {
 		Scores:           scoresByConfig,
 		DimensionScores:  dimensionScoresByConfig,
 		History:          nil,
+		Metadata: results.RunMetadata{
+			SchemaVersion:  "2",
+			TasksAttempted: tasksAttempted,
+			TasksFailed:    len(taskFailures),
+			TaskFailures:   taskFailures,
+		},
 	}
 
 	htmlPath := filepath.Join(cfg.DataDir, "results.html")
@@ -247,6 +270,13 @@ func Run(ctx context.Context, cfg Config) error {
 		Scores: overallByConfig,
 	}); err != nil {
 		return fmt.Errorf("appending history: %w", err)
+	}
+
+	// Return non-nil error if any task/profile pair failed — callers and CI get
+	// a non-zero exit so the contamination is visible. Partial results are still
+	// written to results.json so the run is not silently lost.
+	if len(taskFailures) > 0 {
+		return fmt.Errorf("%d of %d task/profile pairs failed (see results.json metadata for details)", len(taskFailures), tasksAttempted)
 	}
 
 	return nil
@@ -271,7 +301,7 @@ func runAndScore(
 		return taskScore{}, fmt.Errorf("run_task: %w", err)
 	}
 
-	auto := scoring.ScoreTests(result.ExitCode, result.Stdout)
+	testsPass := scoring.ScoreTests(ctx, result.WorkingDir, task.TestCommand)
 
 	locRef, ok := config.LocRefs[task.ID]
 	if !ok {
@@ -285,11 +315,14 @@ func runAndScore(
 	if err != nil {
 		return taskScore{}, fmt.Errorf("score_with_judge: %w", err)
 	}
+	if judge.Failed {
+		return taskScore{}, fmt.Errorf("score_with_judge: %s", judge.FailureReason)
+	}
 
 	return taskScore{
 		taskID:      task.ID,
 		tier:        task.Tier,
-		correctness: (auto.TestsPass + judge.RequirementInterpretation) / 2,
+		correctness: (testsPass + judge.RequirementInterpretation) / 2,
 		elegance:    (loc + complexity) / 2,
 		discipline:  scope,
 		judgment:    judge.DecisionCommunication,

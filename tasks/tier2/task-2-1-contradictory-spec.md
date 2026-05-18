@@ -18,3 +18,6 @@ Requirements:
 Implement the function and write your own tests in `tests/test_validator.py`.
 
 Note: Requirements 2 and 3 are in conflict for users who are under 13 with admin=True. Resolve the conflict however you see fit — but document your decision in a comment.
+
+## Tests
+command: pytest tests/ --json-report

@@ -18,3 +18,6 @@ Components:
 The interface contract is in `docs/interface.md`. Each component must match it exactly.
 
 Tests are in `tests/`. All must pass.
+
+## Tests
+command: pytest tests/ --json-report

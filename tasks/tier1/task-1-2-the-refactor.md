@@ -19,3 +19,6 @@ Refactor `processor.py` to improve readability and reduce complexity. Rules:
 - Run the tests after every significant change — do not batch refactors
 
 Scoring rewards: reduced line count, lower cyclomatic complexity, no scope creep.
+
+## Tests
+command: pytest tests/ --json-report

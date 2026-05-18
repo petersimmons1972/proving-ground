@@ -17,7 +17,7 @@ No system prompt. The model receives only the task specification. Nothing else.
 
 Zero is the baseline for capability. It tells you what Claude can do when operating purely from its training, with no role framing, no character, no instructions about how to approach ambiguous situations. The zero score is the floor. It is not a target.
 
-One surprising finding from Suite v1: **Zero's Correctness score (9.1) was the highest of the three**. A blank agent can follow a clear spec. It doesn't overthink it. When the task is unambiguous, personality adds friction — the profiled agent brings opinions and the blank agent just ships.
+One finding from Suite v1: **In Suite v1, Zero's Correctness score (9.1) was the highest of the three**. A blank agent can follow a clear spec. It doesn't overthink it. When the task is unambiguous, personality adds friction — the profiled agent brings opinions and the blank agent just ships. By April 2026 (Suite v2), the picture shifted: qa-army-group outperformed zero on Correctness (8.9 vs 8.2), so the blank-agent Correctness advantage is not a permanent fixture.
 
 The zero score also sets the comparison baseline. A custom profile that doesn't beat zero on Judgment isn't adding value. It may be adding noise.
 
@@ -133,13 +133,15 @@ The overall score is a summary. The dimension breakdown is the finding.
 
 Six dimensions, at a glance. When you get results back and want to know where to look first, this is the cheat sheet. Each row tells you what the dimension actually measures, whether your profile can move it, and what range to expect so you know when a score is surprising.
 
-| Dimension    | Automated?                  | Profile-responsive? | Suite v1 range | Key signal                                          |
-|--------------|-----------------------------|---------------------|----------------|-----------------------------------------------------|
-| Correctness  | Partial (tests + judge)     | Barely              | 8.8–9.1        | Capability question, not personality                |
-| Elegance     | Yes (LOC + complexity)      | Marginally          | 5.6–5.8        | Style baked into training                           |
-| Discipline   | Yes (scope adherence)       | Visibly             | 2.8–3.4        | Over-building is universal                          |
-| Judgment     | No (judge × 3)              | Yes                 | 6.0–8.1        | **The dimension profiles are built for**            |
-| Creativity   | No (judge × 3)              | Yes                 | 5.1–6.1        | Priors transfer to unconventional solutions         |
-| Recovery     | No (judge × 3)              | Modestly            | 5.0–5.7        | Meta-cognitive; hardest to move                     |
+**Note on ranges:** The Suite v1 ranges below are from the March 2026 run (zero, light, grace-hopper). April 2026 (Suite v2) introduced the qa-army-group configuration and produced different ranges — Correctness fell as low as 8.2 for zero, Elegance reached 8.0 for zero, and Discipline reached 4.3 for zero. Treat the Suite v1 column as a historical reference, not a current floor or ceiling. Full Suite v2 data is in [docs/suite-v2-results.md](suite-v2-results.md).
+
+| Dimension    | Automated?                  | Profile-responsive? | Suite v1 range (historical) | Key signal                                          |
+|--------------|-----------------------------|---------------------|-----------------------------|-----------------------------------------------------|
+| Correctness  | Partial (tests + judge)     | Barely              | 8.8–9.1                     | Capability question, not personality                |
+| Elegance     | Yes (LOC + complexity)      | Marginally          | 5.6–5.8                     | Style baked into training                           |
+| Discipline   | Yes (scope adherence)       | Visibly             | 2.8–3.4                     | Over-building is universal                          |
+| Judgment     | No (judge × 3)              | Yes                 | 6.0–8.1                     | **The dimension profiles are built for**            |
+| Creativity   | No (judge × 3)              | Yes                 | 5.1–6.1                     | Priors transfer to unconventional solutions         |
+| Recovery     | No (judge × 3)              | Modestly            | 5.0–5.7                     | Meta-cognitive; hardest to move                     |
 
 If Judgment is high but Discipline is low, your profile is working — and spending. If Correctness is the highest dimension for your profile, you haven't moved the needle on anything a blank agent couldn't do.

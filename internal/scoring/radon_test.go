@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/scoring"
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
 )
 
 func TestScoreComplexityNoPyFilesReturnsFive(t *testing.T) {

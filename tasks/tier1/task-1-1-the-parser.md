@@ -28,3 +28,6 @@ Rules:
 - Unicode content in messages must be preserved
 
 Tests are in `tests/test_parser.py`. They must all pass. Do not modify the tests.
+
+## Tests
+command: pytest tests/ --json-report

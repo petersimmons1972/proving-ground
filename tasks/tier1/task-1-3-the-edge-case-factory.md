@@ -21,3 +21,6 @@ def safe_divide(a: float, b: float, precision: int = 2) -> float | None:
 Three basic test cases are provided in `tests/test_calculator.py`. Add additional tests for edge cases you think are missing. Run all tests to verify they pass.
 
 Do not change the existing tests. Do not change the function signature.
+
+## Tests
+command: pytest tests/ --json-report

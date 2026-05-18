@@ -18,11 +18,12 @@ RUN apk add --no-cache \
     git \
     ca-certificates
 
-# Install Claude Code CLI
-RUN npm install -g @anthropic-ai/claude-code
+# Install Claude Code CLI — pinned for reproducible benchmark runs (#26)
+RUN npm install -g @anthropic-ai/claude-code@1.0.3
 
-# Install radon (pinned version for score continuity)
-RUN pip install --break-system-packages radon==6.0.1
+# Install radon (pinned version for score continuity) and pytest-json-report
+# for harness-controlled test scoring (B-3).
+RUN pip install --break-system-packages radon==6.0.1 pytest pytest-json-report
 
 # Copy Go binary
 COPY --from=builder /out/proving-ground /usr/local/bin/proving-ground
@@ -38,6 +39,13 @@ WORKDIR /app
 
 # Data volume — user profiles, results, history
 VOLUME ["/data"]
+
+# Non-root user — eliminates root execution of agent subprocesses inside
+# the container (B-1, #18). The /data directory is pre-owned so the volume
+# mount does not require root at runtime.
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup && mkdir -p /data && chown appuser:appgroup /data
+
+USER appuser
 
 # Default entrypoint
 ENTRYPOINT ["/usr/local/bin/proving-ground", "--data-dir", "/data"]

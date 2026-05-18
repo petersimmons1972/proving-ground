@@ -22,6 +22,11 @@ type JudgeScores struct {
 	RecoveryQuality           float64
 	UnconventionalThinking    float64
 	Rationale                 string
+	// Failed and FailureReason are internal sentinel fields — not serialized to JSON.
+	// When Failed is true, all dimension scores are zero and must NOT be averaged
+	// into benchmark results as if they were real scores.
+	Failed        bool   `json:"-"`
+	FailureReason string `json:"-"`
 }
 
 // judgeRaw holds one parsed judge run result.
@@ -39,6 +44,27 @@ var judgeRe = map[string]*regexp.Regexp{
 
 var rationaleRe = regexp.MustCompile(`RATIONALE:\s*(.+)`)
 
+// BuildJudgeArgs returns the command-line arguments for a judge subprocess invocation.
+// The judge is a read-only evaluator: it reads a transcript and outputs scores.
+// It deliberately omits --dangerously-skip-permissions because feeding untrusted
+// agent transcripts to a process with shell-execute permissions creates a
+// prompt-injection risk (B-4, #21).
+// When PROVING_GROUND_MODEL is set, --model <value> is appended so the judge
+// uses the same model as the runner.
+func BuildJudgeArgs(rubric string) []string {
+	args := []string{
+		"--print",
+		"--no-session-persistence",
+		"--system-prompt", rubric,
+	}
+	// Allow callers to pin a specific Claude model via environment variable.
+	// Omitting the flag leaves the CLI to use its own default — no breaking change.
+	if model := os.Getenv("PROVING_GROUND_MODEL"); model != "" {
+		args = append(args, "--model", model)
+	}
+	return args
+}
+
 // ScoreWithJudge invokes claude as LLM judge `runs` times and returns median scores.
 // rubricPath is the absolute path to prompts/judge-rubric.md.
 func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string, runs int) (*JudgeScores, error) {
@@ -54,12 +80,8 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 
 	for i := 0; i < runs; i++ {
 		runCtx, cancel := context.WithTimeout(ctx, judgeTimeout)
-		cmd := exec.CommandContext(runCtx, "claude",
-			"--print",
-			"--dangerously-skip-permissions",
-			"--no-session-persistence",
-			"--system-prompt", rubric,
-		)
+		args := BuildJudgeArgs(rubric)
+		cmd := exec.CommandContext(runCtx, "claude", args...)
 		cmd.Stdin = strings.NewReader(prompt)
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
@@ -77,11 +99,9 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 
 	if len(allScores) == 0 {
 		return &JudgeScores{
-			RequirementInterpretation: 0,
-			DecisionCommunication:     0,
-			RecoveryQuality:           0,
-			UnconventionalThinking:    0,
-			Rationale:                 "ALL_JUDGE_RUNS_FAILED",
+			Rationale:     "ALL_JUDGE_RUNS_FAILED",
+			Failed:        true,
+			FailureReason: "ALL_JUDGE_RUNS_FAILED",
 		}, nil
 	}
 

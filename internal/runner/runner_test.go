@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/psimmons/proving-ground/internal/runner"
+	"github.com/petersimmons1972/proving-ground/internal/runner"
 )
 
 // setupFakeClaude writes a fake claude script to a temp bin dir and prepends it to PATH.

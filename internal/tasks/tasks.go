@@ -11,10 +11,11 @@ import (
 
 // Task represents one benchmark task.
 type Task struct {
-	ID    string
-	Tier  int
-	Title string
-	Spec  string // full markdown content including frontmatter
+	ID          string
+	Tier        int
+	Title       string
+	Spec        string // full markdown content including frontmatter
+	TestCommand string // command from ## Tests section, e.g. "python -m pytest solution/ --json-report"
 }
 
 // LoadTasks loads task definitions for the requested tiers, sorted by ID.
@@ -50,10 +51,11 @@ func LoadTasks(tasksDir string, tiers []string) ([]Task, error) {
 				return nil, fmt.Errorf("parsing frontmatter in %s: %w", path, err)
 			}
 			tasks = append(tasks, Task{
-				ID:    meta["id"],
-				Tier:  tier,
-				Title: meta["title"],
-				Spec:  string(content),
+				ID:          meta["id"],
+				Tier:        tier,
+				Title:       meta["title"],
+				Spec:        string(content),
+				TestCommand: parseTestCommand(string(content)),
 			})
 		}
 	}
@@ -62,6 +64,20 @@ func LoadTasks(tasksDir string, tiers []string) ([]Task, error) {
 }
 
 var frontmatterRe = regexp.MustCompile(`(?s)^---\n(.+?)\n---`)
+
+// testCommandRe matches a "## Tests" section followed by a "command: ..." line.
+// The command value is captured in group 1.
+var testCommandRe = regexp.MustCompile(`(?m)^## Tests\s*\ncommand:\s*(.+)$`)
+
+// parseTestCommand extracts the test command from a task markdown's ## Tests section.
+// Returns an empty string if no such section exists.
+func parseTestCommand(content string) string {
+	m := testCommandRe.FindStringSubmatch(content)
+	if m == nil {
+		return ""
+	}
+	return strings.TrimSpace(m[1])
+}
 
 func parseFrontmatter(content string) (map[string]string, error) {
 	m := frontmatterRe.FindStringSubmatch(content)

@@ -6,36 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/psimmons/proving-ground/internal/scoring"
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
 )
 
-func TestScoreTestsAllPass(t *testing.T) {
-	s := scoring.ScoreTests(0, "5 passed")
-	if s.TestsPass != 10.0 {
-		t.Errorf("TestsPass = %f, want 10.0", s.TestsPass)
-	}
-}
-
-func TestScoreTestsAllFail(t *testing.T) {
-	s := scoring.ScoreTests(1, "5 failed")
-	if s.TestsPass != 0.0 {
-		t.Errorf("TestsPass = %f, want 0.0", s.TestsPass)
-	}
-}
-
-func TestScoreTestsExactPartial(t *testing.T) {
-	s := scoring.ScoreTests(1, "3 passed, 2 failed")
-	if s.TestsPass != 6.0 {
-		t.Errorf("TestsPass = %f, want 6.0", s.TestsPass)
-	}
-}
-
-func TestScoreTestsNoTestsFound(t *testing.T) {
-	s := scoring.ScoreTests(0, "All done, no tests to run")
-	if s.TestsPass != 0.0 {
-		t.Errorf("TestsPass = %f, want 0.0", s.TestsPass)
-	}
-}
+// ScoreTests now runs pytest independently (see harness_scoring_test.go for those tests).
+// The tests below cover the remaining automated scoring functions.
 
 func TestScoreLOCAtMinimalReturns10(t *testing.T) {
 	tmp := t.TempDir()

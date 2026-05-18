@@ -3,5 +3,10 @@
 coverage.out
 /proving-ground
 /.worktrees/
-/data/runs/
 /solution/
+
+# Benchmark run output — generated, not source
+data/results.html
+data/results.json
+data/history.jsonl
+data/runs/
