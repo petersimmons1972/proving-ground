@@ -26,7 +26,7 @@ type RunMetadata struct {
 	SchemaVersion  string        `json:"schema_version"`
 	TasksAttempted int           `json:"tasks_attempted"`
 	TasksFailed    int           `json:"tasks_failed"`
-	JudgeFailures  []TaskFailure `json:"judge_failures,omitempty"`
+	TaskFailures   []TaskFailure `json:"task_failures,omitempty"`
 }
 
 // ResultsReport holds all scored data for a benchmark run.

@@ -250,7 +250,7 @@ func Run(ctx context.Context, cfg Config) error {
 			SchemaVersion:  "2",
 			TasksAttempted: tasksAttempted,
 			TasksFailed:    len(taskFailures),
-			JudgeFailures:  taskFailures,
+			TaskFailures:   taskFailures,
 		},
 	}
 

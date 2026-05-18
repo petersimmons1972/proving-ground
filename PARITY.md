@@ -75,7 +75,7 @@ modes that existed in both ports.
   "schema_version": "2",
   "tasks_attempted": 9,
   "tasks_failed": 1,
-  "judge_failures": [
+  "task_failures": [
     { "task_id": "parse-01", "profile": "zero", "reason": "ALL_JUDGE_RUNS_FAILED" }
   ]
 }
@@ -84,7 +84,7 @@ modes that existed in both ports.
 - `schema_version`: always `"2"` in the Go port.
 - `tasks_attempted`: total number of task × profile combinations dispatched.
 - `tasks_failed`: number that returned an error (run_task failure or judge failure).
-- `judge_failures`: per-failure details. **Omitted from JSON when empty** (all tasks succeeded).
+- `task_failures`: per-failure details. **Omitted from JSON when empty** (all tasks succeeded).
 
 ### Behavior changes from schema v1 (Python original)
 

@@ -176,7 +176,7 @@ func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 		SchemaVersion:  "2",
 		TasksAttempted: 9,
 		TasksFailed:    2,
-		JudgeFailures: []results.TaskFailure{
+		TaskFailures: []results.TaskFailure{
 			{TaskID: "parse-01", Profile: "zero", Reason: "ALL_JUDGE_RUNS_FAILED"},
 			{TaskID: "sort-02", Profile: "light", Reason: "run_task: simulated failure"},
 		},
@@ -192,11 +192,11 @@ func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 			SchemaVersion  string `json:"schema_version"`
 			TasksAttempted int    `json:"tasks_attempted"`
 			TasksFailed    int    `json:"tasks_failed"`
-			JudgeFailures  []struct {
+			TaskFailures  []struct {
 				TaskID  string `json:"task_id"`
 				Profile string `json:"profile"`
 				Reason  string `json:"reason"`
-			} `json:"judge_failures"`
+			} `json:"task_failures"`
 		} `json:"metadata"`
 	}
 	if err := json.Unmarshal(data, &parsed); err != nil {
@@ -212,13 +212,13 @@ func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 	if parsed.Metadata.TasksFailed != 2 {
 		t.Errorf("tasks_failed = %d, want 2", parsed.Metadata.TasksFailed)
 	}
-	if len(parsed.Metadata.JudgeFailures) != 2 {
-		t.Errorf("judge_failures len = %d, want 2", len(parsed.Metadata.JudgeFailures))
+	if len(parsed.Metadata.TaskFailures) != 2 {
+		t.Errorf("task_failures len = %d, want 2", len(parsed.Metadata.TaskFailures))
 	}
 }
 
-// TestResultsReport_JSON_MetadataOmittedWhenEmpty verifies that when JudgeFailures
-// is empty (all tasks succeeded), judge_failures is omitted from JSON (omitempty).
+// TestResultsReport_JSON_MetadataOmittedWhenEmpty verifies that when TaskFailures
+// is empty (all tasks succeeded), task_failures is omitted from JSON (omitempty).
 func TestResultsReport_JSON_MetadataOmittedWhenEmpty(t *testing.T) {
 	report := makeSampleReport()
 	report.Metadata = results.RunMetadata{
@@ -232,8 +232,8 @@ func TestResultsReport_JSON_MetadataOmittedWhenEmpty(t *testing.T) {
 		t.Fatalf("marshal: %v", err)
 	}
 
-	if bytes.Contains(data, []byte(`"judge_failures"`)) {
-		t.Error("judge_failures present in JSON when empty, want omitempty to suppress it")
+	if bytes.Contains(data, []byte(`"task_failures"`)) {
+		t.Error("task_failures present in JSON when empty, want omitempty to suppress it")
 	}
 }
 
