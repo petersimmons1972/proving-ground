@@ -30,13 +30,6 @@ func resolveAssetDir(explicit, subdir string) string {
 	return filepath.Join(cwd, subdir)
 }
 
-// makeRootContext creates a context that is cancelled by SIGTERM or SIGINT.
-// The returned stop function must be deferred to clean up signal handlers.
-func makeRootContext() context.Context {
-	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
-	return ctx
-}
-
 // runPreFlight checks that required tools are available before any benchmark work starts.
 // Returns a non-nil error if ANTHROPIC_API_KEY is absent or if the claude CLI is not on PATH.
 // A missing radon binary is non-fatal — it is logged as a warning instead.
