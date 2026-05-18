@@ -64,6 +64,20 @@ func TestJudge_ModelEnvVar_NotSet_NoModelFlag(t *testing.T) {
 	}
 }
 
+// TestJudge_ModelEnvVar_EmptyString_NoModelFlag confirms that when PROVING_GROUND_MODEL
+// is set to empty string "", no --model flag is passed. Empty string should be treated
+// as "not set" per os.Getenv semantics.
+func TestJudge_ModelEnvVar_EmptyString_NoModelFlag(t *testing.T) {
+	t.Setenv("PROVING_GROUND_MODEL", "")
+
+	args := scoring.BuildJudgeArgs("rubric")
+	for _, a := range args {
+		if a == "--model" {
+			t.Errorf("--model flag must not appear when PROVING_GROUND_MODEL is empty string; args: %v", args)
+		}
+	}
+}
+
 // TestJudge_ModelEnvVar_E2E_AppendsModelFlag runs the full ScoreWithJudge path
 // and captures the fake claude's received args from stdout to verify --model passes.
 func TestJudge_ModelEnvVar_E2E_AppendsModelFlag(t *testing.T) {

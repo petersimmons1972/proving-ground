@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	"github.com/petersimmons1972/proving-ground/internal/orchestrator"
 	"github.com/spf13/cobra"
@@ -21,9 +22,11 @@ func runPreFlight() error {
 	}
 
 	// 2. claude CLI must be on PATH.
-	out, err := exec.Command("claude", "--version").Output()
+	cmdCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	out, err := exec.CommandContext(cmdCtx, "claude", "--version").Output()
 	if err != nil {
-		return fmt.Errorf("claude CLI not found on PATH: %w", err)
+		return fmt.Errorf("claude CLI not found on PATH (or timed out after 5s): %w", err)
 	}
 	fmt.Fprintf(os.Stderr, "pre-flight: %s\n", out)
 

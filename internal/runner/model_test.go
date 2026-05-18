@@ -53,3 +53,24 @@ func TestRunner_ModelEnvVar_NotSet_NoModelFlag(t *testing.T) {
 		t.Errorf("--model flag should not be present when PROVING_GROUND_MODEL is not set; got stdout: %q", res.Stdout)
 	}
 }
+
+// TestRunner_ModelEnvVar_EmptyString_NoModelFlag confirms that when PROVING_GROUND_MODEL
+// is set to empty string "", no --model flag is passed. Empty string should be treated
+// as "not set" per os.Getenv semantics.
+func TestRunner_ModelEnvVar_EmptyString_NoModelFlag(t *testing.T) {
+	cleanup := setupFakeClaude(t, `echo "$@"; exit 0`)
+	defer cleanup()
+
+	t.Setenv("PROVING_GROUND_MODEL", "")
+
+	tmp := t.TempDir()
+	res, err := runner.RunTask(context.Background(), runner.RunTaskArgs{
+		TaskID: "t1-1", TaskSpec: "spec", ProfileName: "zero", WorkingDir: tmp,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(res.Stdout, "--model") {
+		t.Errorf("--model flag should not be present when PROVING_GROUND_MODEL is empty string; got stdout: %q", res.Stdout)
+	}
+}
