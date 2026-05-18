@@ -27,7 +27,7 @@ Then run it:
 
 ```bash
 docker run \
-  -e ANTHROPIC_API_KEY=sk-ant-... \
+  --env-file .env \
   -v ./data:/data \
   provingground
 ```
@@ -38,10 +38,12 @@ To run a single tier:
 
 ```bash
 docker run \
-  -e ANTHROPIC_API_KEY=sk-ant-... \
+  --env-file .env \
   -v ./data:/data \
   provingground --tier 1
 ```
+
+(Both `--env-file .env` and `-e ANTHROPIC_API_KEY=your-key` work; `--env-file` avoids typing the key directly into your shell history.)
 
 Tier 1 is the cheapest run (~$4–10) and gives you a quick read on your profile's correctness and elegance characteristics. Tier 2 is where judgment scores appear. Tier 3 is the most expensive and produces the most interesting data.
 
