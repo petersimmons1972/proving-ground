@@ -49,12 +49,20 @@ var rationaleRe = regexp.MustCompile(`RATIONALE:\s*(.+)`)
 // It deliberately omits --dangerously-skip-permissions because feeding untrusted
 // agent transcripts to a process with shell-execute permissions creates a
 // prompt-injection risk (B-4, #21).
+// When PROVING_GROUND_MODEL is set, --model <value> is appended so the judge
+// uses the same model as the runner.
 func BuildJudgeArgs(rubric string) []string {
-	return []string{
+	args := []string{
 		"--print",
 		"--no-session-persistence",
 		"--system-prompt", rubric,
 	}
+	// Allow callers to pin a specific Claude model via environment variable.
+	// Omitting the flag leaves the CLI to use its own default — no breaking change.
+	if model := os.Getenv("PROVING_GROUND_MODEL"); model != "" {
+		args = append(args, "--model", model)
+	}
+	return args
 }
 
 // ScoreWithJudge invokes claude as LLM judge `runs` times and returns median scores.

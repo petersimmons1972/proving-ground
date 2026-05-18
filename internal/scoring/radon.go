@@ -2,6 +2,7 @@ package scoring
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -28,6 +29,10 @@ func ScoreComplexity(ctx context.Context, solutionDir string) float64 {
 
 	out, err := exec.CommandContext(cmdCtx, "radon", "cc", solutionDir, "-a", "-s").Output()
 	if err != nil {
+		// Distinguish "binary not found" from other radon errors so users get a clear hint.
+		if _, lookErr := exec.LookPath("radon"); lookErr != nil {
+			log.Printf("WARNING: radon not found on PATH — Elegance scoring defaulting to 5.0; install radon==6.0.1 for accurate scores")
+		}
 		return 5.0
 	}
 

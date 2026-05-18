@@ -74,6 +74,11 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 	if args.SystemPrompt != "" {
 		cmdArgs = append(cmdArgs, "--system-prompt", args.SystemPrompt)
 	}
+	// Allow callers to pin a specific Claude model via environment variable.
+	// Omitting the flag leaves the CLI to use its own default — no breaking change.
+	if model := os.Getenv("PROVING_GROUND_MODEL"); model != "" {
+		cmdArgs = append(cmdArgs, "--model", model)
+	}
 
 	runCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()

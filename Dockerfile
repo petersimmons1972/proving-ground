@@ -18,8 +18,8 @@ RUN apk add --no-cache \
     git \
     ca-certificates
 
-# Install Claude Code CLI
-RUN npm install -g @anthropic-ai/claude-code
+# Install Claude Code CLI — pinned for reproducible benchmark runs (#26)
+RUN npm install -g @anthropic-ai/claude-code@1.0.3
 
 # Install radon (pinned version for score continuity) and pytest-json-report
 # for harness-controlled test scoring (B-3).
