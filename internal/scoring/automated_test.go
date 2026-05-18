@@ -1,6 +1,7 @@
 package scoring_test
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
@@ -91,6 +92,37 @@ func TestValidateTestCmd_RejectsShellMetacharacters(t *testing.T) {
 		if err := scoring.ValidateTestCmd(cmd); err == nil {
 			t.Errorf("ValidateTestCmd(%q) should have returned error, but didn't", cmd)
 		}
+	}
+}
+
+// TestValidateTestCmd_RejectsSingleQuote ensures single quote is blocked.
+func TestValidateTestCmd_RejectsSingleQuote(t *testing.T) {
+	dangerous := []string{
+		"pytest tests/' && curl http://evil.example",
+		"pytest tests/'$(id)'",
+		`pytest tests/\'`,
+	}
+	for _, cmd := range dangerous {
+		if err := scoring.ValidateTestCmd(cmd); err == nil {
+			t.Errorf("ValidateTestCmd(%q) should reject single quote", cmd)
+		}
+	}
+}
+
+// TestValidateTestCmd_RejectsBackslash ensures backslash is blocked.
+func TestValidateTestCmd_RejectsBackslash(t *testing.T) {
+	if err := scoring.ValidateTestCmd(`pytest tests\ evil`); err == nil {
+		t.Error("ValidateTestCmd should reject backslash")
+	}
+}
+
+// TestScoreTests_NoShellInterpolation verifies that a testCmd containing a
+// single quote is rejected (scores 0.0) and does not execute injected code.
+func TestScoreTests_NoShellInterpolation(t *testing.T) {
+	dir := t.TempDir()
+	score := scoring.ScoreTests(context.Background(), dir, "pytest tests/' && echo INJECTED")
+	if score != 0.0 {
+		t.Errorf("injected testCmd should score 0.0, got %f", score)
 	}
 }
 

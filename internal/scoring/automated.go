@@ -13,25 +13,30 @@ import (
 
 // ValidateTestCmd checks that testCmd contains no shell metacharacters that
 // could enable injection. Only pytest/python invocations with flags are permitted.
-// Rejected: ; & | ` $ > < ! { } ( )  (shell control and substitution chars).
+// Rejected: ; & | ` $ > < ! { } ( ) ' " \  (shell control, substitution, and
+// word-boundary chars that can break out of quoting contexts).
 func ValidateTestCmd(cmd string) error {
 	if cmd == "" {
 		return nil // empty is handled upstream
 	}
-	const forbidden = ";|&`$><!()"
+	const forbidden = `';|&` + "`" + `$><!()"`
 	for _, ch := range forbidden {
 		if strings.ContainsRune(cmd, ch) {
 			return fmt.Errorf("testCmd contains forbidden shell metacharacter %q: %q", ch, cmd)
 		}
+	}
+	// Check backslash separately — it cannot appear in the raw string literal above.
+	if strings.Contains(cmd, `\`) {
+		return fmt.Errorf("testCmd contains forbidden character '\\': %q", cmd)
 	}
 	return nil
 }
 
 // ScoreTests runs pytest independently against solutionDir using testCmd.
 // Agent stdout is ignored — the harness always computes the ground-truth score.
-// testCmd is the raw command string from the task spec (e.g. "python -m pytest solution/ --json-report").
-// If testCmd is empty, returns 0.0.
-// testCmd is validated against shell metacharacters before execution.
+// testCmd is the raw command string from the task spec (e.g. "python -m pytest solution/").
+// If testCmd is empty or contains forbidden characters, returns 0.0.
+// No shell is spawned — testCmd is split into argv and executed directly via exec.Command.
 func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 	if testCmd == "" {
 		return 0.0
@@ -42,11 +47,17 @@ func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 		return 0.0
 	}
 	reportFile := filepath.Join(solutionDir, ".pytest_report.json")
-	// Append --json-report flags; use shellQuote for shell-safe path quoting.
-	shellCmd := fmt.Sprintf("cd %s && %s --json-report --json-report-file=%s",
-		shellQuote(solutionDir), testCmd, shellQuote(reportFile))
-	cmd := exec.CommandContext(ctx, "sh", "-c", shellCmd)
-	cmd.Run() // non-zero exit is expected when tests fail — not an error here
+
+	// Split testCmd into argv — no shell. Append json-report flags.
+	parts := strings.Fields(testCmd)
+	if len(parts) == 0 {
+		return 0.0
+	}
+	args := append(parts[1:], "--json-report", "--json-report-file="+reportFile)
+
+	cmd := exec.CommandContext(ctx, parts[0], args...)
+	cmd.Dir = solutionDir // set working directory directly; no `cd` shell needed
+	cmd.Run()             // non-zero exit is expected when tests fail — not an error here
 	return parsePytestJSONReport(reportFile)
 }
 
@@ -70,12 +81,6 @@ func parsePytestJSONReport(path string) float64 {
 		return 0.0
 	}
 	return roundTo1(10.0 * float64(report.Summary.Passed) / float64(report.Summary.Total))
-}
-
-// shellQuote wraps s in single quotes, escaping any embedded single quotes.
-// This is sufficient for paths passed to "sh -c".
-func shellQuote(s string) string {
-	return "'" + strings.ReplaceAll(s, "'", "'\\''") + "'"
 }
 
 // ScoreLinesOfCode scores solution LOC: at or below minimal=10.0, at or above verbose=0.0.
