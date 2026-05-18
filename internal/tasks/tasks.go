@@ -9,6 +9,21 @@ import (
 	"strings"
 )
 
+// validateTestCmd checks that testCmd contains no shell metacharacters.
+// Matches the validation in scoring/automated.go.
+func validateTestCmd(cmd string) error {
+	if cmd == "" {
+		return nil
+	}
+	const forbidden = ";|&`$><!()"
+	for _, ch := range forbidden {
+		if strings.ContainsRune(cmd, ch) {
+			return fmt.Errorf("testCmd contains forbidden shell metacharacter %q: %q", ch, cmd)
+		}
+	}
+	return nil
+}
+
 // Task represents one benchmark task.
 type Task struct {
 	ID          string
@@ -50,12 +65,18 @@ func LoadTasks(tasksDir string, tiers []string) ([]Task, error) {
 			if err != nil {
 				return nil, fmt.Errorf("parsing frontmatter in %s: %w", path, err)
 			}
+			testCmd := parseTestCommand(string(content))
+			if err := validateTestCmd(testCmd); err != nil {
+				// Log the invalid command but continue; set TestCommand to "" so it scores 0.
+				fmt.Printf("tasks: invalid TestCommand in %s: %v\n", path, err)
+				testCmd = ""
+			}
 			tasks = append(tasks, Task{
 				ID:          meta["id"],
 				Tier:        tier,
 				Title:       meta["title"],
 				Spec:        string(content),
-				TestCommand: parseTestCommand(string(content)),
+				TestCommand: testCmd,
 			})
 		}
 	}

@@ -71,3 +71,44 @@ func TestScoreLOCNoPyFilesReturnsFivePointZero(t *testing.T) {
 		t.Errorf("score = %f, want 5.0", score)
 	}
 }
+
+// TestValidateTestCmd_RejectsShellMetacharacters verifies that commands
+// containing shell metacharacters are rejected before execution.
+func TestValidateTestCmd_RejectsShellMetacharacters(t *testing.T) {
+	dangerous := []string{
+		"pytest tests/; rm -rf /",
+		"pytest tests/ && curl http://evil.example",
+		"pytest tests/ | tee /tmp/exfil",
+		"pytest tests/ `whoami`",
+		"pytest tests/ $(id)",
+		"pytest tests/ > /dev/null",
+		"pytest tests/ 2>&1",
+		"pytest tests/ ! false",
+		"pytest tests/ { echo pwned; }",
+		"pytest tests/ (subshell)",
+	}
+	for _, cmd := range dangerous {
+		if err := scoring.ValidateTestCmd(cmd); err == nil {
+			t.Errorf("ValidateTestCmd(%q) should have returned error, but didn't", cmd)
+		}
+	}
+}
+
+// TestValidateTestCmd_AcceptsLegitimateCommands verifies that real pytest
+// commands are not rejected.
+func TestValidateTestCmd_AcceptsLegitimateCommands(t *testing.T) {
+	safe := []string{
+		"pytest tests/",
+		"pytest tests/ --json-report",
+		"pytest tests/test_solution.py -v",
+		"python -m pytest solution/",
+		"pytest . --tb=short",
+		"pytest solution/test.py -x",
+		"python -m pytest --co -q",
+	}
+	for _, cmd := range safe {
+		if err := scoring.ValidateTestCmd(cmd); err != nil {
+			t.Errorf("ValidateTestCmd(%q) returned unexpected error: %v", cmd, err)
+		}
+	}
+}

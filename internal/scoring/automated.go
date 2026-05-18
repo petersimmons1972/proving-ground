@@ -11,12 +11,34 @@ import (
 	"strings"
 )
 
+// ValidateTestCmd checks that testCmd contains no shell metacharacters that
+// could enable injection. Only pytest/python invocations with flags are permitted.
+// Rejected: ; & | ` $ > < ! { } ( )  (shell control and substitution chars).
+func ValidateTestCmd(cmd string) error {
+	if cmd == "" {
+		return nil // empty is handled upstream
+	}
+	const forbidden = ";|&`$><!()"
+	for _, ch := range forbidden {
+		if strings.ContainsRune(cmd, ch) {
+			return fmt.Errorf("testCmd contains forbidden shell metacharacter %q: %q", ch, cmd)
+		}
+	}
+	return nil
+}
+
 // ScoreTests runs pytest independently against solutionDir using testCmd.
 // Agent stdout is ignored — the harness always computes the ground-truth score.
 // testCmd is the raw command string from the task spec (e.g. "python -m pytest solution/ --json-report").
 // If testCmd is empty, returns 0.0.
+// testCmd is validated against shell metacharacters before execution.
 func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 	if testCmd == "" {
+		return 0.0
+	}
+	if err := ValidateTestCmd(testCmd); err != nil {
+		// Log the rejection; return 0 to fail scoring on malicious input.
+		fmt.Printf("scoring: rejected testCmd: %v\n", err)
 		return 0.0
 	}
 	reportFile := filepath.Join(solutionDir, ".pytest_report.json")
