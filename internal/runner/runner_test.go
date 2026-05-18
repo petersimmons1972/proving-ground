@@ -138,6 +138,21 @@ func TestSpecHeaderContainsAbsRunDir(t *testing.T) {
 	}
 }
 
+// TestRunner_Args_DoNotContainDangerousPermissions verifies the task runner
+// subprocess does not run with --dangerously-skip-permissions.
+// Without this flag, Claude Code enforces its permission system. Agents running
+// in headless --print mode may be unable to write files or execute shell
+// commands without permission approval — this is the intended security posture.
+// If tasks produce empty stdout, verify the agent's tool-use permissions.
+func TestRunner_Args_DoNotContainDangerousPermissions(t *testing.T) {
+	args := runner.BuildRunnerArgs("system prompt")
+	for _, a := range args {
+		if a == "--dangerously-skip-permissions" {
+			t.Errorf("runner args contain --dangerously-skip-permissions; this flag must not be present")
+		}
+	}
+}
+
 func TestRunTaskTimeoutReturnsResult(t *testing.T) {
 	// Script sleeps indefinitely -- will be killed by timeout.
 	cleanup := setupFakeClaude(t, `sleep 999; exit 0`)

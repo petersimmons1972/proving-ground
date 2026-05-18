@@ -35,6 +35,31 @@ type RunTaskArgs struct {
 	Timeout      time.Duration // zero means use defaultTimeout
 }
 
+// BuildRunnerArgs returns the command-line arguments for a task runner subprocess invocation.
+// The task spec is passed via stdin by the caller, not as a CLI argument.
+// The runner executes agent tasks in headless --print mode.
+//
+// --dangerously-skip-permissions is intentionally omitted.
+// Without it, Claude Code enforces its permission system. Agents running
+// in headless --print mode may be unable to write files or execute shell
+// commands without permission approval — this is the intended security posture.
+// If tasks produce empty stdout, verify the agent's tool-use permissions.
+func BuildRunnerArgs(systemPrompt string) []string {
+	args := []string{
+		"--print",
+		"--no-session-persistence",
+	}
+	if systemPrompt != "" {
+		args = append(args, "--system-prompt", systemPrompt)
+	}
+	// Allow callers to pin a specific Claude model via environment variable.
+	// Omitting the flag leaves the CLI to use its own default — no breaking change.
+	if model := os.Getenv("PROVING_GROUND_MODEL"); model != "" {
+		args = append(args, "--model", model)
+	}
+	return args
+}
+
 // RunTask runs one task+profile combination with Claude Code headless.
 // Creates an isolated subdirectory: WorkingDir/TaskID/ProfileName.
 func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
@@ -66,19 +91,7 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 		args.TaskSpec,
 	)
 
-	cmdArgs := []string{
-		"--print",
-		"--dangerously-skip-permissions",
-		"--no-session-persistence",
-	}
-	if args.SystemPrompt != "" {
-		cmdArgs = append(cmdArgs, "--system-prompt", args.SystemPrompt)
-	}
-	// Allow callers to pin a specific Claude model via environment variable.
-	// Omitting the flag leaves the CLI to use its own default — no breaking change.
-	if model := os.Getenv("PROVING_GROUND_MODEL"); model != "" {
-		cmdArgs = append(cmdArgs, "--model", model)
-	}
+	cmdArgs := BuildRunnerArgs(args.SystemPrompt)
 
 	runCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
