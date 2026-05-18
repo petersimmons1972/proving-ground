@@ -128,6 +128,46 @@ func TestJudgeAllRunsFailReturnsZeros(t *testing.T) {
 	}
 }
 
+// TestScoreWithJudge_AllRunsFail_ReturnsSentinel verifies B-2:
+// when ALL judge invocations fail, Failed must be true so callers
+// know the zero scores are not real scores — not silent contamination.
+func TestScoreWithJudge_AllRunsFail_ReturnsSentinel(t *testing.T) {
+	rubric, cleanup := setupFakeJudgeClaude(t, `exit 1`)
+	defer cleanup()
+
+	scores, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !scores.Failed {
+		t.Error("Failed = false, want true when all judge runs fail")
+	}
+	if scores.FailureReason != "ALL_JUDGE_RUNS_FAILED" {
+		t.Errorf("FailureReason = %q, want %q", scores.FailureReason, "ALL_JUDGE_RUNS_FAILED")
+	}
+	// Scores must be zero AND Failed must be true — not ambiguously zero
+	if scores.RequirementInterpretation != 0 {
+		t.Errorf("RequirementInterpretation = %f, want 0 for failed sentinel", scores.RequirementInterpretation)
+	}
+}
+
+// TestScoreWithJudge_SuccessfulRun_NotSentinel verifies that a successful
+// run does NOT set Failed=true, so callers can distinguish real zeros from
+// failed-run zeros.
+func TestScoreWithJudge_SuccessfulRun_NotSentinel(t *testing.T) {
+	rubric, cleanup := setupFakeJudgeClaude(t,
+		`printf 'REQUIREMENT_INTERPRETATION: 0\nDECISION_COMMUNICATION: 0\nRECOVERY_QUALITY: 0\nUNCONVENTIONAL_THINKING: 0\nRATIONALE: legitimately bad\n'; exit 0`)
+	defer cleanup()
+
+	scores, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if scores.Failed {
+		t.Error("Failed = true, want false when judge runs succeed (even with zero scores)")
+	}
+}
+
 func TestJudgeMissingDimensionDefaultsFive(t *testing.T) {
 	// Response omits UNCONVENTIONAL_THINKING — should default to 5.
 	rubric, cleanup := setupFakeJudgeClaude(t,

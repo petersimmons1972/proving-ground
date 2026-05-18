@@ -61,3 +61,38 @@ Score computation is identical between Go and Python:
 - Overall: same weighted sum
 
 **Any score difference between Go and Python outputs indicates a bug.**
+
+## Schema v2 Additions (Go port only)
+
+The Go port adds a `metadata` block to `results.json` that is not present in
+the Python original. This is a deliberate extension to surface silent failure
+modes that existed in both ports.
+
+### New top-level field: `"metadata"`
+
+```json
+"metadata": {
+  "schema_version": "2",
+  "tasks_attempted": 9,
+  "tasks_failed": 1,
+  "judge_failures": [
+    { "task_id": "parse-01", "profile": "zero", "reason": "ALL_JUDGE_RUNS_FAILED" }
+  ]
+}
+```
+
+- `schema_version`: always `"2"` in the Go port.
+- `tasks_attempted`: total number of task × profile combinations dispatched.
+- `tasks_failed`: number that returned an error (run_task failure or judge failure).
+- `judge_failures`: per-failure details. **Omitted from JSON when empty** (all tasks succeeded).
+
+### Behavior changes from schema v1 (Python original)
+
+| Situation | Python / old Go | New Go (schema v2) |
+|-----------|----------------|--------------------|
+| All judge runs fail | Returns `JudgeScores` with all zeros, `Rationale="ALL_JUDGE_RUNS_FAILED"`, silently averaged into results | Returns sentinel `JudgeScores{Failed:true}`, orchestrator records `TaskFailure`, excluded from score average |
+| Any task/profile pair fails | `Run()` returns `nil`, exits 0, no indication in output | `Run()` returns non-nil error, exits non-zero; failure recorded in `metadata`; partial results still written |
+
+The `metadata` block is always present in Go schema v2 output, even when
+`tasks_failed` is 0. Consumers can check `schema_version` to detect Go port
+output vs. Python port output.

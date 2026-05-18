@@ -185,9 +185,9 @@ func TestRunBenchmarkAppendsHistory(t *testing.T) {
 	}
 }
 
-// TestRunBenchmarkSurvivesTaskFailure verifies that a single profile failure does not
-// abort the whole run. One of the N RunTask calls returns an error; results.html
-// must still be produced.
+// TestRunBenchmarkSurvivesTaskFailure verifies that a single profile failure still
+// produces results.html (partial results are preserved) AND that Run returns a
+// non-nil error so callers and CI get a non-zero exit. See B-5/#22.
 func TestRunBenchmarkSurvivesTaskFailure(t *testing.T) {
 	dataDir := t.TempDir()
 
@@ -217,12 +217,15 @@ func TestRunBenchmarkSurvivesTaskFailure(t *testing.T) {
 		TemplateDir: findTemplateDir(t),
 		PromptDir:   findPromptDir(t),
 	}
-	if err := Run(context.Background(), cfg); err != nil {
-		t.Fatal(err)
+	// Run must return a non-nil error when any task fails — B-5 fix.
+	// Partial results are still written so the run is not silently lost.
+	err := Run(context.Background(), cfg)
+	if err == nil {
+		t.Error("Run() returned nil, want non-nil error when a task/profile pair fails")
 	}
 
 	if _, err := os.Stat(filepath.Join(dataDir, "results.html")); err != nil {
-		t.Error("results.html missing after partial task failure")
+		t.Error("results.html missing after partial task failure — partial results must still be written")
 	}
 }
 
@@ -508,6 +511,100 @@ type taskStub struct {
 
 func (s taskStub) toTask() tasks.Task {
 	return tasks.Task{ID: s.id, Tier: s.tier, Spec: "spec text"}
+}
+
+// TestRun_PartialTaskFailure_ReturnsError verifies B-5:
+// when at least one task/profile pair fails, orchestrator.Run() must return
+// a non-nil error. The current code logs WARNING and returns nil — that is the bug.
+func TestRun_PartialTaskFailure_ReturnsError(t *testing.T) {
+	dataDir := t.TempDir()
+
+	orig1, orig2 := runTaskFn, scoreWithJudgeFn
+	defer func() { runTaskFn, scoreWithJudgeFn = orig1, orig2 }()
+
+	var callCount atomic.Int64
+	runTaskFn = func(ctx context.Context, args runner.RunTaskArgs) (*runner.TaskResult, error) {
+		n := callCount.Add(1)
+		if n == 1 {
+			return nil, &mockError{"simulated task failure"}
+		}
+		r := *mockTaskResult
+		r.WorkingDir = t.TempDir()
+		return &r, nil
+	}
+	scoreWithJudgeFn = func(ctx context.Context, transcript, taskSpec, rubricPath string, runs int) (*scoring.JudgeScores, error) {
+		return mockJudge, nil
+	}
+
+	cfg := Config{
+		DataDir:     dataDir,
+		Tiers:       []string{"1"},
+		TasksDir:    findTasksDir(t),
+		ControlsDir: findControlsDir(t),
+		TemplateDir: findTemplateDir(t),
+		PromptDir:   findPromptDir(t),
+	}
+
+	err := Run(context.Background(), cfg)
+	if err == nil {
+		t.Error("Run() returned nil, want non-nil error when a task/profile pair fails")
+	}
+}
+
+// TestRun_PartialTaskFailure_RecordsMetadata verifies B-5:
+// results.json must contain tasks_failed and tasks_attempted counts in a metadata block.
+func TestRun_PartialTaskFailure_RecordsMetadata(t *testing.T) {
+	dataDir := t.TempDir()
+
+	orig1, orig2 := runTaskFn, scoreWithJudgeFn
+	defer func() { runTaskFn, scoreWithJudgeFn = orig1, orig2 }()
+
+	var callCount atomic.Int64
+	runTaskFn = func(ctx context.Context, args runner.RunTaskArgs) (*runner.TaskResult, error) {
+		n := callCount.Add(1)
+		if n == 1 {
+			return nil, &mockError{"simulated task failure"}
+		}
+		r := *mockTaskResult
+		r.WorkingDir = t.TempDir()
+		return &r, nil
+	}
+	scoreWithJudgeFn = func(ctx context.Context, transcript, taskSpec, rubricPath string, runs int) (*scoring.JudgeScores, error) {
+		return mockJudge, nil
+	}
+
+	cfg := Config{
+		DataDir:     dataDir,
+		Tiers:       []string{"1"},
+		TasksDir:    findTasksDir(t),
+		ControlsDir: findControlsDir(t),
+		TemplateDir: findTemplateDir(t),
+		PromptDir:   findPromptDir(t),
+	}
+
+	// Run may return error — that's expected per B-5 fix. We care about the JSON.
+	_ = Run(context.Background(), cfg)
+
+	jsonData, err := os.ReadFile(filepath.Join(dataDir, "results.json"))
+	if err != nil {
+		t.Fatalf("results.json not written: %v", err)
+	}
+
+	var parsed struct {
+		Metadata struct {
+			TasksAttempted int `json:"tasks_attempted"`
+			TasksFailed    int `json:"tasks_failed"`
+		} `json:"metadata"`
+	}
+	if err := json.Unmarshal(jsonData, &parsed); err != nil {
+		t.Fatalf("invalid json: %v", err)
+	}
+	if parsed.Metadata.TasksAttempted == 0 {
+		t.Error("metadata.tasks_attempted = 0, want > 0")
+	}
+	if parsed.Metadata.TasksFailed == 0 {
+		t.Error("metadata.tasks_failed = 0, want > 0 (one task was injected to fail)")
+	}
 }
 
 // mockError is a simple error type for test stubs.

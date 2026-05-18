@@ -167,6 +167,76 @@ func TestJSONOutputIsValid(t *testing.T) {
 	}
 }
 
+// TestResultsReport_JSON_ContainsSchemaVersionAndMetadata verifies that a
+// ResultsReport with a populated RunMetadata marshals to JSON containing
+// schema_version: "2" and the metadata block (tasks_failed, tasks_attempted).
+func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
+	report := makeSampleReport()
+	report.Metadata = results.RunMetadata{
+		SchemaVersion:  "2",
+		TasksAttempted: 9,
+		TasksFailed:    2,
+		JudgeFailures: []results.TaskFailure{
+			{TaskID: "parse-01", Profile: "zero", Reason: "ALL_JUDGE_RUNS_FAILED"},
+			{TaskID: "sort-02", Profile: "light", Reason: "run_task: simulated failure"},
+		},
+	}
+
+	data, err := json.Marshal(report)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+
+	var parsed struct {
+		Metadata struct {
+			SchemaVersion  string `json:"schema_version"`
+			TasksAttempted int    `json:"tasks_attempted"`
+			TasksFailed    int    `json:"tasks_failed"`
+			JudgeFailures  []struct {
+				TaskID  string `json:"task_id"`
+				Profile string `json:"profile"`
+				Reason  string `json:"reason"`
+			} `json:"judge_failures"`
+		} `json:"metadata"`
+	}
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	if parsed.Metadata.SchemaVersion != "2" {
+		t.Errorf("schema_version = %q, want %q", parsed.Metadata.SchemaVersion, "2")
+	}
+	if parsed.Metadata.TasksAttempted != 9 {
+		t.Errorf("tasks_attempted = %d, want 9", parsed.Metadata.TasksAttempted)
+	}
+	if parsed.Metadata.TasksFailed != 2 {
+		t.Errorf("tasks_failed = %d, want 2", parsed.Metadata.TasksFailed)
+	}
+	if len(parsed.Metadata.JudgeFailures) != 2 {
+		t.Errorf("judge_failures len = %d, want 2", len(parsed.Metadata.JudgeFailures))
+	}
+}
+
+// TestResultsReport_JSON_MetadataOmittedWhenEmpty verifies that when JudgeFailures
+// is empty (all tasks succeeded), judge_failures is omitted from JSON (omitempty).
+func TestResultsReport_JSON_MetadataOmittedWhenEmpty(t *testing.T) {
+	report := makeSampleReport()
+	report.Metadata = results.RunMetadata{
+		SchemaVersion:  "2",
+		TasksAttempted: 9,
+		TasksFailed:    0,
+	}
+
+	data, err := json.Marshal(report)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+
+	if bytes.Contains(data, []byte(`"judge_failures"`)) {
+		t.Error("judge_failures present in JSON when empty, want omitempty to suppress it")
+	}
+}
+
 func TestHTMLIsSelfContained(t *testing.T) {
 	htmlPath, _ := generate(t)
 	data, err := os.ReadFile(htmlPath)

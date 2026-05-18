@@ -13,9 +13,26 @@ import (
 	"github.com/petersimmons1972/proving-ground/internal/config"
 )
 
+// TaskFailure records a single task/profile combination that failed during a run.
+type TaskFailure struct {
+	TaskID  string `json:"task_id"`
+	Profile string `json:"profile"`
+	Reason  string `json:"reason"`
+}
+
+// RunMetadata records diagnostic counters and failure details for a benchmark run.
+// It is written to results.json under "metadata" when SchemaVersion is "2".
+type RunMetadata struct {
+	SchemaVersion  string        `json:"schema_version"`
+	TasksAttempted int           `json:"tasks_attempted"`
+	TasksFailed    int           `json:"tasks_failed"`
+	JudgeFailures  []TaskFailure `json:"judge_failures,omitempty"`
+}
+
 // ResultsReport holds all scored data for a benchmark run.
 // JSON field names match Python's dataclass asdict() output exactly,
 // so JSON written by the Go port is byte-compatible with the Python port.
+// Schema v2 adds a Metadata block recording failure counts and details.
 type ResultsReport struct {
 	RunID            string                        `json:"run_id"`
 	TaskSuiteVersion string                        `json:"task_suite_version"`
@@ -23,6 +40,7 @@ type ResultsReport struct {
 	Scores           map[string]map[string]float64 `json:"scores"`
 	DimensionScores  map[string]map[string]float64 `json:"dimension_scores"`
 	History          interface{}                   `json:"history"`
+	Metadata         RunMetadata                   `json:"metadata"`
 }
 
 // defaultConfigColors mirrors DEFAULT_CONFIG_COLORS from the Python port.
@@ -114,6 +132,11 @@ func (r ResultsReport) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("marshal task_suite_version: %w", err)
 	}
 
+	metaJSON, err := json.Marshal(r.Metadata)
+	if err != nil {
+		return nil, fmt.Errorf("marshal metadata: %w", err)
+	}
+
 	var buf bytes.Buffer
 	buf.WriteString(`{"run_id":`)
 	buf.Write(runIDJSON)
@@ -127,6 +150,8 @@ func (r ResultsReport) MarshalJSON() ([]byte, error) {
 	buf.Write(dimScoresJSON)
 	buf.WriteString(`,"history":`)
 	buf.Write(histJSON)
+	buf.WriteString(`,"metadata":`)
+	buf.Write(metaJSON)
 	buf.WriteString(`}`)
 	return buf.Bytes(), nil
 }

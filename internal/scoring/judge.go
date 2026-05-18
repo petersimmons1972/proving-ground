@@ -22,6 +22,11 @@ type JudgeScores struct {
 	RecoveryQuality           float64
 	UnconventionalThinking    float64
 	Rationale                 string
+	// Failed and FailureReason are internal sentinel fields — not serialized to JSON.
+	// When Failed is true, all dimension scores are zero and must NOT be averaged
+	// into benchmark results as if they were real scores.
+	Failed        bool   `json:"-"`
+	FailureReason string `json:"-"`
 }
 
 // judgeRaw holds one parsed judge run result.
@@ -77,11 +82,9 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 
 	if len(allScores) == 0 {
 		return &JudgeScores{
-			RequirementInterpretation: 0,
-			DecisionCommunication:     0,
-			RecoveryQuality:           0,
-			UnconventionalThinking:    0,
-			Rationale:                 "ALL_JUDGE_RUNS_FAILED",
+			Rationale:     "ALL_JUDGE_RUNS_FAILED",
+			Failed:        true,
+			FailureReason: "ALL_JUDGE_RUNS_FAILED",
 		}, nil
 	}
 
