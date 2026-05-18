@@ -107,7 +107,7 @@ Scored across six dimensions: Correctness, Elegance, Discipline, Judgment, Creat
 ## How It Works
 
 1. Provide your API key and optionally your agent profile
-2. The benchmark runs each task three times: blank agent, light prompt, your profile
+2. The benchmark runs each task once per configuration — always including the blank-agent (`zero`) and light-prompt controls, plus any custom profiles you add to `data/profiles/`. With one custom profile that is three configurations; with two profiles, four.
 3. Automated metrics + LLM-as-judge score every dimension
 4. A single HTML results page shows exactly where your agent excels and where it falls short
 5. Run again after improving your profile — history tracking shows your progress over time
@@ -124,4 +124,5 @@ Run it before you ship your next agent to production.
 | **[How to use it](docs/using.md)** | Running with Docker, providing your own profile, cost estimates, output files |
 | **[Reading the results](docs/interpreting.md)** | The three configurations, what each dimension actually measures, how to tell if your profile is working |
 | **[Suite v1 archive](docs/suite-v1-results.md)** | Full preserved results from the first run, including both historical runs, task-level analysis, and what changes in Suite v2 |
+| [docs/suite-v2-results.md](docs/suite-v2-results.md) | Full archived results from the April 2026 (Suite v2) run |
 | **[Benchmark design](docs/plans/2026-03-30-benchmark-design.md)** | Full architecture and task specifications |

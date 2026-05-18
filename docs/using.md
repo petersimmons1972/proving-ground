@@ -27,7 +27,7 @@ Then run it:
 
 ```bash
 docker run \
-  -e ANTHROPIC_API_KEY=sk-ant-... \
+  --env-file .env \
   -v ./data:/data \
   provingground
 ```
@@ -38,10 +38,12 @@ To run a single tier:
 
 ```bash
 docker run \
-  -e ANTHROPIC_API_KEY=sk-ant-... \
+  --env-file .env \
   -v ./data:/data \
   provingground --tier 1
 ```
+
+(Both `--env-file .env` and `-e ANTHROPIC_API_KEY=your-key` work; `--env-file` avoids typing the key directly into your shell history.)
 
 Tier 1 is the cheapest run (~$4–10) and gives you a quick read on your profile's correctness and elegance characteristics. Tier 2 is where judgment scores appear. Tier 3 is the most expensive and produces the most interesting data.
 
@@ -125,7 +127,23 @@ proving-ground \
   --tier all
 ```
 
-You'll need Claude Code CLI installed and on your PATH. The benchmark uses it as the execution engine — each task is sent to `claude --print --dangerously-skip-permissions` with the task spec piped via stdin and your profile passed as `--system-prompt`.
+You'll need Claude Code CLI installed and on your PATH. The benchmark was built with `@anthropic-ai/claude-code@1.0.3`. Install a specific version: `npm install -g @anthropic-ai/claude-code@1.0.3`. Check your installed version: `claude --version`.
+
+Claude Code runs in headless `--print` mode. The `--dangerously-skip-permissions` flag is **not** used — Claude Code enforces its standard permission system. If tasks produce empty output, the agent may need explicit permission grants.
+
+---
+
+## Configuration
+
+Beyond `--tier` and `--data-dir`, three environment variables tune benchmark behavior:
+
+| Variable | Default | Effect |
+|----------|---------|--------|
+| `PROVING_GROUND_MODEL` | CLI default | Claude model for both runner and judge. Set to pin model for reproducibility (e.g. `claude-3-5-sonnet-20241022`). |
+| `PROVING_GROUND_JUDGE_RUNS` | `5` | Judge invocations per task. Reduce to `1` for fast iteration; increase for lower variance. |
+| `PROVING_GROUND_MAX_WORKERS` | `4` | Parallel task workers. Reduce to `1` for debugging; increase to run faster (higher API cost). |
+
+Set via `--env-file .env` or `-e VAR=value` in Docker, or `export VAR=value` for the native binary.
 
 ---
 
@@ -137,7 +155,7 @@ Each task executes independently with each configuration. For a full run with on
 2. Launches Claude Code with the task spec
 3. Captures the full session transcript and all files written
 4. Scores the output: automated metrics first (pytest, LOC, complexity, scope), then LLM-as-judge
-5. Judge scoring runs 3 times; median is taken for each dimension to reduce variance
+5. Judge scoring runs 5 times by default (configurable via `PROVING_GROUND_JUDGE_RUNS`); the median across runs is taken for each dimension to reduce variance
 
 You'll see progress logged to stdout. Expect 45–90 minutes for a full run.
 
@@ -179,5 +197,7 @@ The history file lets you track progress across runs. Don't delete it. Every run
 | `--tier 1`  | 3     | Craft, execution, correctness    | $4–10           |
 | `--tier 2`  | 3     | Judgment, ambiguity, scope       | $6–15           |
 | `--tier 3`  | 4     | Pressure, coordination, recovery | $8–20           |
+
+`--tier all` (or omitting `--tier` entirely) runs all three tiers sequentially. These are equivalent — `all` is the default.
 
 Tier 2 is the best single-tier run if you're trying to evaluate whether your profile improves decision-making. Tier 1 results are relatively unsurprising. Tier 3 results are the most interesting and the most expensive.

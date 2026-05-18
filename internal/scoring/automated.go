@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"os/exec"
@@ -43,7 +44,7 @@ func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 	}
 	if err := ValidateTestCmd(testCmd); err != nil {
 		// Log the rejection; return 0 to fail scoring on malicious input.
-		fmt.Printf("scoring: rejected testCmd: %v\n", err)
+		log.Printf("scoring: rejected testCmd: %v", err)
 		return 0.0
 	}
 	reportFile := filepath.Join(solutionDir, ".pytest_report.json")

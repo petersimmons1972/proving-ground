@@ -2,27 +2,19 @@ package tasks
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/petersimmons1972/proving-ground/internal/scoring"
 )
 
-// validateTestCmd checks that testCmd contains no shell metacharacters.
-// Matches the validation in scoring/automated.go.
-func validateTestCmd(cmd string) error {
-	if cmd == "" {
-		return nil
-	}
-	const forbidden = ";|&`$><!()"
-	for _, ch := range forbidden {
-		if strings.ContainsRune(cmd, ch) {
-			return fmt.Errorf("testCmd contains forbidden shell metacharacter %q: %q", ch, cmd)
-		}
-	}
-	return nil
-}
+// safeIDRe matches only alphanumeric characters, hyphens, and underscores.
+// Task IDs that do not match are rejected to prevent path traversal.
+var safeIDRe = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
 
 // Task represents one benchmark task.
 type Task struct {
@@ -65,14 +57,21 @@ func LoadTasks(tasksDir string, tiers []string) ([]Task, error) {
 			if err != nil {
 				return nil, fmt.Errorf("parsing frontmatter in %s: %w", path, err)
 			}
+			// Sanitize task ID to prevent path traversal in filepath.Join.
+			taskID := filepath.Base(strings.TrimSpace(meta["id"]))
+			if taskID == "" || taskID == "." || !safeIDRe.MatchString(taskID) {
+				log.Printf("tasks: skipping %s — invalid or unsafe task ID %q", path, meta["id"])
+				continue
+			}
+
 			testCmd := parseTestCommand(string(content))
-			if err := validateTestCmd(testCmd); err != nil {
+			if err := scoring.ValidateTestCmd(testCmd); err != nil {
 				// Log the invalid command but continue; set TestCommand to "" so it scores 0.
-				fmt.Printf("tasks: invalid TestCommand in %s: %v\n", path, err)
+				log.Printf("tasks: invalid TestCommand in %s: %v", path, err)
 				testCmd = ""
 			}
 			tasks = append(tasks, Task{
-				ID:          meta["id"],
+				ID:          taskID,
 				Tier:        tier,
 				Title:       meta["title"],
 				Spec:        string(content),

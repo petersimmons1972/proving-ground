@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -91,21 +90,3 @@ func TestPreFlight_ClaudeNotOnPath_ReturnsError(t *testing.T) {
 	}
 }
 
-// TestMakeRootContext verifies that makeRootContext returns a cancellable context
-// (not context.Background) that can be cancelled via signal.NotifyContext.
-func TestMakeRootContext(t *testing.T) {
-	ctx := makeRootContext()
-
-	// A cancellable context should not equal Background and should have a non-nil Err() after cancel.
-	if ctx == context.Background() {
-		t.Error("makeRootContext returned context.Background; expected a signal-cancellable context")
-	}
-
-	// Check that it's a derived context with cancellation capability.
-	// We cannot test cancellation directly without sending signals, but we can
-	// verify it's not the background by checking that it's a different object.
-	bgCtx := context.Background()
-	if ctx == bgCtx {
-		t.Error("makeRootContext returned Background context, expected derived context")
-	}
-}

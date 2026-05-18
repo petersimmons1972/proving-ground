@@ -23,7 +23,7 @@ RUN npm install -g @anthropic-ai/claude-code@1.0.3
 
 # Install radon (pinned version for score continuity) and pytest-json-report
 # for harness-controlled test scoring (B-3).
-RUN pip install --break-system-packages radon==6.0.1 pytest pytest-json-report
+RUN pip install --break-system-packages radon==6.0.1 pytest==8.3.4 pytest-json-report==1.5.0
 
 # Copy Go binary
 COPY --from=builder /out/proving-ground /usr/local/bin/proving-ground
