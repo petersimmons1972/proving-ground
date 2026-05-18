@@ -49,6 +49,11 @@ func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 	}
 	reportFile := filepath.Join(solutionDir, ".pytest_report.json")
 
+	// Remove any pre-existing report file. An agent could write a fake
+	// perfect-score report before the harness runs; removing it here ensures
+	// pytest always writes a fresh result from actual test execution.
+	os.Remove(reportFile)
+
 	// Split testCmd into argv — no shell. Append json-report flags.
 	parts := strings.Fields(testCmd)
 	if len(parts) == 0 {
@@ -59,7 +64,14 @@ func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
 	cmd := exec.CommandContext(ctx, parts[0], args...)
 	cmd.Dir = solutionDir // set working directory directly; no `cd` shell needed
 	cmd.Run()             // non-zero exit is expected when tests fail — not an error here
-	return parsePytestJSONReport(reportFile)
+
+	score := parsePytestJSONReport(reportFile)
+
+	// Remove the harness-generated report so it never appears in FilesWritten
+	// and does not penalize the agent's Discipline score.
+	os.Remove(reportFile)
+
+	return score
 }
 
 // parsePytestJSONReport reads the json-report output and returns a 0–10 pass rate.
