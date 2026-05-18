@@ -79,7 +79,7 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 
 	var allScores []judgeRaw
 
-	for i := 0; i < runs; i++ {
+	for i := range runs {
 		runCtx, cancel := context.WithTimeout(ctx, judgeTimeout)
 		args := BuildJudgeArgs(rubric)
 		cmd := exec.CommandContext(runCtx, "claude", args...)

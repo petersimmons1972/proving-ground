@@ -25,7 +25,7 @@ func TestScoreLOCAtMinimalReturns10(t *testing.T) {
 func TestScoreLOCVerbose(t *testing.T) {
 	tmp := t.TempDir()
 	var lines []string
-	for i := 0; i < 80; i++ {
+	for i := range 80 {
 		lines = append(lines, "x_"+string(rune('0'+i%10))+" = "+string(rune('0'+i%10)))
 	}
 	os.WriteFile(filepath.Join(tmp, "solution.py"), []byte(strings.Join(lines, "\n")), 0644)
