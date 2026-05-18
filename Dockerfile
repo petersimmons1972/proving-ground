@@ -21,8 +21,9 @@ RUN apk add --no-cache \
 # Install Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
 
-# Install radon (pinned version for score continuity)
-RUN pip install --break-system-packages radon==6.0.1
+# Install radon (pinned version for score continuity) and pytest-json-report
+# for harness-controlled test scoring (B-3).
+RUN pip install --break-system-packages radon==6.0.1 pytest pytest-json-report
 
 # Copy Go binary
 COPY --from=builder /out/proving-ground /usr/local/bin/proving-ground

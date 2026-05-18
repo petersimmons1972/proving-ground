@@ -301,7 +301,7 @@ func runAndScore(
 		return taskScore{}, fmt.Errorf("run_task: %w", err)
 	}
 
-	auto := scoring.ScoreTests(result.ExitCode, result.Stdout)
+	testsPass := scoring.ScoreTests(ctx, result.WorkingDir, task.TestCommand)
 
 	locRef, ok := config.LocRefs[task.ID]
 	if !ok {
@@ -322,7 +322,7 @@ func runAndScore(
 	return taskScore{
 		taskID:      task.ID,
 		tier:        task.Tier,
-		correctness: (auto.TestsPass + judge.RequirementInterpretation) / 2,
+		correctness: (testsPass + judge.RequirementInterpretation) / 2,
 		elegance:    (loc + complexity) / 2,
 		discipline:  scope,
 		judgment:    judge.DecisionCommunication,

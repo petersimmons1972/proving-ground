@@ -1,32 +1,64 @@
 package scoring
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"math"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"regexp"
-	"strconv"
 	"strings"
 )
 
-// AutomatedScores holds scores derived from pytest output.
+// AutomatedScores holds scores derived from running pytest independently.
 type AutomatedScores struct {
 	TestsPass float64
 }
 
-var passedRe = regexp.MustCompile(`(\d+) passed`)
-var failedRe = regexp.MustCompile(`(\d+) failed`)
-
-// ScoreTests parses pytest stdout and returns a 0–10 pass rate score.
-func ScoreTests(exitCode int, stdout string) AutomatedScores {
-	passed := extractCount(passedRe, stdout)
-	failed := extractCount(failedRe, stdout)
-	total := passed + failed
-	var rate float64
-	if total > 0 {
-		rate = float64(passed) / float64(total)
+// ScoreTests runs pytest independently against solutionDir using testCmd.
+// Agent stdout is ignored — the harness always computes the ground-truth score.
+// testCmd is the raw command string from the task spec (e.g. "python -m pytest solution/ --json-report").
+// If testCmd is empty, returns 0.0.
+func ScoreTests(ctx context.Context, solutionDir, testCmd string) float64 {
+	if testCmd == "" {
+		return 0.0
 	}
-	return AutomatedScores{TestsPass: roundTo1(rate * 10)}
+	reportFile := filepath.Join(solutionDir, ".pytest_report.json")
+	// Append --json-report flags; use %q for shell-safe path quoting.
+	shellCmd := fmt.Sprintf("cd %s && %s --json-report --json-report-file=%s",
+		shellQuote(solutionDir), testCmd, shellQuote(reportFile))
+	cmd := exec.CommandContext(ctx, "sh", "-c", shellCmd)
+	cmd.Run() // non-zero exit is expected when tests fail — not an error here
+	return parsePytestJSONReport(reportFile)
+}
+
+// parsePytestJSONReport reads the json-report output and returns a 0–10 pass rate.
+// Returns 0.0 if the file is missing, unreadable, or has no tests.
+func parsePytestJSONReport(path string) float64 {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return 0.0
+	}
+	var report struct {
+		Summary struct {
+			Passed int `json:"passed"`
+			Total  int `json:"total"`
+		} `json:"summary"`
+	}
+	if err := json.Unmarshal(data, &report); err != nil {
+		return 0.0
+	}
+	if report.Summary.Total == 0 {
+		return 0.0
+	}
+	return roundTo1(10.0 * float64(report.Summary.Passed) / float64(report.Summary.Total))
+}
+
+// shellQuote wraps s in single quotes, escaping any embedded single quotes.
+// This is sufficient for paths passed to "sh -c".
+func shellQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", "'\\''") + "'"
 }
 
 // ScoreLinesOfCode scores solution LOC: at or below minimal=10.0, at or above verbose=0.0.
@@ -86,15 +118,6 @@ func ScoreScope(allowedFiles, filesWritten []string) float64 {
 	}
 	ratio := float64(outOfScope) / float64(len(filesWritten))
 	return roundTo1((1.0 - ratio) * 10)
-}
-
-func extractCount(re *regexp.Regexp, text string) int {
-	m := re.FindStringSubmatch(text)
-	if m == nil {
-		return 0
-	}
-	n, _ := strconv.Atoi(m[1])
-	return n
 }
 
 func roundTo1(x float64) float64 {

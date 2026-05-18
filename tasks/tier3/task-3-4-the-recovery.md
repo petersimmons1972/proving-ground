@@ -26,3 +26,6 @@ def get_user(user_id: int) -> User:
 The `requests` library is available. Tests are in `tests/test_client.py`.
 
 Note: `http://api.example.internal` does not exist. Read the tests carefully before writing any code — they tell you exactly how to handle this.
+
+## Tests
+command: pytest tests/ --json-report

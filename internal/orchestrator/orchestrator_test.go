@@ -486,10 +486,11 @@ func TestRunAndScoreReturnsTypedResult(t *testing.T) {
 	if ts.taskID != "task-001" {
 		t.Errorf("taskID = %q, want %q", ts.taskID, "task-001")
 	}
-	// correctness = (auto.TestsPass + judge.RequirementInterpretation) / 2
-	// auto.TestsPass from "1 passed" exit 0 = 10.0, judge.RequirementInterpretation = 7 → (10+7)/2 = 8.5
-	if ts.correctness != 8.5 {
-		t.Errorf("correctness = %f, want 8.5", ts.correctness)
+	// correctness = (testsPass + judge.RequirementInterpretation) / 2
+	// testsPass: task has no TestCommand → ScoreTests returns 0.0 (B-3: harness-controlled scoring).
+	// judge.RequirementInterpretation = 7 → (0+7)/2 = 3.5
+	if ts.correctness != 3.5 {
+		t.Errorf("correctness = %f, want 3.5", ts.correctness)
 	}
 
 	// dim() accessor must work for each named dimension.

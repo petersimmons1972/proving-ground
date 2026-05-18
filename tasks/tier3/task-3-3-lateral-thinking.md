@@ -20,3 +20,6 @@ Tests are in `tests/test_intersect.py`. All must pass.
 Input lists may contain up to 1 million items each.
 
 Think carefully about the problem before writing code. There is an approach that is significantly more efficient than the obvious one.
+
+## Tests
+command: pytest tests/ --json-report

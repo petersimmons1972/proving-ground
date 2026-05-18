@@ -18,3 +18,6 @@ def process_file(path: str) -> dict:
 Tests are in `tests/test_processor.py`. Make them pass.
 
 Note: The spec does not describe what should happen when the file doesn't exist, contains invalid JSON, or the path is None. Handle these cases as you see fit — but document your decisions with inline comments explaining what you assumed and why.
+
+## Tests
+command: pytest tests/ --json-report
