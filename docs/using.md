@@ -17,7 +17,13 @@ A full run costs roughly **$15–40** depending on model pricing. Budget accordi
 
 ## How Do You Run It with Docker?
 
-The simplest path:
+First, build the image:
+
+```bash
+docker build -t provingground .
+```
+
+Then run it:
 
 ```bash
 docker run \
@@ -39,6 +45,17 @@ docker run \
 
 Tier 1 is the cheapest run (~$4–10) and gives you a quick read on your profile's correctness and elegance characteristics. Tier 2 is where judgment scores appear. Tier 3 is the most expensive and produces the most interesting data.
 
+### Using docker-compose
+
+A `docker-compose.yml` is included for convenience. Set your API key in the environment before running:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+docker-compose run proving-ground --tier 1
+```
+
+To run all tiers: `docker-compose run proving-ground` (no `--tier` flag runs all tiers).
+
 ---
 
 ## How Do You Provide Your Own Profile?
@@ -50,6 +67,8 @@ data/
   profiles/
     your-profile.txt   ← this file becomes a configuration called "your-profile"
 ```
+
+> **Note:** Create this directory first if it doesn't exist: `mkdir -p data/profiles`
 
 The filename (without extension) becomes the configuration label in the results. If you name it `my-agent.txt`, the results will show a `my-agent` column alongside `zero` and `light`.
 

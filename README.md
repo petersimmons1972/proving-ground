@@ -51,16 +51,44 @@ The original Suite v1 run introduced the **Grace Hopper** profile against blank 
 
 ---
 
-## Quick Start
+## Getting Started
+
+### Prerequisites
+
+- **Docker** — install from [docker.com](https://docker.com)
+- **Anthropic API key** — get one at [console.anthropic.com](https://console.anthropic.com/)
+
+### Quick Start
+
+```bash
+# 1. Clone and build
+git clone https://github.com/petersimmons1972/proving-ground
+cd proving-ground
+docker build -t provingground .
+
+# 2. Set up your data directory and API key
+mkdir -p data/profiles
+cp .env.example .env
+# Edit .env with your real API key
+```
+
+Run Tier 1 only (~$4–10, ~15 min):
 
 ```bash
 docker run \
-  -e ANTHROPIC_API_KEY=sk-ant-... \
+  --env-file .env \
   -v ./data:/data \
-  provingground
+  provingground --tier 1
 ```
 
-Place your agent profile in `data/profiles/your-profile.txt` before running. It becomes a configuration alongside `zero` and `light`. **[Full usage guide →](docs/using.md)**
+Or use docker-compose:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+docker-compose run proving-ground --tier 1
+```
+
+**Full documentation:** [docs/using.md](docs/using.md) — includes tier descriptions, profile setup, and cost estimates.
 
 **STATUS: experimental**
 
