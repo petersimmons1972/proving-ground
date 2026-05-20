@@ -78,6 +78,15 @@ var scoreWithJudgeFn = func(ctx context.Context, transcript, taskSpec, rubricPat
 
 // Run executes the full benchmark pipeline: run all tasks × profiles, score, aggregate, report.
 func Run(ctx context.Context, cfg Config) error {
+	// #59: log active Claude model identity at startup so each run is
+	// reproducible from logs alone. Empty value means CLI default is in use.
+	model := os.Getenv("PROVING_GROUND_MODEL")
+	if model == "" {
+		model = "cli-default"
+	}
+	log.Printf("orchestrator: startup model=%s task_timeout=%s max_workers=%d judge_runs=%d",
+		model, config.TaskTimeout(), config.MaxWorkers(), config.JudgeRuns())
+
 	// Create runs output directory.
 	runsPath := filepath.Join(cfg.DataDir, "runs")
 	if err := os.MkdirAll(runsPath, 0755); err != nil {
@@ -134,12 +143,18 @@ func Run(ctx context.Context, cfg Config) error {
 		for name, prompt := range profileMap {
 			wg.Add(1)
 			sem <- struct{}{}
-			failuresMu.Lock()
-			tasksAttempted++
-			failuresMu.Unlock()
 			go func(name, prompt string) {
 				defer wg.Done()
 				defer func() { <-sem }()
+				// #61: increment AFTER the goroutine actually starts. If the parent
+				// ctx was cancelled while this goroutine was queued behind the
+				// semaphore, return early without counting it as attempted.
+				if ctx.Err() != nil {
+					return
+				}
+				failuresMu.Lock()
+				tasksAttempted++
+				failuresMu.Unlock()
 				defer func() {
 					if r := recover(); r != nil {
 						log.Printf("orchestrator: PANIC in task=%s profile=%s: %v\nstack:\n%s",

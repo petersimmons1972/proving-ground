@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -11,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/petersimmons1972/proving-ground/internal/config"
 )
 
 const defaultTimeout = 300 * time.Second
@@ -66,7 +69,7 @@ func BuildRunnerArgs(systemPrompt string) []string {
 func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 	timeout := args.Timeout
 	if timeout == 0 {
-		timeout = defaultTimeout
+		timeout = config.TaskTimeout()
 	}
 
 	runDir := filepath.Join(args.WorkingDir, args.TaskID, args.ProfileName)
@@ -115,8 +118,19 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 	// WaitDelay forces the I/O pipes closed after the timeout so
 	// cmd.Run() returns even if a grandchild is still holding them.
 	cmd.WaitDelay = 2 * time.Second
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
+	// #58: stream subprocess stdout to a temp file rather than an unbounded
+	// bytes.Buffer. With 4 parallel goroutines each potentially capturing
+	// tens of MB during the 300s window, in-memory buffers risked OOM. The
+	// temp file is read back below with an io.LimitReader cap; on overflow,
+	// a TRUNCATED marker is appended so the judge sees an explicit notice.
+	stdoutFile, err := os.CreateTemp("", "pg-stdout-*")
+	if err != nil {
+		return nil, fmt.Errorf("create stdout temp file: %w", err)
+	}
+	defer os.Remove(stdoutFile.Name())
+	defer stdoutFile.Close()
+	var stderr bytes.Buffer
+	cmd.Stdout = stdoutFile
 	cmd.Stderr = &stderr
 
 	start := time.Now()
@@ -156,6 +170,15 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 			args.TaskID, args.ProfileName, exitCode, truncate(stderr.String(), 200))
 	}
 
+	stdoutStr, stdoutTruncated, err := readCappedStdout(stdoutFile, config.StdoutCapBytes())
+	if err != nil {
+		return nil, fmt.Errorf("reading stdout temp: %w", err)
+	}
+	if stdoutTruncated {
+		log.Printf("runner: task=%s profile=%s stdout TRUNCATED at cap (%d bytes)",
+			args.TaskID, args.ProfileName, config.StdoutCapBytes())
+	}
+
 	// Collect files written under run dir.
 	var filesWritten []string
 	_ = filepath.Walk(absRunDir, func(path string, info os.FileInfo, err error) error {
@@ -171,7 +194,7 @@ func RunTask(ctx context.Context, args RunTaskArgs) (*TaskResult, error) {
 		TaskID:       args.TaskID,
 		ProfileName:  args.ProfileName,
 		ExitCode:     exitCode,
-		Stdout:       stdout.String(),
+		Stdout:       stdoutStr,
 		Stderr:       stderr.String(),
 		WorkingDir:   absRunDir,
 		FilesWritten: filesWritten,
@@ -184,4 +207,31 @@ func truncate(s string, n int) string {
 		return s
 	}
 	return s[:n]
+}
+
+// readCappedStdout rewinds f and reads up to cap bytes; if the file
+// contained more, returns the bytes plus a TRUNCATED marker line and
+// truncated=true.
+func readCappedStdout(f *os.File, cap int64) (string, bool, error) {
+	info, err := f.Stat()
+	if err != nil {
+		return "", false, err
+	}
+	if _, err := f.Seek(0, 0); err != nil {
+		return "", false, err
+	}
+	truncated := info.Size() > cap
+	limit := info.Size()
+	if truncated {
+		limit = cap
+	}
+	buf := make([]byte, limit)
+	if _, err := io.ReadFull(f, buf); err != nil && err != io.ErrUnexpectedEOF {
+		return "", false, err
+	}
+	out := string(buf)
+	if truncated {
+		out += fmt.Sprintf("\n...[TRUNCATED at %d bytes; original size %d]...\n", cap, info.Size())
+	}
+	return out, truncated, nil
 }
