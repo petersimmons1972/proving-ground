@@ -213,7 +213,7 @@ func GenerateResults(report ResultsReport, htmlPath, jsonPath, templateDir strin
 	if err != nil {
 		return fmt.Errorf("marshal report: %w", err)
 	}
-	if err := os.WriteFile(jsonPath, jsonBytes, 0o644); err != nil {
+	if err := atomicWriteFile(jsonPath, jsonBytes, 0o644); err != nil {
 		return fmt.Errorf("write json: %w", err)
 	}
 
@@ -224,8 +224,57 @@ func GenerateResults(report ResultsReport, htmlPath, jsonPath, templateDir strin
 	if err != nil {
 		return fmt.Errorf("render html: %w", err)
 	}
-	if err := os.WriteFile(htmlPath, []byte(html), 0o644); err != nil {
+	if err := atomicWriteFile(htmlPath, []byte(html), 0o644); err != nil {
 		return fmt.Errorf("write html: %w", err)
 	}
 	return nil
+}
+
+// atomicWriteFile writes data to path via write-temp-then-rename, so a
+// crash mid-write does not leave a partially-written invalid file at path.
+// The temp file is created in the same directory to keep the rename on
+// the same filesystem. On error the temp file is removed.
+func atomicWriteFile(path string, data []byte, perm os.FileMode) error {
+	dir, base := filepathSplit(path)
+	f, err := os.CreateTemp(dir, base+".tmp.*")
+	if err != nil {
+		return fmt.Errorf("create temp: %w", err)
+	}
+	tmpName := f.Name()
+	cleanup := func() { _ = os.Remove(tmpName) }
+	if _, err := f.Write(data); err != nil {
+		f.Close()
+		cleanup()
+		return fmt.Errorf("write temp: %w", err)
+	}
+	if err := f.Chmod(perm); err != nil {
+		f.Close()
+		cleanup()
+		return fmt.Errorf("chmod temp: %w", err)
+	}
+	if err := f.Sync(); err != nil {
+		f.Close()
+		cleanup()
+		return fmt.Errorf("sync temp: %w", err)
+	}
+	if err := f.Close(); err != nil {
+		cleanup()
+		return fmt.Errorf("close temp: %w", err)
+	}
+	if err := os.Rename(tmpName, path); err != nil {
+		cleanup()
+		return fmt.Errorf("rename temp: %w", err)
+	}
+	return nil
+}
+
+// filepathSplit returns (dir, file) without importing path/filepath at the
+// top of this file (avoids touching the existing import block).
+func filepathSplit(p string) (string, string) {
+	for i := len(p) - 1; i >= 0; i-- {
+		if p[i] == '/' {
+			return p[:i], p[i+1:]
+		}
+	}
+	return ".", p
 }
