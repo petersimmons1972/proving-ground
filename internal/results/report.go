@@ -76,13 +76,26 @@ var colorPalette = []string{
 
 // colorFor returns the brand color for a configuration name.
 // Known names (zero, light, user) use their exact brand colors.
-// Unknown names fall back to a palette indexed by idx, cycling through
-// colorPalette to ensure distinct colors for different indices.
+// Unknown names hash the name itself into the palette, so a profile's
+// color is stable across runs even when other profiles are added or
+// removed. idx is preserved in the signature for callers but unused
+// for unknown names (#49).
 func colorFor(name string, idx int) string {
+	_ = idx
 	if c, ok := defaultConfigColors[name]; ok {
 		return c
 	}
-	return colorPalette[idx%len(colorPalette)]
+	// FNV-1a 32-bit hash of the profile name → palette index.
+	const (
+		offset32 = 2166136261
+		prime32  = 16777619
+	)
+	h := uint32(offset32)
+	for i := 0; i < len(name); i++ {
+		h ^= uint32(name[i])
+		h *= prime32
+	}
+	return colorPalette[int(h%uint32(len(colorPalette)))]
 }
 
 // buildVerdict produces the one-sentence verdict line shown at the top

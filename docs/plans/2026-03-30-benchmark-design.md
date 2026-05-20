@@ -1,3 +1,11 @@
+> **⚠️ HISTORICAL / SUPERSEDED.** This is the original March 2026 design document.
+> Several details no longer match the implementation:
+> - `scoring.yaml` was never created (tier weights live in `internal/config/config.go:TierWeights`)
+> - `history.html` was never created (history is rendered inline in `results.html`)
+> - default judge runs is 5, not 3 (commit 212effe)
+>
+> For current behavior see `README.md` and `docs/using.md`. See issue #48.
+
 # Proving Ground — Benchmark Design
 
 ```
