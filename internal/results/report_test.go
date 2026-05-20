@@ -169,11 +169,11 @@ func TestJSONOutputIsValid(t *testing.T) {
 
 // TestResultsReport_JSON_ContainsSchemaVersionAndMetadata verifies that a
 // ResultsReport with a populated RunMetadata marshals to JSON containing
-// schema_version: "2" and the metadata block (tasks_failed, tasks_attempted).
+// schema_version: "3" (v3 adds failure_class + judge_prompt_format) and the metadata block (tasks_failed, tasks_attempted).
 func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 	report := makeSampleReport()
 	report.Metadata = results.RunMetadata{
-		SchemaVersion:  "2",
+		SchemaVersion:  "3",
 		TasksAttempted: 9,
 		TasksFailed:    2,
 		TaskFailures: []results.TaskFailure{
@@ -203,8 +203,8 @@ func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 		t.Fatalf("unmarshal: %v", err)
 	}
 
-	if parsed.Metadata.SchemaVersion != "2" {
-		t.Errorf("schema_version = %q, want %q", parsed.Metadata.SchemaVersion, "2")
+	if parsed.Metadata.SchemaVersion != "3" {
+		t.Errorf("schema_version = %q, want %q", parsed.Metadata.SchemaVersion, "3")
 	}
 	if parsed.Metadata.TasksAttempted != 9 {
 		t.Errorf("tasks_attempted = %d, want 9", parsed.Metadata.TasksAttempted)
@@ -222,7 +222,7 @@ func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 func TestResultsReport_JSON_MetadataOmittedWhenEmpty(t *testing.T) {
 	report := makeSampleReport()
 	report.Metadata = results.RunMetadata{
-		SchemaVersion:  "2",
+		SchemaVersion:  "3",
 		TasksAttempted: 9,
 		TasksFailed:    0,
 	}

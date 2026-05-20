@@ -76,7 +76,15 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 	}
 	rubric := string(rubricBytes)
 
-	prompt := fmt.Sprintf("## Task Spec\n\n%s\n\n## Agent Session\n\n%s", taskSpec, transcript)
+	// #31: wrap the agent transcript in BEGIN_TRANSCRIPT/END_TRANSCRIPT
+	// delimiters so the parser can ignore dimension-line tokens the agent
+	// injects into its own output. Literal occurrences of the delimiters
+	// inside the transcript are escaped to disarm fence-break attacks.
+	wrapped := sanitizeTranscript(transcript)
+	prompt := fmt.Sprintf(
+		"## Task Spec\n\n%s\n\n## Agent Session (UNTRUSTED)\n\nBEGIN_TRANSCRIPT\n%s\nEND_TRANSCRIPT\n",
+		taskSpec, wrapped,
+	)
 
 	var allScores []judgeRaw
 
@@ -128,7 +136,11 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 			continue
 		}
 
-parsed := parseJudgeOutput(stdoutText)
+		// #31: clip everything before END_TRANSCRIPT so dim lines INSIDE the
+		// fenced transcript (echoed by a judge that prints its prompt back) are
+		// ignored. Real judge output appears AFTER the marker.
+		// #39 (AG-4): drop runs that don't carry all four dimensions.
+		parsed := parseJudgeOutput(clipAfterTranscriptFence(stdoutText))
 		if !isCompleteJudgeRun(parsed) {
 			log.Printf("judge: run %d/%d dropped — incomplete output (missing dimensions); not contributing to median",
 				i+1, runs)
@@ -247,4 +259,29 @@ func medianJudgeScores(all []judgeRaw) *JudgeScores {
 		UnconventionalThinking:    medianInt(extract("UNCONVENTIONAL_THINKING")),
 		Rationale:                 medianRationale,
 	}
+}
+
+// sanitizeTranscript disarms fence-break attempts: literal occurrences of
+// BEGIN_TRANSCRIPT / END_TRANSCRIPT in the agent output are mangled with a
+// zero-width space so the parser's LastIndex(END_TRANSCRIPT) finds only the
+// real outer marker. The judge still sees the broken token in the prompt
+// and can be instructed (via rubric) to treat fenced content as untrusted.
+// Issue #31.
+func sanitizeTranscript(t string) string {
+	t = strings.ReplaceAll(t, "BEGIN_TRANSCRIPT", "BEGIN​_TRANSCRIPT")
+	t = strings.ReplaceAll(t, "END_TRANSCRIPT", "END​_TRANSCRIPT")
+	return t
+}
+
+// clipAfterTranscriptFence returns the portion of judge stdout that appears
+// after the END_TRANSCRIPT marker. If the marker is absent (typical: judge
+// did not echo its prompt) the original string is returned unchanged.
+// Issue #31.
+func clipAfterTranscriptFence(s string) string {
+	const marker = "END_TRANSCRIPT"
+	idx := strings.LastIndex(s, marker)
+	if idx < 0 {
+		return s
+	}
+	return s[idx+len(marker):]
 }

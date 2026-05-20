@@ -13,20 +13,37 @@ import (
 	"github.com/petersimmons1972/proving-ground/internal/config"
 )
 
+// FailureClass values for TaskFailure.FailureClass (#60). Schema v3 introduces
+// machine-readable failure classification so downstream tooling does not need
+// to brittle-match Go error message text.
+const (
+	FailureClassTimeout      = "timeout"
+	FailureClassJudgeFailure = "judge_failure"
+	FailureClassPanic        = "panic"
+	FailureClassRunnerError  = "runner_error"
+)
+
+// SchemaVersionV3 is the current results.json schema version. v3 adds
+// FailureClass to TaskFailure and JudgePromptFormat to RunMetadata (the
+// value "delimited-v1" indicates the BEGIN/END_TRANSCRIPT fence; see #31).
+const SchemaVersionV3 = "3"
+
 // TaskFailure records a single task/profile combination that failed during a run.
 type TaskFailure struct {
-	TaskID  string `json:"task_id"`
-	Profile string `json:"profile"`
-	Reason  string `json:"reason"`
+	TaskID       string `json:"task_id"`
+	Profile      string `json:"profile"`
+	Reason       string `json:"reason"`
+	FailureClass string `json:"failure_class,omitempty"`
 }
 
 // RunMetadata records diagnostic counters and failure details for a benchmark run.
 // It is written to results.json under "metadata" when SchemaVersion is "2".
 type RunMetadata struct {
-	SchemaVersion  string        `json:"schema_version"`
-	TasksAttempted int           `json:"tasks_attempted"`
-	TasksFailed    int           `json:"tasks_failed"`
-	TaskFailures   []TaskFailure `json:"task_failures,omitempty"`
+	SchemaVersion     string        `json:"schema_version"`
+	TasksAttempted    int           `json:"tasks_attempted"`
+	TasksFailed       int           `json:"tasks_failed"`
+	TaskFailures      []TaskFailure `json:"task_failures,omitempty"`
+	JudgePromptFormat string        `json:"judge_prompt_format,omitempty"`
 }
 
 // ResultsReport holds all scored data for a benchmark run.
