@@ -55,9 +55,10 @@ func TestRunAndScore_TimedOutTask_SkipsJudge(t *testing.T) {
 		TemplateDir: findTemplateDir(t),
 		PromptDir:   findPromptDir(t),
 	}
-	if err := Run(context.Background(), cfg); err != nil {
-		t.Fatal(err)
-	}
+	// All tasks timing out means Run() returns an aggregate failure error —
+	// that is expected and not the property under test. The property under
+	// test is that scoreWithJudgeFn was never invoked.
+	_ = Run(context.Background(), cfg)
 
 	if judgeCalls.Load() != 0 {
 		t.Errorf("expected 0 judge invocations for timed-out tasks, got %d", judgeCalls.Load())

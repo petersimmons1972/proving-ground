@@ -94,6 +94,15 @@ docker-compose run proving-ground --tier 1
 
 ---
 
+## Scoring Scope: Python-Only
+
+Tasks in this suite are Python-only by construction. Scoring components that
+inspect the solution (`pytest`-based tests, LOC counter, radon complexity)
+read `.py` files; non-Python solutions receive neutral scores on Elegance
+and Tests dimensions. This is an explicit constraint of the current task
+catalog, not a bug — see #46. To benchmark agents on non-Python work, fork
+the suite and supply non-Python task fixtures plus equivalent scoring shims.
+
 ## What It Measures
 
 Ten tasks across three tiers of increasing difficulty:

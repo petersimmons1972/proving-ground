@@ -133,10 +133,16 @@ func ScoreLinesOfCode(solutionDir string, refMinimal, refVerbose int) float64 {
 	return roundTo1((1.0 - ratio) * 10)
 }
 
-// ScoreScope scores how many files were written outside allowed prefixes.
+// ScoreScope scores how many files were written within allowed prefixes
+// relative to the agent's working directory (intra-dir scope only — see #30
+// limitation: files written outside the working directory are invisible to
+// this metric, by design; see docs/scope-metric.md).
+//
+// An empty filesWritten slice means the agent wrote nothing at all — this is
+// "did no work," not "perfect scope discipline" (#30 second bug), and scores 0.
 func ScoreScope(allowedFiles, filesWritten []string) float64 {
 	if len(filesWritten) == 0 {
-		return 10.0
+		return 0.0
 	}
 	outOfScope := 0
 	for _, f := range filesWritten {

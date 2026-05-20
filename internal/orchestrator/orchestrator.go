@@ -315,6 +315,14 @@ func runAndScore(
 		return taskScore{}, fmt.Errorf("run_task: %w", err)
 	}
 
+	// #40: A timed-out task (ExitCode 124) has empty stdout. Sending that to the
+	// judge yields neutral-5 defaults that conflate "failed" with "mediocre".
+	// Skip the judge entirely and surface the timeout as the failure reason.
+	// (Cluster D will add a machine-readable failure_class enum to TaskFailure.)
+	if result.ExitCode == 124 {
+		return taskScore{}, fmt.Errorf("timeout: task exceeded deadline (exit 124)")
+	}
+
 	testsPass := scoring.ScoreTests(ctx, result.WorkingDir, task.TestCommand)
 
 	locRef, ok := config.LocRefs[task.ID]

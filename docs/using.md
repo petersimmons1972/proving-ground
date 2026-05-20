@@ -201,3 +201,9 @@ The history file lets you track progress across runs. Don't delete it. Every run
 `--tier all` (or omitting `--tier` entirely) runs all three tiers sequentially. These are equivalent — `all` is the default.
 
 Tier 2 is the best single-tier run if you're trying to evaluate whether your profile improves decision-making. Tier 1 results are relatively unsurprising. Tier 3 results are the most interesting and the most expensive.
+
+
+> **Scoring scope is Python-only.** Tasks ship with `pytest`-based tests and
+> the elegance/complexity metrics read `.py` files via radon. Non-Python
+> agent output is not penalized but is not scored on those dimensions either —
+> see [issue #46](https://github.com/petersimmons1972/proving-ground/issues/46).
