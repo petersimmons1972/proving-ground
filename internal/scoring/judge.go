@@ -102,7 +102,13 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 			continue
 		}
 
-		allScores = append(allScores, parseJudgeOutput(stdout.String()))
+		parsed := parseJudgeOutput(stdout.String())
+		if !isCompleteJudgeRun(parsed) {
+			log.Printf("judge: run %d/%d dropped — incomplete output (missing dimensions); not contributing to median",
+				i+1, runs)
+			continue
+		}
+		allScores = append(allScores, parsed)
 	}
 
 	if len(allScores) < runs && len(allScores) > 0 {
@@ -110,39 +116,61 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 			len(allScores), runs)
 	}
 
-	if len(allScores) == 0 {
+	// Quorum: at least ceil(runs/2) usable observations required (AG-4).
+	quorum := (runs + 1) / 2
+	if len(allScores) < quorum {
+		reason := "ALL_JUDGE_RUNS_FAILED"
+		if len(allScores) > 0 {
+			reason = "INSUFFICIENT_JUDGE_QUORUM"
+		}
 		return &JudgeScores{
-			Rationale:     "ALL_JUDGE_RUNS_FAILED",
+			Rationale:     reason,
 			Failed:        true,
-			FailureReason: "ALL_JUDGE_RUNS_FAILED",
+			FailureReason: reason,
 		}, nil
 	}
 
 	return medianJudgeScores(allScores), nil
 }
 
+// parseJudgeOutput returns the dims that were present in the judge output.
+// Missing dims are NOT defaulted to 5 (#39, AG-4 fail-the-run): a truncated
+// judge response is one event, not four independent observations, so dropping
+// the whole run downstream is more honest than averaging real scores with
+// fabricated neutral defaults.
 func parseJudgeOutput(text string) judgeRaw {
 	dims := map[string]int{}
 	for name, re := range judgeRe {
 		m := re.FindStringSubmatch(text)
-		if m != nil {
-			v, _ := strconv.Atoi(m[1])
-			if v < 0 {
-				v = 0
-			}
-			if v > 10 {
-				v = 10
-			}
-			dims[name] = v
-		} else {
-			dims[name] = 5 // default to neutral when dimension is missing
+		if m == nil {
+			continue
 		}
+		v, _ := strconv.Atoi(m[1])
+		if v < 0 {
+			v = 0
+		}
+		if v > 10 {
+			v = 10
+		}
+		dims[name] = v
 	}
 	rationale := ""
 	if m := rationaleRe.FindStringSubmatch(text); m != nil {
 		rationale = strings.TrimSpace(m[1])
 	}
 	return judgeRaw{dims: dims, rationale: rationale}
+}
+
+// isCompleteJudgeRun returns true iff all four scoring dimensions were
+// parsed from the judge output. A partial run is dropped from the median
+// pool entirely (AG-4 fail-the-run policy).
+func isCompleteJudgeRun(r judgeRaw) bool {
+	for name := range judgeRe {
+		if _, ok := r.dims[name]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 // truncateJudge returns s truncated to n bytes with a suffix if it was cut.

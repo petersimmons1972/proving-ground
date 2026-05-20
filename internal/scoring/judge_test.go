@@ -170,15 +170,25 @@ func TestScoreWithJudge_SuccessfulRun_NotSentinel(t *testing.T) {
 	}
 }
 
-func TestJudgeMissingDimensionDefaultsFive(t *testing.T) {
-	// Response omits UNCONVENTIONAL_THINKING — should default to 5.
+// TestJudgeMissingDimension_FailsRun (updated per AG-4 fail-the-run, #39):
+// previously this test asserted that a missing dimension silently defaulted to 5,
+// which is the bug #39 documents. A truncated judge response is one event, not
+// four independent observations; the run must be dropped from the median pool,
+// and with only one run requested the whole judge result is Failed.
+func TestJudgeMissingDimension_FailsRun(t *testing.T) {
 	rubric, cleanup := setupFakeJudgeClaude(t,
 		`printf 'REQUIREMENT_INTERPRETATION: 7\nDECISION_COMMUNICATION: 6\nSELF_AWARENESS: 7\nRECOVERY_QUALITY: 5\nRATIONALE: incomplete response\n'; exit 0`)
 	defer cleanup()
 
-	scores, _ := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 1)
-	if scores.UnconventionalThinking != 5 {
-		t.Errorf("UnconventionalThinking = %f, want 5 (default for missing)", scores.UnconventionalThinking)
+	scores, err := scoring.ScoreWithJudge(context.Background(), "transcript", "spec", rubric, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !scores.Failed {
+		t.Errorf("missing dim must fail the run; got %+v", scores)
+	}
+	if scores.UnconventionalThinking == 5 {
+		t.Errorf("UnconventionalThinking silently defaulted to 5 (bug #39)")
 	}
 }
 
