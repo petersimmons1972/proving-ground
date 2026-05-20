@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 const TaskSuiteVersion = "v1"
@@ -53,4 +54,35 @@ func JudgeRuns() int {
 		log.Printf("WARNING: invalid PROVING_GROUND_JUDGE_RUNS=%q, using default %d", v, defaultVal)
 	}
 	return defaultVal
+}
+
+// TaskTimeout returns the per-task subprocess timeout (#43).
+// Controlled by PROVING_GROUND_TASK_TIMEOUT env var (e.g. "180s", "5m"),
+// default 300s.
+func TaskTimeout() time.Duration {
+	const defaultVal = 300 * time.Second
+	if v := os.Getenv("PROVING_GROUND_TASK_TIMEOUT"); v != "" {
+		if d, err := time.ParseDuration(v); err == nil && d > 0 {
+			return d
+		}
+		log.Printf("WARNING: invalid PROVING_GROUND_TASK_TIMEOUT=%q, using default %s", v, defaultVal)
+	}
+	return defaultVal
+}
+
+// StdoutCapBytes returns the maximum bytes of subprocess stdout to retain
+// in memory after the run completes (#58). Output is streamed to a temp
+// file during execution and read back via io.LimitReader at this cap.
+// Default 50 MB. Override with PROVING_GROUND_STDOUT_CAP_MB.
+func StdoutCapBytes() int64 {
+	const defaultMB = 50
+	mb := int64(defaultMB)
+	if v := os.Getenv("PROVING_GROUND_STDOUT_CAP_MB"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n > 0 {
+			mb = int64(n)
+		} else {
+			log.Printf("WARNING: invalid PROVING_GROUND_STDOUT_CAP_MB=%q, using default %d", v, defaultMB)
+		}
+	}
+	return mb * 1024 * 1024
 }

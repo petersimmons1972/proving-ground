@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -84,12 +85,37 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 		args := BuildJudgeArgs(rubric)
 		cmd := exec.CommandContext(runCtx, "claude", args...)
 		cmd.Stdin = strings.NewReader(prompt)
-		var stdout, stderr bytes.Buffer
-		cmd.Stdout = &stdout
+		// #58: stream stdout to temp file rather than unbounded bytes.Buffer.
+		stdoutFile, ferr := os.CreateTemp("", "pg-judge-stdout-*")
+		if ferr != nil {
+			log.Printf("judge: run %d/%d temp file error: %v", i+1, runs, ferr)
+			cancel()
+			continue
+		}
+		var stderr bytes.Buffer
+		cmd.Stdout = stdoutFile
 		cmd.Stderr = &stderr
 
 		runErr := cmd.Run()
 		cancel()
+
+		// Read back with cap.
+		stdoutCapBytes := int64(50 * 1024 * 1024)
+		stdoutText := ""
+		if info, ierr := stdoutFile.Stat(); ierr == nil {
+			limit := info.Size()
+			if limit > stdoutCapBytes {
+				limit = stdoutCapBytes
+				log.Printf("judge: run %d/%d stdout TRUNCATED at %d bytes (original %d)",
+					i+1, runs, stdoutCapBytes, info.Size())
+			}
+			stdoutFile.Seek(0, 0)
+			buf := make([]byte, limit)
+			io.ReadFull(stdoutFile, buf)
+			stdoutText = string(buf)
+		}
+		stdoutFile.Close()
+		os.Remove(stdoutFile.Name())
 
 		if runCtx.Err() == context.DeadlineExceeded || runErr != nil {
 			stderrStr := stderr.String()
@@ -102,7 +128,7 @@ func ScoreWithJudge(ctx context.Context, transcript, taskSpec, rubricPath string
 			continue
 		}
 
-		parsed := parseJudgeOutput(stdout.String())
+parsed := parseJudgeOutput(stdoutText)
 		if !isCompleteJudgeRun(parsed) {
 			log.Printf("judge: run %d/%d dropped — incomplete output (missing dimensions); not contributing to median",
 				i+1, runs)
