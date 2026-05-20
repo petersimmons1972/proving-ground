@@ -161,9 +161,10 @@ func Run(ctx context.Context, cfg Config) error {
 							task.ID, name, r, debug.Stack())
 						failuresMu.Lock()
 						taskFailures = append(taskFailures, results.TaskFailure{
-							TaskID:  task.ID,
-							Profile: name,
-							Reason:  fmt.Sprintf("panic: %v", r),
+							TaskID:       task.ID,
+							Profile:      name,
+							Reason:       fmt.Sprintf("panic: %v", r),
+							FailureClass: results.FailureClassPanic,
 						})
 						failuresMu.Unlock()
 					}
@@ -174,9 +175,10 @@ func Run(ctx context.Context, cfg Config) error {
 					log.Printf("WARNING: profile %q failed on %s: %v", name, task.ID, err)
 					failuresMu.Lock()
 					taskFailures = append(taskFailures, results.TaskFailure{
-						TaskID:  task.ID,
-						Profile: name,
-						Reason:  err.Error(),
+						TaskID:       task.ID,
+						Profile:      name,
+						Reason:       err.Error(),
+						FailureClass: classifyFailure(err),
 					})
 					failuresMu.Unlock()
 					return
@@ -276,7 +278,8 @@ func Run(ctx context.Context, cfg Config) error {
 		DimensionScores:  dimensionScoresByConfig,
 		History:          nil,
 		Metadata: results.RunMetadata{
-			SchemaVersion:  "2",
+			SchemaVersion:     results.SchemaVersionV3,
+			JudgePromptFormat: "delimited-v1",
 			TasksAttempted: tasksAttempted,
 			TasksFailed:    len(taskFailures),
 			TaskFailures:   taskFailures,
