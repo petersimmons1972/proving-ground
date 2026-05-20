@@ -48,5 +48,11 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup && mkdir -p /data && 
 USER appuser
 
 # Default entrypoint
+
+# #54: container HEALTHCHECK — confirms the claude CLI is still present and
+# responsive. Used by orchestrators (k8s, compose) to detect a wedged image.
+HEALTHCHECK --interval=5m --timeout=10s --start-period=30s --retries=2 \
+    CMD claude --version >/dev/null 2>&1 || exit 1
+
 ENTRYPOINT ["/usr/local/bin/proving-ground", "--data-dir", "/data"]
 CMD []

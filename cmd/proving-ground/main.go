@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/petersimmons1972/proving-ground/internal/config"
 	"github.com/petersimmons1972/proving-ground/internal/orchestrator"
 	"github.com/spf13/cobra"
 )
@@ -140,6 +141,41 @@ Asset path overrides (for go install or custom layouts):
 	rootCmd.Flags().StringVar(&profilesDir, "profiles-dir", "", "Path to profiles/ directory (default: profiles/ relative to working directory)")
 	rootCmd.Flags().StringVar(&templatesDir, "templates-dir", "", "Path to templates/ directory (default: templates/ relative to working directory)")
 	rootCmd.Flags().StringVar(&promptsDir, "prompts-dir", "", "Path to prompts/ directory (default: prompts/ relative to working directory)")
+
+	// #44: tunable flags (env-var fallback). Flag takes precedence over env;
+	// implementation sets the env var when flag is provided so the existing
+	// config layer (PROVING_GROUND_*) sees the flag value.
+	var maxWorkers, judgeRuns, stdoutCapBytes int
+	var modelFlag, timeoutFlag string
+	rootCmd.Flags().IntVar(&maxWorkers, "max-workers", 0, "Parallel task workers (default: $PROVING_GROUND_MAX_WORKERS or 4)")
+	rootCmd.Flags().IntVar(&judgeRuns, "judge-runs", 0, "Judge invocations per task (default: $PROVING_GROUND_JUDGE_RUNS or 5)")
+	rootCmd.Flags().StringVar(&modelFlag, "model", "", "Claude model id (default: $PROVING_GROUND_MODEL or CLI default)")
+	rootCmd.Flags().StringVar(&timeoutFlag, "timeout", "", "Per-task timeout, e.g. 180s, 5m (default: $PROVING_GROUND_TASK_TIMEOUT or 300s)")
+	rootCmd.Flags().IntVar(&stdoutCapBytes, "stdout-cap-mb", 0, "Per-subprocess stdout cap in MB (default: $PROVING_GROUND_STDOUT_CAP_MB or 50)")
+
+	// #50: --version flag.
+	rootCmd.Version = config.TaskSuiteVersion
+	rootCmd.SetVersionTemplate("proving-ground task-suite-version: {{.Version}}\n")
+
+	// Propagate flags to env vars BEFORE Execute() runs the command body.
+	// We do this in PersistentPreRun so the flags are parsed first.
+	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		if cmd.Flags().Changed("max-workers") {
+			os.Setenv("PROVING_GROUND_MAX_WORKERS", fmt.Sprintf("%d", maxWorkers))
+		}
+		if cmd.Flags().Changed("judge-runs") {
+			os.Setenv("PROVING_GROUND_JUDGE_RUNS", fmt.Sprintf("%d", judgeRuns))
+		}
+		if cmd.Flags().Changed("model") {
+			os.Setenv("PROVING_GROUND_MODEL", modelFlag)
+		}
+		if cmd.Flags().Changed("timeout") {
+			os.Setenv("PROVING_GROUND_TASK_TIMEOUT", timeoutFlag)
+		}
+		if cmd.Flags().Changed("stdout-cap-mb") {
+			os.Setenv("PROVING_GROUND_STDOUT_CAP_MB", fmt.Sprintf("%d", stdoutCapBytes))
+		}
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
