@@ -121,8 +121,8 @@ func Run(ctx context.Context, cfg Config) error {
 
 	// taskFailures accumulates per-task-profile failures for schema v2 metadata.
 	var (
-		failuresMu   sync.Mutex
-		taskFailures []results.TaskFailure
+		failuresMu     sync.Mutex
+		taskFailures   []results.TaskFailure
 		tasksAttempted int
 	)
 
@@ -280,9 +280,9 @@ func Run(ctx context.Context, cfg Config) error {
 		Metadata: results.RunMetadata{
 			SchemaVersion:     results.SchemaVersionV3,
 			JudgePromptFormat: "delimited-v1",
-			TasksAttempted: tasksAttempted,
-			TasksFailed:    len(taskFailures),
-			TaskFailures:   taskFailures,
+			TasksAttempted:    tasksAttempted,
+			TasksFailed:       len(taskFailures),
+			TaskFailures:      taskFailures,
 		},
 	}
 
@@ -333,12 +333,18 @@ func runAndScore(
 		return taskScore{}, fmt.Errorf("run_task: %w", err)
 	}
 
-	// #40: A timed-out task (ExitCode 124) has empty stdout. Sending that to the
-	// judge yields neutral-5 defaults that conflate "failed" with "mediocre".
-	// Skip the judge entirely and surface the timeout as the failure reason.
-	// (Cluster D will add a machine-readable failure_class enum to TaskFailure.)
-	if result.ExitCode == 124 {
-		return taskScore{}, fmt.Errorf("timeout: task exceeded deadline (exit 124)")
+	// #40/#69: Any non-zero runner exit code means the task did not produce a
+	// valid transcript. Sending an empty or invalid transcript to the judge
+	// yields misleading scores or an ALL_JUDGE_RUNS_FAILED error that
+	// classifyFailure maps to judge_failure — masking the real runner failure.
+	// Skip the judge entirely and surface the runner exit as the failure reason.
+	// ExitCode 124 is the timeout sentinel; all other non-zero exits are
+	// generic runner_error.
+	if result.ExitCode != 0 {
+		if result.ExitCode == 124 {
+			return taskScore{}, fmt.Errorf("timeout: task exceeded deadline (exit 124)")
+		}
+		return taskScore{}, fmt.Errorf("runner_error: runner exit %d", result.ExitCode)
 	}
 
 	testsPass := scoring.ScoreTests(ctx, result.WorkingDir, task.TestCommand)
