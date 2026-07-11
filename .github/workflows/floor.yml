@@ -1,0 +1,38 @@
+# .github/workflows/floor.yml — the machine-checkable coding floor
+#
+# Fleet-wide CI floor (Bitter-Lesson item IC-1). Additive: this workflow
+# does not modify or replace the existing `ci.yml`. See
+# https://github.com/petersimmons1972/fleet-standards (standards/ci-enforcement.md)
+# for the full rule -> check mapping. Judgment-only rules stay advisory
+# and are not gated here (floor-not-cage).
+name: floor
+on: [pull_request]
+jobs:
+  go:
+    if: ${{ hashFiles('go.mod') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: go.mod }
+      - run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }   # formatting
+      - run: go vet ./...
+      - run: go test -race -count=1 ./...                          # suite + race
+  python:
+    if: ${{ hashFiles('pyproject.toml', 'requirements*.txt') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+      - run: pipx run ruff format --check .
+      - run: pipx run ruff check .
+      - run: pip install -e . && python -m pytest -q                # suite
+  rust:
+    if: ${{ hashFiles('Cargo.toml') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo fmt --check
+      - run: cargo clippy -- -D warnings
+      - run: cargo test

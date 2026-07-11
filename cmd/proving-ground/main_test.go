@@ -89,4 +89,3 @@ func TestPreFlight_ClaudeNotOnPath_ReturnsError(t *testing.T) {
 		t.Error("error message is empty")
 	}
 }
-
