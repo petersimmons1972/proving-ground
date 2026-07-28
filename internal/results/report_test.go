@@ -192,7 +192,7 @@ func TestResultsReport_JSON_ContainsSchemaVersionAndMetadata(t *testing.T) {
 			SchemaVersion  string `json:"schema_version"`
 			TasksAttempted int    `json:"tasks_attempted"`
 			TasksFailed    int    `json:"tasks_failed"`
-			TaskFailures  []struct {
+			TaskFailures   []struct {
 				TaskID  string `json:"task_id"`
 				Profile string `json:"profile"`
 				Reason  string `json:"reason"`

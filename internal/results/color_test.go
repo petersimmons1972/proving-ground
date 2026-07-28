@@ -23,8 +23,8 @@ func TestColorForUnknownConfigIsNotGray(t *testing.T) {
 func TestColorForKnownConfigsPreservesBrandColors(t *testing.T) {
 	// Brand colors must be preserved exactly — do not change these values.
 	cases := []struct {
-		name  string
-		want  string
+		name string
+		want string
 	}{
 		{"zero", "#64748b"},
 		{"light", "#22D3EE"},
